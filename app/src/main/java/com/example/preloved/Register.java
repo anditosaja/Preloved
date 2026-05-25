@@ -25,13 +25,12 @@ import java.util.Map;
 
 public class Register extends AppCompatActivity {
 
-    // Deklarasi variabel komponen UI
     private TextInputEditText etNama, etEmail, etPassword;
     private MaterialButton btnDaftar;
     private TextView txtKeLogin;
     private ImageButton btnHelp;
 
-    // PENTING: Gunakan 10.0.2.2 untuk memanggil localhost XAMPP dari Emulator Android
+    // URL API Register (Gunakan 10.0.2.2 jika pakai Emulator)
     private static final String URL_REGISTER = "http://10.0.2.2/api_android/register.php";
 
     @Override
@@ -55,42 +54,52 @@ public class Register extends AppCompatActivity {
                 String email = etEmail.getText().toString().trim();
                 String password = etPassword.getText().toString().trim();
 
-                // Cek apakah ada kolom yang kosong
-                if (!nama.isEmpty() && !email.isEmpty() && !password.isEmpty()) {
-                    registerUser(nama, email, password);
+                // Validasi input di sisi client sebelum dikirim ke MySQL
+                if (nama.isEmpty()) {
+                    etNama.setError("Nama tidak boleh kosong");
+                } else if (email.isEmpty()) {
+                    etEmail.setError("Email tidak boleh kosong");
+                } else if (password.isEmpty()) {
+                    etPassword.setError("Kata sandi tidak boleh kosong");
+                } else if (password.length() < 6) {
+                    etPassword.setError("Kata sandi minimal 6 karakter");
                 } else {
-                    Toast.makeText(Register.this, "Harap isi semua kolom!", Toast.LENGTH_SHORT).show();
+                    // Jika semua input valid, jalankan fungsi register menggunakan Volley
+                    Toast.makeText(Register.this, "Memproses pendaftaran...", Toast.LENGTH_SHORT).show();
+                    registerUser(nama, email, password);
                 }
             }
         });
 
-        // Aksi ketika teks "Masuk" diklik (Pindah ke halaman Login)
+        // Aksi ketika teks "Masuk" diklik (Kembali ke halaman Login asli)
         txtKeLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Register.this, Login.class);
                 startActivity(intent);
-                finish(); // Tutup halaman register agar memori tidak menumpuk
+                finish(); // Tutup halaman register agar tidak menumpuk di stack memory
             }
         });
 
-        // Aksi untuk tombol tanda tanya (Help) di pojok kanan atas
-        btnHelp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(Register.this, "Bantuan belum tersedia", Toast.LENGTH_SHORT).show();
-            }
-        });
+        // Aksi untuk tombol bantuan (Help) di pojok kanan atas
+        if (btnHelp != null) {
+            btnHelp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(Register.this, "Bantuan belum tersedia", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
-    // Fungsi untuk mengirim data ke Database lewat PHP API
+    // Fungsi untuk mengirim data pendaftaran ke XAMPP
     private void registerUser(final String nama, final String email, final String password) {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_REGISTER,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            // Mengubah respons PHP menjadi JSON
+                            // Mengubah respons teks dari PHP menjadi JSON Object
                             JSONObject jsonObject = new JSONObject(response);
                             String status = jsonObject.getString("status");
                             String message = jsonObject.getString("message");
@@ -98,12 +107,12 @@ public class Register extends AppCompatActivity {
                             if (status.equals("success")) {
                                 Toast.makeText(Register.this, message, Toast.LENGTH_SHORT).show();
 
-                                // Jika sukses daftar, langsung arahkan ke halaman Login
+                                // Jika registrasi sukses, arahkan ke halaman Login asli
                                 Intent intent = new Intent(Register.this, Login.class);
                                 startActivity(intent);
                                 finish();
                             } else {
-                                // Jika gagal (misal: email sudah dipakai)
+                                // Jika gagal dari sisi server (misal: email sudah terdaftar di DB)
                                 Toast.makeText(Register.this, message, Toast.LENGTH_LONG).show();
                             }
                         } catch (JSONException e) {
@@ -115,14 +124,14 @@ public class Register extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // Menangkap error aslinya agar tidak menampilkan "null"
+                        // Menampilkan error detail jaringan/server secara gamblang
                         String pesanError = error.getMessage() != null ? error.getMessage() : error.toString();
                         Toast.makeText(Register.this, "Koneksi Error: " + pesanError, Toast.LENGTH_LONG).show();
                     }
                 }) {
             @Override
             protected Map<String, String> getParams() {
-                // Proses mengirim parameter ke POST PHP
+                // Mapping data POST yang dikirim ke register.php
                 Map<String, String> params = new HashMap<>();
                 params.put("nama", nama);
                 params.put("email", email);
