@@ -31,6 +31,10 @@
             android:name=".Register"
             android:exported="false" />
 
+        <activity
+            android:name=".KategoriActivity"
+            android:exported="false" />
+
 
     </application>
 
