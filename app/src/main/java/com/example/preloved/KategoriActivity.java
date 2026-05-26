@@ -28,21 +28,18 @@ public class KategoriActivity extends AppCompatActivity {
             });
         }
 
-        // Tombol kembali di atas
         ImageView btnBack = findViewById(R.id.btnBack);
         if (btnBack != null) {
             btnBack.setOnClickListener(v -> finish());
         }
 
-        // Tombol Beranda di Bottom Navigation (Kembali ke Beranda)
-        // Pastikan LinearLayout Beranda di activity_kategori.xml sudah diberi id="@+id/navBeranda"
         LinearLayout navBeranda = findViewById(R.id.navBeranda);
         if (navBeranda != null) {
             navBeranda.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    finish(); // Menutup activity kategori dan kembali ke beranda
-                    overridePendingTransition(0, 0); // Mematikan animasi agar mulus
+                    finish();
+                    overridePendingTransition(0, 0);
                 }
             });
         }

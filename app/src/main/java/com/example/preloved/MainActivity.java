@@ -20,7 +20,6 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        // Agar tampilan tidak tertutup bar atas (jam/sinyal)
         View mainView = findViewById(R.id.main);
         if (mainView != null) {
             ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
@@ -30,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        // 1. Pindah ke halaman Kategori lewat tulisan "Lihat Semua"
         TextView tvLihatSemuaKategori = findViewById(R.id.tvLihatSemuaKategori);
         tvLihatSemuaKategori.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,14 +38,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // 2. Pindah ke halaman Kategori lewat Bottom Navigation
         LinearLayout navKategori = findViewById(R.id.navKategori);
         navKategori.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, KategoriActivity.class);
                 startActivity(intent);
-                // Matikan animasi transisi default agar terasa seperti tab biasa
                 overridePendingTransition(0, 0);
             }
         });

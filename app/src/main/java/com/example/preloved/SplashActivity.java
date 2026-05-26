@@ -13,17 +13,14 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        // Menjalankan fungsi delay untuk Splash Screen
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                // Berpindah ke halaman Login setelah waktu habis
-                Intent intent = new Intent(SplashActivity.this, Login.class);
+                Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                 startActivity(intent);
 
-                // Menutup SplashActivity agar pengguna tidak bisa kembali ke layar ini saat menekan tombol back
                 finish();
             }
-        }, 2500); // 2500 = 2,5 detik
+        }, 2500);
     }
 }
