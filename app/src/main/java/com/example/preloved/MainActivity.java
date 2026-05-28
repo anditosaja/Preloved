@@ -47,5 +47,34 @@ public class MainActivity extends AppCompatActivity {
                 overridePendingTransition(0, 0);
             }
         });
+
+        // --- LOGIKA KLIK KATEGORI HOMEPAGE MENUJU DAFTAR BARANG ---
+        LinearLayout btnKatPakaian = findViewById(R.id.btnKatPakaian);
+        LinearLayout btnKatSepatu = findViewById(R.id.btnKatSepatu);
+        LinearLayout btnKatTas = findViewById(R.id.btnKatTas);
+
+        if (btnKatPakaian != null) {
+            btnKatPakaian.setOnClickListener(v -> {
+                Intent intent = new Intent(MainActivity.this, DaftarBarangActivity.class);
+                intent.putExtra("NAMA_KATEGORI", "Pakaian");
+                startActivity(intent);
+            });
+        }
+
+        if (btnKatSepatu != null) {
+            btnKatSepatu.setOnClickListener(v -> {
+                Intent intent = new Intent(MainActivity.this, DaftarBarangActivity.class);
+                intent.putExtra("NAMA_KATEGORI", "Sepatu");
+                startActivity(intent);
+            });
+        }
+
+        if (btnKatTas != null) {
+            btnKatTas.setOnClickListener(v -> {
+                Intent intent = new Intent(MainActivity.this, DaftarBarangActivity.class);
+                intent.putExtra("NAMA_KATEGORI", "Tas");
+                startActivity(intent);
+            });
+        }
     }
 }

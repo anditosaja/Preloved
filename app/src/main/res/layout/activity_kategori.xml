@@ -29,14 +29,16 @@
                     android:layout_height="28dp"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/maki_arrow" /> <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="Kategori"
-                android:textColor="#000000"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                    android:src="@drawable/maki_arrow" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="Kategori"
+                    android:textColor="#000000"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
             </RelativeLayout>
 
             <LinearLayout
@@ -67,17 +69,19 @@
                         android:layout_width="28dp"
                         android:layout_height="28dp"
                         android:layout_centerInParent="true"
-                        android:src="@android:drawable/ic_menu_agenda" /> <TextView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentTop="true"
-                    android:background="@drawable/bg_badge_angka"
-                    android:gravity="center"
-                    android:text="3"
-                    android:textColor="#FFFFFF"
-                    android:textSize="10sp"
-                    android:textStyle="bold" />
+                        android:src="@android:drawable/ic_menu_agenda" />
+
+                    <TextView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentTop="true"
+                        android:background="@drawable/bg_badge_angka"
+                        android:gravity="center"
+                        android:text="3"
+                        android:textColor="#FFFFFF"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
                 </RelativeLayout>
             </LinearLayout>
 
@@ -122,7 +126,8 @@
                         android:layout_height="match_parent"
                         android:layout_alignParentEnd="true"
                         android:scaleType="centerCrop"
-                        android:src="@android:color/transparent" /> </RelativeLayout>
+                        android:src="@android:color/transparent" />
+                </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <RelativeLayout
@@ -151,17 +156,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:columnCount="4"
-                android:rowCount="3"
+                android:columnCount="3"
                 android:alignmentMode="alignBounds"
                 android:useDefaultMargins="true">
 
                 <LinearLayout
+                    android:id="@+id/katHalamanPakaian"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="8dp">
 
                     <RelativeLayout
                         android:layout_width="65dp"
@@ -183,11 +192,47 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/katHalamanSepatu"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="8dp">
+
+                    <RelativeLayout
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:background="@drawable/bg_kategori_icon">
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_centerInParent="true"
+                            android:src="@android:drawable/ic_menu_gallery" />
+                    </RelativeLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Sepatu"
+                        android:textColor="#757575"
+                        android:textSize="11sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/katHalamanTas"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="8dp">
 
                     <RelativeLayout
                         android:layout_width="65dp"
@@ -278,10 +323,81 @@
                             android:textSize="10sp" />
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="12dp"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="match_parent"
+                            android:layout_height="140dp"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="0dp">
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"
+                                android:background="#EAEAEA" />
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Kemeja"
+                            android:textColor="#000000"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="2.8k barang"
+                            android:textColor="#757575"
+                            android:textSize="10sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="12dp"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="match_parent"
+                            android:layout_height="140dp"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="0dp">
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"
+                                android:background="#DCDCDC" />
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Jam Tangan"
+                            android:textColor="#000000"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="1.5k barang"
+                            android:textColor="#757575"
+                            android:textSize="10sp" />
+                    </LinearLayout>
+
                 </LinearLayout>
             </HorizontalScrollView>
 
-            <View android:layout_width="match_parent" android:layout_height="30dp"/> </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="30dp"/>
+        </LinearLayout>
     </ScrollView>
 
     <LinearLayout
@@ -293,8 +409,6 @@
         android:elevation="16dp"
         android:orientation="horizontal">
 
-
-
         <LinearLayout
             android:id="@+id/navBeranda"
             android:layout_width="0dp"
@@ -305,7 +419,6 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true">
-
             <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_gallery" />
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Beranda" android:textSize="10sp" android:textColor="#757575" />
         </LinearLayout>

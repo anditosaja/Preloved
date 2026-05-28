@@ -44,6 +44,9 @@
         <activity
             android:name=".MainActivity"
             android:exported="false" />
+        <activity
+            android:name=".DaftarBarangActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
