@@ -37,14 +37,47 @@ public class ProfilBarangActivity extends AppCompatActivity {
             btnBackImg.setOnClickListener(v -> finish());
         }
 
-        // FUNGSI CORET HARGA (Strikethrough)
+        // Deklarasi Komponen UI Dinamis
+        ImageView imgProduct = findViewById(R.id.imgProduct);
+        TextView tvProductName = findViewById(R.id.tvProductName);
+        TextView tvProductPrice = findViewById(R.id.tvProductPrice);
         TextView tvOldPrice = findViewById(R.id.tvOldPrice);
+        TextView tvDiscount = findViewById(R.id.tvDiscount);
+        TextView tvCondition = findViewById(R.id.tvCondition);
+        TextView tvProductLocation = findViewById(R.id.tvProductLocation);
+        TextView tvDescription = findViewById(R.id.tvDescription);
+
+        // TANGKAP DATA INTENT EXTRA DARI HALAMAN SEBELUMNYA
+        if (getIntent() != null && getIntent().hasExtra("PROD_NAME")) {
+            String name = getIntent().getStringExtra("PROD_NAME");
+            String price = getIntent().getStringExtra("PROD_PRICE");
+            String oldPrice = getIntent().getStringExtra("PROD_OLD_PRICE");
+            String discount = getIntent().getStringExtra("PROD_DISCOUNT");
+            String location = getIntent().getStringExtra("PROD_LOCATION");
+            String condition = getIntent().getStringExtra("PROD_CONDITION");
+            int imageRes = getIntent().getIntExtra("PROD_IMAGE", 0);
+
+            // Set Data ke Komponen UI
+            if (tvProductName != null) tvProductName.setText(name);
+            if (tvProductPrice != null) tvProductPrice.setText(price);
+            if (tvOldPrice != null) tvOldPrice.setText(oldPrice);
+            if (tvDiscount != null) tvDiscount.setText(discount);
+            if (tvProductLocation != null) tvProductLocation.setText(location);
+            if (tvCondition != null) tvCondition.setText(condition);
+            if (imgProduct != null && imageRes != 0) imgProduct.setImageResource(imageRes);
+
+            // Modifikasi Deskripsi dummy menyesuaikan nama barang
+            if (tvDescription != null) {
+                tvDescription.setText("Produk preloved " + name + " berkualitas premium. Kondisi terawat dengan tingkat kemulusan " + condition + ". Sangat cocok digunakan untuk menunjang penampilan kasual sehari-hari.");
+            }
+        }
+
+        // FUNGSI CORET HARGA (Strikethrough)
         if (tvOldPrice != null) {
-            // Ini akan memberikan garis tengah horizontal pada tulisan Rp300.000
             tvOldPrice.setPaintFlags(tvOldPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }
 
-        // Contoh interaksi tombol (bisa dihapus/diganti nantinya)
+        // Contoh interaksi tombol
         findViewById(R.id.btnBeli).setOnClickListener(v -> {
             Toast.makeText(this, "Membuka halaman Pembayaran...", Toast.LENGTH_SHORT).show();
         });

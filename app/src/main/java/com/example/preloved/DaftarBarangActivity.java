@@ -65,15 +65,29 @@ public class DaftarBarangActivity extends AppCompatActivity {
             }
         }
 
-        // Klik baju masuk ke Detail Produk
+        // Klik baju masuk ke Detail Produk dengan membawa data dinamis
         cardDummyBaju.setOnClickListener(v -> {
             Intent intent = new Intent(DaftarBarangActivity.this, ProfilBarangActivity.class);
+            intent.putExtra("PROD_NAME", "Zaro Cargo Shirt");
+            intent.putExtra("PROD_PRICE", "Rp150.000");
+            intent.putExtra("PROD_OLD_PRICE", "Rp300.000");
+            intent.putExtra("PROD_DISCOUNT", "-50%");
+            intent.putExtra("PROD_LOCATION", "Kota Depok");
+            intent.putExtra("PROD_CONDITION", "Baik");
+            intent.putExtra("PROD_IMAGE", R.drawable.zarocargo_shirt);
             startActivity(intent);
         });
 
-        // Klik sepatu masuk ke Detail Produk
+        // Klik sepatu masuk ke Detail Produk dengan membawa data dinamis
         cardDummySepatu.setOnClickListener(v -> {
             Intent intent = new Intent(DaftarBarangActivity.this, ProfilBarangActivity.class);
+            intent.putExtra("PROD_NAME", "POSH Model Boots");
+            intent.putExtra("PROD_PRICE", "Rp500.000");
+            intent.putExtra("PROD_OLD_PRICE", "Rp1.000.000");
+            intent.putExtra("PROD_DISCOUNT", "-50%");
+            intent.putExtra("PROD_LOCATION", "Jakarta Selatan");
+            intent.putExtra("PROD_CONDITION", "Sangat Baik");
+            intent.putExtra("PROD_IMAGE", R.drawable.poshmodel_boots);
             startActivity(intent);
         });
     }
