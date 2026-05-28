@@ -47,5 +47,19 @@ public class MainActivity extends AppCompatActivity {
                 overridePendingTransition(0, 0);
             }
         });
+
+        // ====================================================================
+        // TOMBOL NAVIGASI PROFIL (Tambahan Baru)
+        // ====================================================================
+        LinearLayout btnNavProfil = findViewById(R.id.btn_nav_profil);
+        btnNavProfil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ProfilActivity.class);
+                startActivity(intent);
+                // Menghilangkan animasi jeda bawaan Android biar transisinya mulus seperti kategori
+                overridePendingTransition(0, 0);
+            }
+        });
     }
 }

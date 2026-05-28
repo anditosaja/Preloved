@@ -15,6 +15,9 @@
         android:theme="@style/Theme.Preloved"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ProfilActivity"
+            android:exported="false" />
+        <activity
             android:name=".ProfilBarangActivity"
             android:exported="false" />
         <activity
