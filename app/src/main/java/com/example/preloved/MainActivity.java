@@ -76,5 +76,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             });
         }
+
+        LinearLayout navChat = findViewById(R.id.navChat);
+        if (navChat != null) {
+            navChat.setOnClickListener(v -> {
+                Intent intent = new Intent(MainActivity.this, ChatActivity.class);
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+            });
+        }
     }
 }

@@ -73,5 +73,14 @@ public class KategoriActivity extends AppCompatActivity {
                 startActivity(intent);
             });
         }
+
+        LinearLayout navChat = findViewById(R.id.navChat);
+        if (navChat != null) {
+            navChat.setOnClickListener(v -> {
+                Intent intent = new Intent(KategoriActivity.this, ChatActivity.class);
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+            });
+        }
     }
 }
