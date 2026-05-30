@@ -423,12 +423,12 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true">
-            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_gallery" />
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/beranda" />
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Beranda" android:textSize="10sp" android:textColor="#757575" />
         </LinearLayout>
 
         <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
-            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_sort_by_size" app:tint="#6952D9"/>
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/kategori" app:tint="#6952D9"/>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Kategori" android:textSize="10sp" android:textStyle="bold" android:textColor="#6952D9" />
         </LinearLayout>
 
@@ -450,12 +450,12 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true">
-            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/sym_action_chat" />
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/chat" />
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Chat" android:textSize="10sp" android:textColor="#757575" />
         </LinearLayout>
 
         <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
-            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_myplaces" />
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/profile" />
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Profil" android:textSize="10sp" android:textColor="#757575" />
         </LinearLayout>
     </LinearLayout>
