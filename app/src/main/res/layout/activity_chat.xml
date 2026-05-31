@@ -39,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:background="@null"
-            android:drawableStart="@android:drawable/ic_menu_search"
+            android:drawableStart="@drawable/search"
             android:drawablePadding="8dp"
             android:hint="Cari obrolan..."
             android:paddingStart="12dp"

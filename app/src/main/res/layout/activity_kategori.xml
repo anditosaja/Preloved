@@ -25,8 +25,8 @@
 
                 <ImageView
                     android:id="@+id/btnBack"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/maki_arrow" />
@@ -53,7 +53,7 @@
                     android:layout_height="45dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_search_outline"
-                    android:drawableStart="@android:drawable/ic_menu_search"
+                    android:drawableStart="@drawable/search"
                     android:drawablePadding="8dp"
                     android:hint="Mau cari apa?"
                     android:paddingStart="16dp"
@@ -69,7 +69,7 @@
                         android:layout_width="28dp"
                         android:layout_height="28dp"
                         android:layout_centerInParent="true"
-                        android:src="@android:drawable/ic_menu_agenda" />
+                        android:src="@drawable/bag" />
 
                     <TextView
                         android:layout_width="16dp"
@@ -122,11 +122,12 @@
                     </LinearLayout>
 
                     <ImageView
-                        android:layout_width="140dp"
-                        android:layout_height="match_parent"
+                        android:layout_width="282dp"
+                        android:layout_height="158dp"
                         android:layout_alignParentEnd="true"
-                        android:scaleType="centerCrop"
-                        android:src="@android:color/transparent" />
+                        android:layout_marginEnd="-74dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/barang" />
                 </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
 
