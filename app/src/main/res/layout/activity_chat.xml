@@ -75,7 +75,7 @@
                     android:id="@+id/avatar1"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@android:drawable/sym_contact_card" />
+                    android:src="@drawable/avatar_danil" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -125,7 +125,7 @@
                     android:id="@+id/avatar2"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@android:drawable/sym_contact_card"
+                    android:src="@drawable/avatar"
                     app:tint="#757575"/>
 
                 <LinearLayout
