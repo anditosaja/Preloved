@@ -35,6 +35,8 @@ public class DaftarBarangActivity extends AppCompatActivity {
         TextView tvTitleKategori = findViewById(R.id.tvTitleKategori);
         ImageView btnBack = findViewById(R.id.btnBack);
         MaterialCardView cardDummyBaju = findViewById(R.id.cardDummyBaju);
+        MaterialCardView cardDummyBaju2 = findViewById(R.id.cardDummyBaju2);
+        MaterialCardView cardDummyBaju3 = findViewById(R.id.cardDummyBaju3);
         MaterialCardView cardDummySepatu = findViewById(R.id.cardDummySepatu);
         TextView tvEmptyState = findViewById(R.id.tvEmptyState);
 
@@ -52,20 +54,26 @@ public class DaftarBarangActivity extends AppCompatActivity {
             // Logika filter visual item dummy
             if (namaKategori.equals("Pakaian")) {
                 cardDummyBaju.setVisibility(View.VISIBLE);
+                cardDummyBaju2.setVisibility(View.VISIBLE);
+                cardDummyBaju3.setVisibility(View.VISIBLE);
                 cardDummySepatu.setVisibility(View.GONE);
                 tvEmptyState.setVisibility(View.GONE);
             } else if (namaKategori.equals("Sepatu")) {
                 cardDummyBaju.setVisibility(View.GONE);
+                cardDummyBaju2.setVisibility(View.GONE);
+                cardDummyBaju3.setVisibility(View.GONE);
                 cardDummySepatu.setVisibility(View.VISIBLE);
                 tvEmptyState.setVisibility(View.GONE);
             } else {
                 cardDummyBaju.setVisibility(View.GONE);
+                cardDummyBaju2.setVisibility(View.GONE);
+                cardDummyBaju3.setVisibility(View.GONE);
                 cardDummySepatu.setVisibility(View.GONE);
                 tvEmptyState.setVisibility(View.VISIBLE);
             }
         }
 
-        // Klik baju masuk ke Detail Produk dengan membawa data dinamis
+        // Klik baju 1 masuk ke Detail Produk
         cardDummyBaju.setOnClickListener(v -> {
             Intent intent = new Intent(DaftarBarangActivity.this, ProfilBarangActivity.class);
             intent.putExtra("PROD_NAME", "Zaro Cargo Shirt");
@@ -75,10 +83,39 @@ public class DaftarBarangActivity extends AppCompatActivity {
             intent.putExtra("PROD_LOCATION", "Kota Depok");
             intent.putExtra("PROD_CONDITION", "Baik");
             intent.putExtra("PROD_IMAGE", R.drawable.zarocargo_shirt);
+            intent.putExtra("PROD_CATEGORY", "Pakaian");
             startActivity(intent);
         });
 
-        // Klik sepatu masuk ke Detail Produk dengan membawa data dinamis
+        // Klik baju 2 masuk ke Detail Produk
+        cardDummyBaju2.setOnClickListener(v -> {
+            Intent intent = new Intent(DaftarBarangActivity.this, ProfilBarangActivity.class);
+            intent.putExtra("PROD_NAME", "Flannel Casual Shirt");
+            intent.putExtra("PROD_PRICE", "Rp120.000");
+            intent.putExtra("PROD_OLD_PRICE", "Rp250.000");
+            intent.putExtra("PROD_DISCOUNT", "-52%");
+            intent.putExtra("PROD_LOCATION", "Kota Bekasi");
+            intent.putExtra("PROD_CONDITION", "Sangat Baik");
+            intent.putExtra("PROD_IMAGE", R.drawable.flannel);
+            intent.putExtra("PROD_CATEGORY", "Pakaian");
+            startActivity(intent);
+        });
+
+        // Klik baju 3 masuk ke Detail Produk
+        cardDummyBaju3.setOnClickListener(v -> {
+            Intent intent = new Intent(DaftarBarangActivity.this, ProfilBarangActivity.class);
+            intent.putExtra("PROD_NAME", "Oversized Streetwear Hoodie");
+            intent.putExtra("PROD_PRICE", "Rp185.000");
+            intent.putExtra("PROD_OLD_PRICE", "Rp350.000");
+            intent.putExtra("PROD_DISCOUNT", "-47%");
+            intent.putExtra("PROD_LOCATION", "Jakarta Timur");
+            intent.putExtra("PROD_CONDITION", "Baik");
+            intent.putExtra("PROD_IMAGE", R.drawable.hoodie);
+            intent.putExtra("PROD_CATEGORY", "Pakaian");
+            startActivity(intent);
+        });
+
+        // Klik sepatu masuk ke Detail Produk
         cardDummySepatu.setOnClickListener(v -> {
             Intent intent = new Intent(DaftarBarangActivity.this, ProfilBarangActivity.class);
             intent.putExtra("PROD_NAME", "POSH Model Boots");
@@ -88,6 +125,7 @@ public class DaftarBarangActivity extends AppCompatActivity {
             intent.putExtra("PROD_LOCATION", "Jakarta Selatan");
             intent.putExtra("PROD_CONDITION", "Sangat Baik");
             intent.putExtra("PROD_IMAGE", R.drawable.poshmodel_boots);
+            intent.putExtra("PROD_CATEGORY", "Sepatu");
             startActivity(intent);
         });
     }

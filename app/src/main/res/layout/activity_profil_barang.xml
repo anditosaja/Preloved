@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
+    <!-- Top Bar -->
     <RelativeLayout
         android:id="@+id/topBar"
         android:layout_width="match_parent"
@@ -81,7 +82,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <!-- Diubah ID-nya jadi tvProductName -->
                     <TextView
                         android:id="@+id/tvProductName"
                         android:layout_width="match_parent"
@@ -102,6 +102,16 @@
                         app:tint="#D32F2F"/>
                 </RelativeLayout>
 
+                <TextView
+                    android:id="@+id/tvProductCategory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Kategori: Pakaian"
+                    android:textColor="#757575"
+                    android:textSize="13sp"
+                    android:textStyle="italic" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -109,7 +119,6 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical">
 
-                    <!-- Diubah ID-nya jadi tvProductPrice -->
                     <TextView
                         android:id="@+id/tvProductPrice"
                         android:layout_width="wrap_content"
@@ -128,7 +137,6 @@
                         android:textSize="14sp"
                         android:textColor="#9E9E9E"/>
 
-                    <!-- Diubah ID-nya jadi tvDiscount -->
                     <TextView
                         android:id="@+id/tvDiscount"
                         android:layout_width="wrap_content"
@@ -154,7 +162,6 @@
 
                     <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Kondisi" android:textSize="12sp" android:textColor="#757575"/>
-                        <!-- Diubah ID-nya jadi tvCondition -->
                         <TextView android:id="@+id/tvCondition" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Kondisi" android:textSize="14sp" android:textStyle="bold" android:textColor="#000000"/>
                     </LinearLayout>
 
@@ -190,7 +197,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
                         android:orientation="vertical">
-                        <!-- Diubah ID-nya jadi tvProductLocation -->
                         <TextView android:id="@+id/tvProductLocation" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Lokasi" android:textSize="14sp" android:textStyle="bold" android:textColor="#000000"/>
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Lokasi tertera penjual" android:textSize="12sp" android:textColor="#757575"/>
                     </LinearLayout>
@@ -206,7 +212,6 @@
                     android:textStyle="bold"
                     android:textColor="#000000"/>
 
-                <!-- Diubah ID-nya jadi tvDescription -->
                 <TextView
                     android:id="@+id/tvDescription"
                     android:layout_width="match_parent"
@@ -227,6 +232,130 @@
 
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E0E0E0" android:layout_marginTop="20dp" android:layout_marginBottom="20dp"/>
 
+                <!-- SECTION BARANG SERUPA -->
+                <TextView
+                    android:id="@+id/tvTitleBarangSerupa"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Barang Serupa"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"/>
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <!-- Item Serupa 1 -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/cardSerupa1"
+                            android:layout_width="130dp"
+                            android:layout_height="170dp"
+                            android:layout_marginEnd="12dp"
+                            android:layout_marginBottom="4dp"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="1dp"
+                            app:strokeWidth="1dp"
+                            app:strokeColor="#E0E0E0">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+                                <ImageView
+                                    android:id="@+id/imgSerupa1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="100dp"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/zarocargo_shirt"/>
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:padding="8dp">
+                                    <TextView
+                                        android:id="@+id/tvNamaSerupa1"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Zaro Cargo"
+                                        android:textColor="#000000"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold"
+                                        android:maxLines="1"
+                                        android:ellipsize="end"/>
+                                    <TextView
+                                        android:id="@+id/tvHargaSerupa1"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Rp150.000"
+                                        android:textColor="#6952D9"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:layout_marginTop="2dp"/>
+                                </LinearLayout>
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <!-- Item Serupa 2 -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/cardSerupa2"
+                            android:layout_width="130dp"
+                            android:layout_height="170dp"
+                            android:layout_marginEnd="12dp"
+                            android:layout_marginBottom="4dp"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="1dp"
+                            app:strokeWidth="1dp"
+                            app:strokeColor="#E0E0E0">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+                                <ImageView
+                                    android:id="@+id/imgSerupa2"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="100dp"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/flannel"/>
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:padding="8dp">
+                                    <TextView
+                                        android:id="@+id/tvNamaSerupa2"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Flannel Casual"
+                                        android:textColor="#000000"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold"
+                                        android:maxLines="1"
+                                        android:ellipsize="end"/>
+                                    <TextView
+                                        android:id="@+id/tvHargaSerupa2"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Rp120.000"
+                                        android:textColor="#6952D9"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:layout_marginTop="2dp"/>
+                                </LinearLayout>
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+                    </LinearLayout>
+                </HorizontalScrollView>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E0E0E0" android:layout_marginTop="20dp" android:layout_marginBottom="20dp"/>
+
+                <!-- Profil Toko Penjual -->
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -279,6 +408,7 @@
         </RelativeLayout>
     </ScrollView>
 
+    <!-- Bottom Action Area -->
     <LinearLayout
         android:id="@+id/bottomArea"
         android:layout_width="match_parent"
