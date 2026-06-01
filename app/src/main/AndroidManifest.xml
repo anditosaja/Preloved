@@ -50,6 +50,9 @@
         <activity
             android:name=".DaftarBarangActivity"
             android:exported="false" />
+        <activity
+            android:name=".ChatActivityDetail"
+            android:exported="false" />
     </application>
 
 </manifest>

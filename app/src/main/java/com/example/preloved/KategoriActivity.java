@@ -74,6 +74,19 @@ public class KategoriActivity extends AppCompatActivity {
             });
         }
 
+        // --- LOGIKA SAMBUNG TOMBOL TENGAH JUAL (+) ---
+        View navJual = findViewById(R.id.bottomNavigation);
+        if (navJual != null) {
+            // Mengambil layout child urutan ke-2 (tombol tengah) secara aman
+            View btnJualKategori = ((LinearLayout) navJual).getChildAt(2);
+            if (btnJualKategori != null) {
+                btnJualKategori.setOnClickListener(v -> {
+                    Intent intent = new Intent(KategoriActivity.this, JualActivity.class);
+                    startActivity(intent);
+                });
+            }
+        }
+
         LinearLayout navChat = findViewById(R.id.navChat);
         if (navChat != null) {
             navChat.setOnClickListener(v -> {
