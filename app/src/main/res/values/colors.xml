@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_main">#8A2BE2</color> <color name="gray_text">#757575</color>
+    <color name="gray_border">#BDBDBD</color>
+</resources>

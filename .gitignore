@@ -1,3 +1,4 @@
+
 *.log
 .DS_Store
 .env
@@ -22,3 +23,20 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+>>>>>>> 395ad9a2a256bf8c70319952750bc40eebd30ecf
