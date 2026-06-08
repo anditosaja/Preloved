@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -28,7 +29,8 @@
                     android:layout_height="35dp"
                     android:layout_centerInParent="true"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/group_2" />
+                    android:src="@drawable/group_2"
+                    android:contentDescription="Logo" />
 
                 <ImageView
                     android:id="@+id/btnNotifikasi"
@@ -37,6 +39,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/ion_notifications_outline"
+                    android:contentDescription="Notifikasi" />
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:clickable="true"
                     android:focusable="true"/>
@@ -61,12 +64,16 @@
                     android:hint="Cari barang preloved..."
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:ignore="Autofill,HardcodedText,TextFields" />
 
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginEnd="12dp"
+                    android:src="@android:drawable/ic_menu_crop"
+                    app:tint="#757575"
+                    android:contentDescription="Crop" />
                     android:src="@drawable/qr"
                     app:tint="#757575" />
             </LinearLayout>
@@ -91,7 +98,8 @@
                         android:text="Cari barang bagus\ndengan budget friendly!"
                         android:textColor="#FFFFFF"
                         android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText" />
 
                     <!-- Tambahkan ID di sini agar tombol bisa berada di bawahnya -->
                     <TextView
@@ -102,7 +110,8 @@
                         android:layout_marginTop="8dp"
                         android:text="Cari, temukan dan miliki\nbarang favoritmu!"
                         android:textColor="#FFFFFF"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        tools:ignore="HardcodedText" />
 
                     <Button
                         android:id="@+id/btnJelajahi"
@@ -115,13 +124,17 @@
                         android:textAllCaps="false"
                         android:textColor="#6952D9"
                         android:textStyle="bold"
-                        app:cornerRadius="8dp" />
+                        app:cornerRadius="8dp"
+                        tools:ignore="HardcodedText" />
 
                     <!-- Gambar Tas Merah -->
                     <ImageView
                         android:layout_width="282dp"
                         android:layout_height="158dp"
                         android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@android:color/transparent"
+                        android:contentDescription="Banner Image" />
                         android:layout_marginEnd="-50dp"
                         android:scaleType="fitCenter"
                         android:src="@drawable/tas_merah" />
@@ -139,7 +152,8 @@
                     android:text="Kategori"
                     android:textColor="#000000"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/tvLihatSemuaKategori"
@@ -149,6 +163,7 @@
                     android:text="Lihat Semua"
                     android:textColor="#6952D9"
                     android:textSize="12sp"
+                    tools:ignore="HardcodedText" />
                     android:background="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"/>
@@ -163,37 +178,42 @@
 
                 <LinearLayout android:id="@+id/btnKatPakaian" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:clickable="true" android:focusable="true" android:background="?attr/selectableItemBackgroundBorderless">
                     <RelativeLayout android:layout_width="60dp" android:layout_height="60dp" android:background="@drawable/bg_kategori_icon">
+                        <ImageView android:layout_width="35dp" android:layout_height="35dp" android:layout_centerInParent="true" android:src="@android:drawable/ic_menu_mapmode" android:contentDescription="Pakaian" />
                         <ImageView android:layout_width="35dp" android:layout_height="35dp" android:layout_centerInParent="true" android:src="@drawable/pakaian" />
                     </RelativeLayout>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Pakaian" android:textColor="#757575" android:textSize="10sp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Pakaian" android:textColor="#757575" android:textSize="10sp" tools:ignore="HardcodedText" />
                 </LinearLayout>
 
                 <LinearLayout android:id="@+id/btnKatTas" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:clickable="true" android:focusable="true" android:background="?attr/selectableItemBackgroundBorderless">
                     <RelativeLayout android:layout_width="60dp" android:layout_height="60dp" android:background="@drawable/bg_kategori_icon">
+                        <ImageView android:layout_width="35dp" android:layout_height="35dp" android:layout_centerInParent="true" android:src="@android:drawable/ic_menu_camera" android:contentDescription="Tas" />
                         <ImageView android:layout_width="35dp" android:layout_height="35dp" android:layout_centerInParent="true" android:src="@drawable/tas" />
                     </RelativeLayout>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Tas" android:textColor="#757575" android:textSize="10sp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Tas" android:textColor="#757575" android:textSize="10sp" tools:ignore="HardcodedText" />
                 </LinearLayout>
 
                 <LinearLayout android:id="@+id/btnKatSepatu" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:clickable="true" android:focusable="true" android:background="?attr/selectableItemBackgroundBorderless">
                     <RelativeLayout android:layout_width="60dp" android:layout_height="60dp" android:background="@drawable/bg_kategori_icon">
+                        <ImageView android:layout_width="35dp" android:layout_height="35dp" android:layout_centerInParent="true" android:src="@android:drawable/ic_menu_mylocation" android:contentDescription="Sepatu" />
                         <ImageView android:layout_width="35dp" android:layout_height="35dp" android:layout_centerInParent="true" android:src="@drawable/sepatu" />
                     </RelativeLayout>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Sepatu" android:textColor="#757575" android:textSize="10sp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Sepatu" android:textColor="#757575" android:textSize="10sp" tools:ignore="HardcodedText" />
                 </LinearLayout>
 
                 <LinearLayout android:id="@+id/btnKatElektronik" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:clickable="true" android:focusable="true" android:background="?attr/selectableItemBackgroundBorderless">
                     <RelativeLayout android:layout_width="60dp" android:layout_height="60dp" android:background="@drawable/bg_kategori_icon">
+                        <ImageView android:layout_width="35dp" android:layout_height="35dp" android:layout_centerInParent="true" android:src="@android:drawable/ic_menu_call" android:contentDescription="Elektronik" />
                         <ImageView android:layout_width="35dp" android:layout_height="35dp" android:layout_centerInParent="true" android:src="@drawable/elektronik" />
                     </RelativeLayout>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Elektronik" android:textColor="#757575" android:textSize="10sp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Elektronik" android:textColor="#757575" android:textSize="10sp" tools:ignore="HardcodedText" />
                 </LinearLayout>
 
                 <LinearLayout android:id="@+id/btnKatLainnya" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:clickable="true" android:focusable="true" android:background="?attr/selectableItemBackgroundBorderless">
                     <RelativeLayout android:layout_width="60dp" android:layout_height="60dp" android:background="@drawable/bg_kategori_icon">
+                        <ImageView android:layout_width="35dp" android:layout_height="35dp" android:layout_centerInParent="true" android:src="@android:drawable/ic_menu_more" android:contentDescription="Lainnya" />
                         <ImageView android:layout_width="30dp" android:layout_height="30dp" android:layout_centerInParent="true" android:src="@drawable/more" app:tint="#000000"/>
                     </RelativeLayout>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Lainnya" android:textColor="#757575" android:textSize="10sp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Lainnya" android:textColor="#757575" android:textSize="10sp" tools:ignore="HardcodedText" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -208,7 +228,8 @@
                     android:text="Trending ↗"
                     android:textColor="#000000"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/tvLihatSemuaTrending"
@@ -218,6 +239,7 @@
                     android:text="Lihat Semua"
                     android:textColor="#6952D9"
                     android:textSize="12sp"
+                    tools:ignore="HardcodedText" />
                     android:background="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"/>
@@ -258,6 +280,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="120dp"
                                 android:scaleType="centerCrop"
+                                android:background="#F5F5F5"
+                                android:contentDescription="Product Image" />
                                 android:src="@drawable/zarocargo_shirt"
                                 android:background="#F5F5F5" />
 
@@ -273,12 +297,16 @@
                                     android:text="Zaro Cargo\nShirt"
                                     android:textColor="#000000"
                                     android:textSize="14sp"
-                                    android:textStyle="bold" />
+                                    android:textStyle="bold"
+                                    tools:ignore="HardcodedText" />
 
                                 <ImageView
                                     android:layout_width="20dp"
                                     android:layout_height="20dp"
                                     android:layout_alignParentEnd="true"
+                                    android:src="@android:drawable/ic_menu_preferences"
+                                    app:tint="#FF0000"
+                                    android:contentDescription="Favorite" />
                                     android:src="@drawable/heart_fill"
                                     app:tint="#FF0000" />
 
@@ -289,6 +317,8 @@
                                     android:text="Rp150.000"
                                     android:textColor="#000000"
                                     android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    tools:ignore="HardcodedText" />
                                     android:textStyle="bold" />
 
                                 <TextView
@@ -298,7 +328,8 @@
                                     android:layout_alignParentBottom="true"
                                     android:text="📍 Kota Depok"
                                     android:textColor="#757575"
-                                    android:textSize="10sp" />
+                                    android:textSize="10sp"
+                                    tools:ignore="HardcodedText" />
                             </RelativeLayout>
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
@@ -374,6 +405,7 @@
                 </LinearLayout>
             </HorizontalScrollView>
 
+            <View android:layout_width="match_parent" android:layout_height="80dp"/>
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -482,6 +514,9 @@
         android:elevation="16dp"
         android:orientation="horizontal">
 
+        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_gallery" app:tint="#6952D9" android:contentDescription="Beranda" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Beranda" android:textSize="10sp" android:textColor="#6952D9" android:textStyle="bold" tools:ignore="HardcodedText" />
         <LinearLayout
             android:id="@+id/navBeranda"
             android:layout_width="0dp"
@@ -504,6 +539,9 @@
             android:gravity="center"
             android:orientation="vertical"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true" android:focusable="true">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_sort_by_size" app:tint="#757575" android:contentDescription="Kategori" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Kategori" android:textSize="10sp" android:textColor="#757575" tools:ignore="HardcodedText" />
             android:clickable="true"
             android:focusable="true">
             <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/kategori" app:tint="#757575"/>
@@ -521,11 +559,18 @@
             android:clickable="true"
             android:focusable="true">
             <RelativeLayout android:layout_width="45dp" android:layout_height="45dp" android:background="@drawable/bg_badge_angka">
-                <ImageView android:layout_width="30dp" android:layout_height="30dp" android:layout_centerInParent="true" android:src="@android:drawable/ic_input_add" app:tint="#FFFFFF"/>
+                <ImageView android:layout_width="30dp" android:layout_height="30dp" android:layout_centerInParent="true" android:src="@android:drawable/ic_input_add" app:tint="#FFFFFF" android:contentDescription="Jual" />
             </RelativeLayout>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="Jual" android:textSize="10sp" android:textColor="#757575" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="Jual" android:textSize="10sp" android:textColor="#757575" tools:ignore="HardcodedText" />
         </LinearLayout>
 
+        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/sym_action_chat" app:tint="#757575" android:contentDescription="Chat" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Chat" android:textSize="10sp" android:textColor="#757575" tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btn_nav_profil"
         <LinearLayout
             android:id="@+id/navChat"
             android:layout_width="0dp"
@@ -547,6 +592,11 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_myplaces" app:tint="#757575" android:contentDescription="Profil" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Profil" android:textSize="10sp" android:textColor="#757575" tools:ignore="HardcodedText" />
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true">
