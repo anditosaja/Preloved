@@ -1,9 +1,10 @@
 package com.example.preloved;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout; // Import ini
+import android.widget.LinearLayout;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,6 +42,57 @@ public class KategoriActivity extends AppCompatActivity {
                     finish();
                     overridePendingTransition(0, 0);
                 }
+            });
+        }
+
+        // --- FITUR LOGIKA KLIK KATEGORI ---
+        LinearLayout katHalamanPakaian = findViewById(R.id.katHalamanPakaian);
+        LinearLayout katHalamanSepatu = findViewById(R.id.katHalamanSepatu);
+        LinearLayout katHalamanTas = findViewById(R.id.katHalamanTas);
+
+        if (katHalamanPakaian != null) {
+            katHalamanPakaian.setOnClickListener(v -> {
+                Intent intent = new Intent(KategoriActivity.this, DaftarBarangActivity.class);
+                intent.putExtra("NAMA_KATEGORI", "Pakaian");
+                startActivity(intent);
+            });
+        }
+
+        if (katHalamanSepatu != null) {
+            katHalamanSepatu.setOnClickListener(v -> {
+                Intent intent = new Intent(KategoriActivity.this, DaftarBarangActivity.class);
+                intent.putExtra("NAMA_KATEGORI", "Sepatu");
+                startActivity(intent);
+            });
+        }
+
+        if (katHalamanTas != null) {
+            katHalamanTas.setOnClickListener(v -> {
+                Intent intent = new Intent(KategoriActivity.this, DaftarBarangActivity.class);
+                intent.putExtra("NAMA_KATEGORI", "Tas");
+                startActivity(intent);
+            });
+        }
+
+        // --- LOGIKA SAMBUNG TOMBOL TENGAH JUAL (+) ---
+        View navJual = findViewById(R.id.bottomNavigation);
+        if (navJual != null) {
+            // Mengambil layout child urutan ke-2 (tombol tengah) secara aman
+            View btnJualKategori = ((LinearLayout) navJual).getChildAt(2);
+            if (btnJualKategori != null) {
+                btnJualKategori.setOnClickListener(v -> {
+                    Intent intent = new Intent(KategoriActivity.this, JualActivity.class);
+                    startActivity(intent);
+                });
+            }
+        }
+
+        LinearLayout navChat = findViewById(R.id.navChat);
+        if (navChat != null) {
+            navChat.setOnClickListener(v -> {
+                Intent intent = new Intent(KategoriActivity.this, ChatActivity.class);
+                startActivity(intent);
+                overridePendingTransition(0, 0);
             });
         }
     }

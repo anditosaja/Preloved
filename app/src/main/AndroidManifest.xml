@@ -8,14 +8,15 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo_maskot"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/logo_maskot"
         android:supportsRtl="true"
         android:theme="@style/Theme.Preloved"
         android:usesCleartextTraffic="true">
         <activity
             android:name=".ProfilActivity"
+            android:name=".ChatActivity"
             android:exported="false" />
         <activity
             android:name=".ProfilBarangActivity"
@@ -46,6 +47,12 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DaftarBarangActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ChatActivityDetail"
             android:exported="false" />
     </application>
 
