@@ -18,6 +18,9 @@
             android:name=".ChatActivity"
             android:exported="false" />
         <activity
+            android:name=".ProfilActivity"
+            android:exported="false" />
+        <activity
             android:name=".ProfilBarangActivity"
             android:exported="false" />
         <activity
