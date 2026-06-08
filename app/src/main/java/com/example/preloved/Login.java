@@ -40,7 +40,7 @@ public class Login extends AppCompatActivity {
         etEmail = findViewById(R.id.editTextLoginEmail);
         etPassword = findViewById(R.id.editTextLoginPassword);
         btnMasuk = findViewById(R.id.btnMasuk);
-        txtKeDaftar = findViewById(R.id.txtKeDaftar);
+        txtKeDaftar = findViewById(R.id.txtKeRegister); // <--- Sesuaikan dengan ID di XML baru
 
         // Aksi ketika tombol MASUK diklik
         btnMasuk.setOnClickListener(new View.OnClickListener() {

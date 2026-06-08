@@ -54,7 +54,16 @@
                 android:textSize="16sp"
                 android:textColor="#757575"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="48dp"/>
+                android:layout_marginBottom="32dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Selamat Datang!"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:layout_marginBottom="32dp"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -146,7 +155,9 @@
                     android:layout_height="wrap_content"
                     android:text="Masuk"
                     android:textStyle="bold"
-                    android:textColor="#000000"/>
+                    android:textColor="#000000"
+                    android:clickable="true"
+                    android:focusable="true"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
