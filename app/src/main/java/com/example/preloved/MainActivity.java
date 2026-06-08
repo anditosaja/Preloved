@@ -31,30 +31,16 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
+        // --- HEADER KATEGORI ---
         TextView tvLihatSemuaKategori = findViewById(R.id.tvLihatSemuaKategori);
         if (tvLihatSemuaKategori != null) {
-            tvLihatSemuaKategori.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(MainActivity.this, KategoriActivity.class);
-                    startActivity(intent);
-                }
+            tvLihatSemuaKategori.setOnClickListener(v -> {
+                Intent intent = new Intent(MainActivity.this, KategoriActivity.class);
+                startActivity(intent);
             });
         }
 
-        LinearLayout navKategori = findViewById(R.id.navKategori);
-        if (navKategori != null) {
-            navKategori.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(MainActivity.this, KategoriActivity.class);
-                    startActivity(intent);
-                    overridePendingTransition(0, 0);
-                }
-            });
-        }
-
-        // --- LOGIKA KLIK KATEGORI HOMEPAGE MENUJU DAFTAR BARANG ---
+        // --- KATEGORI HOMEPAGE MENUJU DAFTAR BARANG ---
         LinearLayout btnKatPakaian = findViewById(R.id.btnKatPakaian);
         LinearLayout btnKatSepatu = findViewById(R.id.btnKatSepatu);
         LinearLayout btnKatTas = findViewById(R.id.btnKatTas);
@@ -83,11 +69,10 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        // --- LOGIKA KLIK CARD TRENDING KE PROFIL BARANG ---
+        // --- KLIK CARD TRENDING KE PROFIL BARANG ---
         MaterialCardView cardTrending1 = findViewById(R.id.cardTrending1);
         MaterialCardView cardTrending2 = findViewById(R.id.cardTrending2);
 
-        // Klik Zaro Cargo Shirt
         if (cardTrending1 != null) {
             cardTrending1.setOnClickListener(v -> {
                 Intent intent = new Intent(MainActivity.this, ProfilBarangActivity.class);
@@ -102,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        // Klik POSH Model Boots
         if (cardTrending2 != null) {
             cardTrending2.setOnClickListener(v -> {
                 Intent intent = new Intent(MainActivity.this, ProfilBarangActivity.class);
@@ -117,20 +101,39 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        // --- LOGIKA SAMBUNG TOMBOL TENGAH JUAL (+) ---
-        View navJual = findViewById(R.id.bottomNavigation);
-        if (navJual != null) {
-            // Mengambil layout child urutan ke-2 (tombol tengah) secara aman
-            View btnJualHome = ((LinearLayout) navJual).getChildAt(2);
-            if (btnJualHome != null) {
-                btnJualHome.setOnClickListener(v -> {
-                    Intent intent = new Intent(MainActivity.this, JualActivity.class);
-                    startActivity(intent);
-                });
-            }
+        // ====================================================================
+        // BOTTOM NAVIGATION BAR
+        // ====================================================================
+
+        // Navigasi Beranda (opsional, karena ini sudah di Beranda)
+        LinearLayout navBeranda = findViewById(R.id.navBeranda);
+        if (navBeranda != null) {
+            navBeranda.setOnClickListener(v -> {
+                // Do nothing atau refresh
+            });
         }
 
-        // --- LOGIKA BOTTOM NAV CHAT ---
+        // Navigasi Kategori
+        LinearLayout navKategori = findViewById(R.id.navKategori);
+        if (navKategori != null) {
+            navKategori.setOnClickListener(v -> {
+                Intent intent = new Intent(MainActivity.this, KategoriActivity.class);
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+            });
+        }
+
+        // Navigasi Jual
+        LinearLayout navJual = findViewById(R.id.navJual);
+        if (navJual != null) {
+            navJual.setOnClickListener(v -> {
+                Intent intent = new Intent(MainActivity.this, JualActivity.class);
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+            });
+        }
+
+        // Navigasi Chat
         LinearLayout navChat = findViewById(R.id.navChat);
         if (navChat != null) {
             navChat.setOnClickListener(v -> {
@@ -140,19 +143,14 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-
-        // ====================================================================
-        // TOMBOL NAVIGASI PROFIL (Tambahan Baru)
-        // ====================================================================
-        LinearLayout btnNavProfil = findViewById(R.id.btn_nav_profil);
-        btnNavProfil.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        // Navigasi Profil
+        LinearLayout navProfil = findViewById(R.id.navProfil);
+        if (navProfil != null) {
+            navProfil.setOnClickListener(v -> {
                 Intent intent = new Intent(MainActivity.this, ProfilActivity.class);
                 startActivity(intent);
-                // Menghilangkan animasi jeda bawaan Android biar transisinya mulus seperti kategori
                 overridePendingTransition(0, 0);
-            }
-        });
-            };
+            });
         }
+    }
+}

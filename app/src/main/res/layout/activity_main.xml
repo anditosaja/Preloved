@@ -526,9 +526,19 @@
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Kategori" android:textSize="10sp" android:textColor="#757575" />
         </LinearLayout>
 
-        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/navJual"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true">
             <RelativeLayout android:layout_width="45dp" android:layout_height="45dp" android:background="@drawable/bg_badge_angka">
-                <ImageView android:layout_width="30dp" android:layout_height="30dp" android:layout_centerInParent="true" android:src="@android:drawable/ic_input_add" app:tint="#FFFFFF"/>
+                <!-- Dikembalikan ke ikon add bawaan Android -->
+                <ImageView android:layout_width="30dp" android:layout_height="30dp" android:layout_centerInParent="true" android:src="@android:drawable/ic_input_add" app:tint="#FFFFFF" android:contentDescription="Jual" />
             </RelativeLayout>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="Jual" android:textSize="10sp" android:textColor="#757575" />
         </LinearLayout>
