@@ -2,10 +2,9 @@ package com.example.preloved;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.view.View; // Import View aman
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -29,23 +28,13 @@ public class KategoriActivity extends AppCompatActivity {
             });
         }
 
+        // --- TOMBOL KEMBALI (BACK) ---
         ImageView btnBack = findViewById(R.id.btnBack);
         if (btnBack != null) {
             btnBack.setOnClickListener(v -> finish());
         }
 
-        LinearLayout navBeranda = findViewById(R.id.navBeranda);
-        if (navBeranda != null) {
-            navBeranda.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                    overridePendingTransition(0, 0);
-                }
-            });
-        }
-
-        // --- FITUR LOGIKA KLIK KATEGORI ---
+        // --- INTERAKSI PILIHAN MENU KATEGORI ATAS (Sesuai ID XML Asli Kamu) ---
         LinearLayout katHalamanPakaian = findViewById(R.id.katHalamanPakaian);
         LinearLayout katHalamanSepatu = findViewById(R.id.katHalamanSepatu);
         LinearLayout katHalamanTas = findViewById(R.id.katHalamanTas);
@@ -54,6 +43,7 @@ public class KategoriActivity extends AppCompatActivity {
             katHalamanPakaian.setOnClickListener(v -> {
                 Intent intent = new Intent(KategoriActivity.this, DaftarBarangActivity.class);
                 intent.putExtra("NAMA_KATEGORI", "Pakaian");
+                intent.putExtra("CATEGORY_ID", 1); // ID Kategori Pakaian di database MySQL
                 startActivity(intent);
             });
         }
@@ -62,6 +52,7 @@ public class KategoriActivity extends AppCompatActivity {
             katHalamanSepatu.setOnClickListener(v -> {
                 Intent intent = new Intent(KategoriActivity.this, DaftarBarangActivity.class);
                 intent.putExtra("NAMA_KATEGORI", "Sepatu");
+                intent.putExtra("CATEGORY_ID", 2); // ID Kategori Sepatu di database MySQL
                 startActivity(intent);
             });
         }
@@ -70,27 +61,53 @@ public class KategoriActivity extends AppCompatActivity {
             katHalamanTas.setOnClickListener(v -> {
                 Intent intent = new Intent(KategoriActivity.this, DaftarBarangActivity.class);
                 intent.putExtra("NAMA_KATEGORI", "Tas");
+                intent.putExtra("CATEGORY_ID", 3); // ID Kategori Tas di database MySQL
                 startActivity(intent);
             });
         }
 
-        // --- LOGIKA SAMBUNG TOMBOL TENGAH JUAL (+) ---
-        View navJual = findViewById(R.id.bottomNavigation);
+        // ====================================================================
+        // BOTTOM NAVIGATION BAR (Sesuai ID Baru yang Ditambahkan di XML)
+        // ====================================================================
+        LinearLayout navBeranda = findViewById(R.id.navBeranda);
+        if (navBeranda != null) {
+            navBeranda.setOnClickListener(v -> {
+                Intent intent = new Intent(KategoriActivity.this, MainActivity.class);
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+                finish(); // Tutup KategoriActivity agar kembali bersih ke Beranda
+            });
+        }
+
+        LinearLayout navKategori = findViewById(R.id.navKategori);
+        if (navKategori != null) {
+            navKategori.setOnClickListener(v -> {
+                // Sedang berada di halaman Kategori, tidak perlu aksi pindah
+            });
+        }
+
+        LinearLayout navJual = findViewById(R.id.navJual);
         if (navJual != null) {
-            // Mengambil layout child urutan ke-2 (tombol tengah) secara aman
-            View btnJualKategori = ((LinearLayout) navJual).getChildAt(2);
-            if (btnJualKategori != null) {
-                btnJualKategori.setOnClickListener(v -> {
-                    Intent intent = new Intent(KategoriActivity.this, JualActivity.class);
-                    startActivity(intent);
-                });
-            }
+            navJual.setOnClickListener(v -> {
+                Intent intent = new Intent(KategoriActivity.this, JualActivity.class);
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+            });
         }
 
         LinearLayout navChat = findViewById(R.id.navChat);
         if (navChat != null) {
             navChat.setOnClickListener(v -> {
                 Intent intent = new Intent(KategoriActivity.this, ChatActivity.class);
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+            });
+        }
+
+        LinearLayout navProfil = findViewById(R.id.navProfil);
+        if (navProfil != null) {
+            navProfil.setOnClickListener(v -> {
+                Intent intent = new Intent(KategoriActivity.this, ProfilActivity.class);
                 startActivity(intent);
                 overridePendingTransition(0, 0);
             });

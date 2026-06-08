@@ -9,6 +9,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 import retrofit2.http.GET;
+import retrofit2.http.Query;
 
 public interface ApiService {
 
@@ -19,4 +20,10 @@ public interface ApiService {
 
     @GET("products")
     Call<List<Product>> getProducts();
+
+    @GET("products")
+    Call<List<Product>> getTrendingProducts();
+
+    @GET("products")
+    Call<List<Product>> getProductsByCategory(@Query("category_id") int categoryId);
 }
