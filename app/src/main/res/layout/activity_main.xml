@@ -136,6 +136,7 @@
                 </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
 
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -266,6 +267,8 @@
                             android:layout_height="match_parent"
                             android:orientation="vertical">
 
+
+
                             <ImageView
                                 android:layout_width="match_parent"
                                 android:layout_height="120dp"
@@ -346,45 +349,6 @@
                                 android:src="@drawable/poshmodel_boots"
                                 android:background="#F5F5F5" />
 
-                            <RelativeLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:padding="12dp">
-
-                                <TextView
-                                    android:id="@+id/tvProdName2"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="POSH Model\nBoots"
-                                    android:textColor="#000000"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold" />
-
-                                <ImageView
-                                    android:layout_width="20dp"
-                                    android:layout_height="20dp"
-                                    android:layout_alignParentEnd="true"
-                                    android:src="@drawable/heart"
-                                    app:tint="#BDBDBD" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_above="@id/tvProdLoc2"
-                                    android:text="Rp500.000"
-                                    android:textColor="#000000"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:id="@+id/tvProdLoc2"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentBottom="true"
-                                    android:text="📍 Jakarta Selatan"
-                                    android:textColor="#757575"
-                                    android:textSize="10sp" />
-                            </RelativeLayout>
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
