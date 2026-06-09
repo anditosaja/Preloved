@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,7 +13,20 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.preloved.network.RetrofitClient;
+import com.example.preloved.network.ApiService;
+
+import okhttp3.ResponseBody;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class ChatActivity extends AppCompatActivity {
+
+    private View itemChat1;
+    private TextView tvNamaUser1, tvPesanTerakhir1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,18 +43,17 @@ public class ChatActivity extends AppCompatActivity {
             });
         }
 
-        View itemChat1 = findViewById(R.id.itemChat1);
+        // Inisialisasi komponen UI list chat
+        itemChat1 = findViewById(R.id.itemChat1);
+        tvNamaUser1 = findViewById(R.id.tvNamaUser1);
+        tvPesanTerakhir1 = findViewById(R.id.tvPesanTerakhir1);
 
-        if (itemChat1 != null) {
-            itemChat1.setOnClickListener(v -> {
-                // Berpindah ke halaman ChatDetail
-                // Pastikan ChatActivityDetail sudah kamu buat dan terdaftar di Manifest
-                Intent intent = new Intent(this, ChatActivityDetail.class);
-                startActivity(intent);
-            });
-        }
+        // Menarik data list chat room dinamis dari Laravel MySQL
+        ambilDataChatDariLaravel();
 
-        // Navigasi balik ke Beranda
+        // ====================================================================
+        // BOTTOM NAVIGATION BAR
+        // ====================================================================
         LinearLayout navBeranda = findViewById(R.id.navBeranda);
         if (navBeranda != null) {
             navBeranda.setOnClickListener(v -> {
@@ -50,7 +64,6 @@ public class ChatActivity extends AppCompatActivity {
             });
         }
 
-        // Navigasi ke Kategori
         LinearLayout navKategori = findViewById(R.id.navKategori);
         if (navKategori != null) {
             navKategori.setOnClickListener(v -> {
@@ -60,5 +73,51 @@ public class ChatActivity extends AppCompatActivity {
                 overridePendingTransition(0, 0);
             });
         }
+    }
+
+    private void ambilDataChatDariLaravel() {
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        Call<ResponseBody> call = apiService.getChatRooms();
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // Semua kode parsing JSON wajib masuk ke dalam blok try {}
+                    try {
+                        String jsonResponse = response.body().string();
+                        JSONArray jsonArray = new JSONArray(jsonResponse);
+
+                        if (jsonArray.length() > 0) {
+                            JSONObject chatObj = jsonArray.getJSONObject(0);
+
+                            int chatId = chatObj.getInt("chat_id");
+                            String pesanTerakhir = chatObj.getString("isi_pesan");
+                            String namaPengirim = chatObj.optString("nama_sender", "User Preloved");
+
+                            if (tvNamaUser1 != null) tvNamaUser1.setText(namaPengirim);
+                            if (tvPesanTerakhir1 != null) tvPesanTerakhir1.setText(pesanTerakhir);
+
+                            if (itemChat1 != null) {
+                                itemChat1.setOnClickListener(v -> {
+                                    Intent intent = new Intent(ChatActivity.this, ChatActivityDetail.class);
+                                    intent.putExtra("CHAT_ID", chatId);
+                                    intent.putExtra("NAMA_PENGIRIM", namaPengirim);
+                                    startActivity(intent);
+                                });
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(ChatActivity.this, "Error parsing data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(ChatActivity.this, "Gagal konek API chat: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
