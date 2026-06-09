@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+<<<<<<< HEAD
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -23,6 +24,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+=======
 import com.example.preloved.models.LoginRequest;
 import com.example.preloved.models.LoginResponse;
 import com.example.preloved.network.ApiService;
@@ -34,7 +36,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
+>>>>>>> c6fedf16f8c9ac409f285afbc9d02a41f9f097c0
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -72,12 +74,15 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (email.isEmpty()) {
                     etEmail.setError("Email tidak boleh kosong");
+<<<<<<< HEAD
                 } else if (password.isEmpty()) {
                     etPassword.setError("Kata sandi tidak boleh kosong");
                 } else {
                     Toast.makeText(LoginActivity.this, "Mencoba masuk...", Toast.LENGTH_SHORT).show();
                     loginUserKeLaravel(email, password);
+=======
                     return;
+>>>>>>> c6fedf16f8c9ac409f285afbc9d02a41f9f097c0
                 }
 
                 if (password.isEmpty()) {
@@ -89,6 +94,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+<<<<<<< HEAD
         // 4. Aksi klik teks "Daftar" -> Pindah ke RegisterActivity yang terhubung ke Laravel
         if (txtKeRegister != null) {
             txtKeRegister.setOnClickListener(new View.OnClickListener() {
@@ -185,7 +191,7 @@ public class LoginActivity extends AppCompatActivity {
         requestQueue.add(jsonObjectRequest);
     }
 }
-
+=======
         txtKeDaftar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -268,3 +274,4 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 }
+>>>>>>> c6fedf16f8c9ac409f285afbc9d02a41f9f097c0

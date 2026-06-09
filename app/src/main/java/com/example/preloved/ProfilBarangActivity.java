@@ -13,6 +13,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.bumptech.glide.Glide; // Pastikan ini di-import
 import com.google.android.material.card.MaterialCardView;
 
 public class ProfilBarangActivity extends AppCompatActivity {
@@ -72,7 +73,9 @@ public class ProfilBarangActivity extends AppCompatActivity {
             String location = getIntent().getStringExtra("PROD_LOCATION");
             String condition = getIntent().getStringExtra("PROD_CONDITION");
             String category = getIntent().getStringExtra("PROD_CATEGORY");
-            int imageRes = getIntent().getIntExtra("PROD_IMAGE", 0);
+            String description = getIntent().getStringExtra("PROD_DESCRIPTION");
+            String imagePath = getIntent().getStringExtra("PROD_IMAGE_PATH"); // Gambar dari DB
+            int imageRes = getIntent().getIntExtra("PROD_IMAGE", 0); // Gambar lokal dummy
 
             // Pengaman data kategori otomatis jika dibuka langsung dari MainActivity
             if (category == null || category.isEmpty()) {
@@ -87,14 +90,29 @@ public class ProfilBarangActivity extends AppCompatActivity {
             if (tvProductName != null) tvProductName.setText(name);
             if (tvProductCategory != null) tvProductCategory.setText("Kategori: " + category);
             if (tvProductPrice != null) tvProductPrice.setText(price);
-            if (tvOldPrice != null) tvOldPrice.setText(oldPrice);
-            if (tvDiscount != null) tvDiscount.setText(discount);
+            if (tvOldPrice != null) tvOldPrice.setText(oldPrice != null ? oldPrice : "");
+            if (tvDiscount != null) tvDiscount.setText(discount != null ? discount : "");
             if (tvProductLocation != null) tvProductLocation.setText(location);
             if (tvCondition != null) tvCondition.setText(condition);
-            if (imgProduct != null && imageRes != 0) imgProduct.setImageResource(imageRes);
 
+            // Logika Muat Gambar: Prioritaskan gambar dari Database (Glide), jika kosong pakai gambar Dummy
+            if (imagePath != null && !imagePath.isEmpty() && imgProduct != null) {
+                String fullUrl = imagePath;
+                if (!fullUrl.startsWith("http")) {
+                    fullUrl = "http://10.0.2.2:8000/storage/" + imagePath;
+                }
+                Glide.with(this).load(fullUrl).into(imgProduct);
+            } else if (imgProduct != null && imageRes != 0) {
+                imgProduct.setImageResource(imageRes);
+            }
+
+            // Set Deskripsi dari DB, atau pakai fallback
             if (tvDescription != null) {
-                tvDescription.setText("Produk preloved " + name + " berkualitas premium. Kondisi terawat dengan tingkat kemulusan " + condition + ". Sangat cocok digunakan untuk menunjang penampilan kasual sehari-hari.");
+                if (description != null && !description.isEmpty()) {
+                    tvDescription.setText(description);
+                } else {
+                    tvDescription.setText("Produk preloved " + name + " berkualitas premium. Kondisi terawat dengan tingkat kemulusan " + condition + ". Sangat cocok digunakan untuk menunjang penampilan kasual sehari-hari.");
+                }
             }
 
             // --- LOGIKA SINKRONISASI BARANG SERUPA (ANTI-DUPLIKAT) ---
@@ -139,7 +157,6 @@ public class ProfilBarangActivity extends AppCompatActivity {
                     if (tvTitleBarangSerupa != null) tvTitleBarangSerupa.setVisibility(View.VISIBLE);
 
                 } else {
-                    // Sembunyikan section barang serupa jika membuka item diluar pakaian (seperti Sepatu)
                     if (cardSerupa1 != null) cardSerupa1.setVisibility(View.GONE);
                     if (cardSerupa2 != null) cardSerupa2.setVisibility(View.GONE);
                     if (tvTitleBarangSerupa != null) tvTitleBarangSerupa.setVisibility(View.GONE);
