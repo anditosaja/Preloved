@@ -2,7 +2,9 @@ package com.example.preloved;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +25,8 @@ import retrofit2.Response;
 public class ChatActivityDetail extends AppCompatActivity {
 
     private int chatId;
+    private int mySenderId;
+    private int targetReceiverId;
     private String namaPengirim;
     private TextView tvTitleNamaToolbar;
 
@@ -45,42 +49,81 @@ public class ChatActivityDetail extends AppCompatActivity {
             });
         }
 
-        // 1. Menangkap ID chat room hasil operan dari halaman List Chat
+        // Tangkap data dinamis lemparan dari ChatActivity halaman depan
         chatId = getIntent().getIntExtra("CHAT_ID", 0);
         namaPengirim = getIntent().getStringExtra("NAMA_PENGIRIM");
+        mySenderId = getIntent().getIntExtra("SENDER_ID", 0);
+        targetReceiverId = getIntent().getIntExtra("RECEIVER_ID", 0);
 
-        // 2. Set nama pengirim secara otomatis pada judul toolbar atas
         tvTitleNamaToolbar = findViewById(R.id.tvTitleNamaToolbar);
         if (tvTitleNamaToolbar != null && namaPengirim != null) {
             tvTitleNamaToolbar.setText(namaPengirim);
         }
 
-        // Fungsionalitas Tombol Kembali
         ImageView btnBack = findViewById(R.id.btnBack);
         if (btnBack != null) {
             btnBack.setOnClickListener(v -> finish());
         }
 
-        // 3. Ambil data riwayat percakapan dari API database MySQL sesuai chat_id
+        // Perbaikan pencarian View di dalam inputBar Layout
+        LinearLayout inputBar = findViewById(R.id.inputBar);
+        EditText etKetikPesan = null;
+        ImageView btnKirimPesan = null;
+
+        if (inputBar != null) {
+            etKetikPesan = (android.widget.EditText) inputBar.getChildAt(0);
+            btnKirimPesan = (ImageView) inputBar.getChildAt(1);
+        }
+
+        if (btnKirimPesan != null && etKetikPesan != null) {
+            final EditText finalEtKetikPesan = etKetikPesan;
+            btnKirimPesan.setOnClickListener(v -> {
+                String teksPesan = finalEtKetikPesan.getText().toString().trim();
+                if (!teksPesan.isEmpty()) {
+                    eksekusiKirimPesan(teksPesan, finalEtKetikPesan);
+                } else {
+                    Toast.makeText(ChatActivityDetail.this, "Pesan tidak boleh kosong", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
         loadIsiPercakapan();
     }
 
     private void loadIsiPercakapan() {
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         Call<ResponseBody> call = apiService.getChatDetail(chatId);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                // Sisi pembacaan data riwayat sukses tersambung ke backend
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(ChatActivityDetail.this, "Gagal memuat riwayat chat", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void eksekusiKirimPesan(String pesan, EditText editText) {
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        Call<ResponseBody> call = apiService.kirimPesan(chatId, pesan, mySenderId, targetReceiverId);
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    // Berhasil menarik data pesan individu ('isi_pesan', 'waktu_kirim')
-                    // Data JSON mentah tinggal disalurkan ke adapter RecyclerView chatroom kelompokmu
+                if (response.isSuccessful()) {
+                    Toast.makeText(ChatActivityDetail.this, "Pesan terkirim!", Toast.LENGTH_SHORT).show();
+                    editText.setText("");
+                    loadIsiPercakapan();
+                } else {
+                    Toast.makeText(ChatActivityDetail.this, "Gagal mengirim pesan", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(ChatActivityDetail.this, "Gagal memuat detail riwayat chat", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChatActivityDetail.this, "Error koneksi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

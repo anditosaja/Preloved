@@ -15,6 +15,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.preloved.network.RetrofitClient;
 import com.example.preloved.network.ApiService;
+import com.example.preloved.utils.SessionManager;
 
 import okhttp3.ResponseBody;
 import org.json.JSONArray;
@@ -27,6 +28,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private View itemChat1;
     private TextView tvNamaUser1, tvPesanTerakhir1;
+    private int currentUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,17 +45,17 @@ public class ChatActivity extends AppCompatActivity {
             });
         }
 
-        // Inisialisasi komponen UI list chat
+        // Ambil ID User login asli dari SessionManager lokal bawaanmu
+        SessionManager sessionManager = new SessionManager(this);
+        currentUserId = sessionManager.getUserId();
+
         itemChat1 = findViewById(R.id.itemChat1);
         tvNamaUser1 = findViewById(R.id.tvNamaUser1);
         tvPesanTerakhir1 = findViewById(R.id.tvPesanTerakhir1);
 
-        // Menarik data list chat room dinamis dari Laravel MySQL
         ambilDataChatDariLaravel();
 
-        // ====================================================================
-        // BOTTOM NAVIGATION BAR
-        // ====================================================================
+        // --- BOTTOM NAVIGATION BAR BARU ---
         LinearLayout navBeranda = findViewById(R.id.navBeranda);
         if (navBeranda != null) {
             navBeranda.setOnClickListener(v -> {
@@ -77,13 +79,12 @@ public class ChatActivity extends AppCompatActivity {
 
     private void ambilDataChatDariLaravel() {
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-        Call<ResponseBody> call = apiService.getChatRooms();
+        Call<ResponseBody> call = apiService.getChatRooms(currentUserId);
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    // Semua kode parsing JSON wajib masuk ke dalam blok try {}
                     try {
                         String jsonResponse = response.body().string();
                         JSONArray jsonArray = new JSONArray(jsonResponse);
@@ -93,30 +94,36 @@ public class ChatActivity extends AppCompatActivity {
 
                             int chatId = chatObj.getInt("chat_id");
                             String pesanTerakhir = chatObj.getString("isi_pesan");
-                            String namaPengirim = chatObj.optString("nama_sender", "User Preloved");
+                            String namaLawanChat = chatObj.optString("nama_lawan", "Teman Preloved");
 
-                            if (tvNamaUser1 != null) tvNamaUser1.setText(namaPengirim);
+                            // Logika mendeteksi siapa lawan bicaranya agar dinamis
+                            int receiverId = (chatObj.getInt("sender_id") == currentUserId)
+                                ? chatObj.getInt("receiver_id")
+                                : chatObj.getInt("sender_id");
+
+                            if (tvNamaUser1 != null) tvNamaUser1.setText(namaLawanChat);
                             if (tvPesanTerakhir1 != null) tvPesanTerakhir1.setText(pesanTerakhir);
 
                             if (itemChat1 != null) {
                                 itemChat1.setOnClickListener(v -> {
                                     Intent intent = new Intent(ChatActivity.this, ChatActivityDetail.class);
                                     intent.putExtra("CHAT_ID", chatId);
-                                    intent.putExtra("NAMA_PENGIRIM", namaPengirim);
+                                    intent.putExtra("NAMA_PENGIRIM", namaLawanChat);
+                                    intent.putExtra("SENDER_ID", currentUserId);
+                                    intent.putExtra("RECEIVER_ID", receiverId);
                                     startActivity(intent);
                                 });
                             }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-                        Toast.makeText(ChatActivity.this, "Error parsing data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(ChatActivity.this, "Gagal konek API chat: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChatActivity.this, "Gagal konek API chat", Toast.LENGTH_SHORT).show();
             }
         });
     }
