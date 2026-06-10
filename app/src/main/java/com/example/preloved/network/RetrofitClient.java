@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClient {
 
     private static final String BASE_URL =
-            "http://10.0.2.2:8000/api/";
+            "http://172.25.23.211:8000/api/";
 
     private static Retrofit retrofit;
 
@@ -18,8 +18,11 @@ public class RetrofitClient {
                     .baseUrl(BASE_URL)
                     .addConverterFactory(
                             GsonConverterFactory.create()
+
                     )
                     .build();
+
+
         }
 
         return retrofit;

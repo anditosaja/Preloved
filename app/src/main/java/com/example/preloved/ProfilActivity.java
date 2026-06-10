@@ -3,12 +3,18 @@ package com.example.preloved;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import android.net.Uri;
+import com.example.preloved.network.RetrofitClient;
+import com.example.preloved.utils.SessionManager;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -20,18 +26,34 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import com.bumptech.glide.Glide;
+import com.example.preloved.network.ApiService;
+import com.google.android.material.imageview.ShapeableImageView;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 public class ProfilActivity extends AppCompatActivity {
 
     private TextView txtNama, txtUsername, txtRating, txtUlasan, txtStatRating, txtStatusVerifikasi;
     private Button btnAksiVerifikasi;
     private String token;
+    private TextView txtSaldoProfil, txtEmailProfil;
+    private ShapeableImageView imgFotoProfil;
+
 
     // Gunakan alamat IP emulator yang mengarah ke localhost Laravel lo
-    private static final String URL_GET_PROFILE = "http://10.0.2.2:8000/api/user";
+    private static final String URL_GET_PROFILE = "http://172.25.23.211:8000/api/profile";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +68,44 @@ public class ProfilActivity extends AppCompatActivity {
         txtStatRating = findViewById(R.id.txtStatRating);
         txtStatusVerifikasi = findViewById(R.id.txtStatusVerifikasi);
         btnAksiVerifikasi = findViewById(R.id.btnAksiVerifikasi);
+        txtSaldoProfil = findViewById(R.id.txtSaldoProfil);
+        txtEmailProfil = findViewById(R.id.txtEmailProfil);
+        imgFotoProfil = findViewById(R.id.imgFotoProfil);
 
-        // Ambil token login yang disimpan di SharedPreferences pas login berhasil
-        SharedPreferences sharedPreferences = getSharedPreferences("PrelovedPrefs", Context.MODE_PRIVATE);
-        token = sharedPreferences.getString("AUTH_TOKEN", "");
+        // Ganti bagian SharedPreferences di ProfilActivity dengan ini:
+        SessionManager sessionManager = new SessionManager(this);
+        token = sessionManager.getToken(); // Pakai fungsi dari SessionManager kita
+
+        // 1. Inisialisasi Launcher Galeri
+        bukaGaleri = registerForActivityResult(
+            new ActivityResultContracts.GetContent(),
+            uri -> {
+                if (uri != null) {
+                    // Tampilkan sementara di layar agar responsif
+                    imgFotoProfil.setImageURI(uri);
+
+                    // Proses upload ke Laravel
+                    uploadFotoKeLaravel(uri);
+                }
+            }
+        );
+
+// 2. Klik foto profil untuk buka galeri
+        imgFotoProfil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Hanya tampilkan file bertipe gambar
+                bukaGaleri.launch("image/*");
+            }
+        });
+
+        if (token.isEmpty()) {
+            Toast.makeText(this, "Token kosong! Silakan login ulang.", Toast.LENGTH_LONG).show();
+            // Opsional: Langsung arahkan (Intent) kembali ke LoginActivity
+            return; // Hentikan proses load data
+        } else {
+            Log.d("TOKEN_CEK", "Token yang dikirim: " + token);
+        }
 
         // Ambil data terbaru dari Server Laravel
         loadDataProfilDariLaravel();
@@ -72,7 +128,52 @@ public class ProfilActivity extends AppCompatActivity {
             }
         });
     }
+    private ActivityResultLauncher<String> bukaGaleri;
 
+    private void uploadFotoKeLaravel(Uri fileUri) {
+        try {
+            // 1. Salin gambar dari Galeri ke Cache Sementara
+            InputStream inputStream = getContentResolver().openInputStream(fileUri);
+            File tempFile = new File(getCacheDir(), "foto_profil.jpg");
+            FileOutputStream outputStream = new FileOutputStream(tempFile);
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+            outputStream.close();
+            if (inputStream != null) inputStream.close();
+
+            // 2. Siapkan file sebagai "MultipartBody.Part" sesuai permintaan Laravel
+            RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpeg"), tempFile);
+            MultipartBody.Part body = MultipartBody.Part.createFormData("photo", tempFile.getName(), requestFile);
+
+            // 3. Panggil Retrofit (Sesuaikan nama kelas Retrofit Client kamu)
+            ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+            Call<ResponseBody> call = apiService.uploadFotoProfil("Bearer " + token, body);
+
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(ProfilActivity.this, "Foto berhasil diunggah!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(ProfilActivity.this, "Gagal upload: " + response.code(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Toast.makeText(ProfilActivity.this, "Error koneksi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Gagal memproses gambar dari galeri", Toast.LENGTH_SHORT).show();
+        }
+    }
     private void loadDataProfilDariLaravel() {
         RequestQueue queue = Volley.newRequestQueue(this);
 
@@ -80,33 +181,45 @@ public class ProfilActivity extends AppCompatActivity {
             Request.Method.GET,
             URL_GET_PROFILE,
             null,
-            new Response.Listener<JSONObject>() {
+            new Response.Listener<JSONObject>() { // "Response" di sini adalah class Volley
                 @Override
-                public void onResponse(JSONObject response) {
+                public void onResponse(JSONObject jsonObject) { //  Ganti namanya jadi jsonObject
                     try {
-                        // Ambil data objek JSON hasil respon ProfileController Laravel
-                        String namaLengkap = response.getString("nama_lengkap");
-                        String username = response.getString("username");
-                        double rating = response.getDouble("rating");
-                        int jumlahUlasan = response.getInt("jumlah_ulasan");
-                        int isVerified = response.getInt("is_verified"); // boolean dibaca 0 / 1 oleh JSON
+                        // Ambil data dari objek jsonObject, BUKAN response
+                        String namaLengkap = jsonObject.getString("nama_lengkap");
+                        String username = jsonObject.getString("username");
+                        String email = jsonObject.optString("email", "Email tidak tersedia");
+                        String fotoProfil = jsonObject.optString("foto_profil", "");
+                        double rating = jsonObject.optDouble("rating", 0.0);
+                        int jumlahUlasan = jsonObject.optInt("jumlah_ulasan", 0);
+                        int isVerified = jsonObject.getInt("is_verified"); // Menggunakan boolean sesuai Laravel
+                        int saldo = jsonObject.optInt("saldo_preloved", 0);
 
-                        // Set nilai ke UI secara dinamis
+                        // Set nilai ke UI
                         txtNama.setText(namaLengkap);
                         txtUsername.setText("@" + username);
                         txtRating.setText(String.valueOf(rating));
                         txtStatRating.setText(String.valueOf(rating));
                         txtUlasan.setText(" (" + jumlahUlasan + ")");
+                        txtSaldoProfil.setText("Rp " + saldo);
+                        txtEmailProfil.setText(email);
+
+                        if (!fotoProfil.isEmpty() && !fotoProfil.equals("null")) {
+                            String imageUrl = "http://192.168.18.169:8000/storage/" + fotoProfil;
+                            Glide.with(ProfilActivity.this)
+                                .load(imageUrl)
+                                .circleCrop() // Opsional: Biar fotonya otomatis bulat
+                                .into(imgFotoProfil);
+                        }
 
                         // Cek Status Verifikasi
                         if (isVerified == 1) {
                             txtStatusVerifikasi.setText("Akun Terverifikasi");
-                            btnAksiVerifikasi.setVisibility(View.GONE); // Sembunyikan tombol kalau sudah aman
+                            btnAksiVerifikasi.setVisibility(View.GONE);
                         } else {
-
-                                txtStatusVerifikasi.setText("Akun Belum Terverifikasi");
-                                btnAksiVerifikasi.setVisibility(View.VISIBLE); // <--- Diubah jadi VISIBLE biar tombolnya muncul normal
-                            }
+                            txtStatusVerifikasi.setText("Akun Belum Terverifikasi");
+                            btnAksiVerifikasi.setVisibility(View.VISIBLE);
+                        }
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -120,8 +233,9 @@ public class ProfilActivity extends AppCompatActivity {
                     Toast.makeText(ProfilActivity.this, "Gagal koneksi ke server: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
-        ) {
-            // Mengirimkan Token Bearer ke API Laravel Auth middleware
+        )
+
+        {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();

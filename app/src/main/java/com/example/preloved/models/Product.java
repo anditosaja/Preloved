@@ -1,89 +1,65 @@
 package com.example.preloved.models;
 
+import com.google.gson.annotations.SerializedName;
+import java.io.Serializable;
 import java.util.List;
 
-public class Product {
+public class Product implements Serializable {
 
-    private int product_id;
-    private int seller_id;
-    private int category_id;
+    @SerializedName("product_id")
+    private int productId;
 
+    @SerializedName("category_id")
+    private int categoryId;
+
+    @SerializedName("seller_id")
+    private int sellerId;
+
+    @SerializedName("nama_barang")
     private String nama_barang;
-    private String deskripsi;
-    private String harga_jual;
-    private String harga_asli;
-    private String kondisi;
-    private String merek;
-    private String warna;
-    private String lokasi_kota;
-    private String status_barang;
-    private String waktu_post;
 
-    private User seller;
-    private Category category;
+    @SerializedName("deskripsi")
+    private String deskripsi;
+
+    // Di adapter kamu memanggil Double.parseDouble(product.getHarga_jual()),
+    // sehingga tipe datanya dideklarasikan sebagai String.
+    @SerializedName("harga_jual")
+    private String harga_jual;
+
+    @SerializedName("harga_asli")
+    private String harga_asli;
+
+    @SerializedName("kondisi")
+    private String kondisi;
+
+    @SerializedName("merek")
+    private String merek;
+
+    @SerializedName("warna")
+    private String warna;
+
+    @SerializedName("lokasi_kota")
+    private String lokasi_kota;
+
+    @SerializedName("status_barang")
+    private String status_barang;
+
+    // Relasi tabel gambar dari Laravel
+    @SerializedName("images")
     private List<ProductImage> images;
 
-    public int getProduct_id() {
-        return product_id;
-    }
-
-    public int getSeller_id() {
-        return seller_id;
-    }
-
-    public int getCategory_id() {
-        return category_id;
-    }
-
-    public String getNama_barang() {
-        return nama_barang;
-    }
-
-    public String getDeskripsi() {
-        return deskripsi;
-    }
-
-    public String getHarga_jual() {
-        return harga_jual;
-    }
-
-    public String getHarga_asli() {
-        return harga_asli;
-    }
-
-    public String getKondisi() {
-        return kondisi;
-    }
-
-    public String getMerek() {
-        return merek;
-    }
-
-    public String getWarna() {
-        return warna;
-    }
-
-    public String getLokasi_kota() {
-        return lokasi_kota;
-    }
-
-    public String getStatus_barang() {
-        return status_barang;
-    }
-
-    public String getWaktu_post() {
-        return waktu_post;
-    }
-
-    public User getSeller() {
-        return seller;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public List<ProductImage> getImages() {
-        return images;
-    }
+    // Getter methods
+    public int getProductId() { return productId; }
+    public int getCategoryId() { return categoryId; }
+    public int getSellerId() { return sellerId; }
+    public String getNama_barang() { return nama_barang; }
+    public String getDeskripsi() { return deskripsi; }
+    public String getHarga_jual() { return harga_jual; }
+    public String getHarga_asli() { return harga_asli; }
+    public String getKondisi() { return kondisi; }
+    public String getMerek() { return merek; }
+    public String getWarna() { return warna; }
+    public String getLokasi_kota() { return lokasi_kota; }
+    public String getStatus_barang() { return status_barang; }
+    public List<ProductImage> getImages() { return images; }
 }

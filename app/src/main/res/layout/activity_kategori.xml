@@ -156,106 +156,68 @@
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:columnCount="3"
+                android:columnCount="4"
+                android:rowCount="2"
                 android:alignmentMode="alignBounds"
                 android:useDefaultMargins="true">
 
-                <LinearLayout
-                    android:id="@+id/katHalamanPakaian"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="8dp">
-
-                    <RelativeLayout
-                        android:layout_width="65dp"
-                        android:layout_height="65dp"
-                        android:background="@drawable/bg_kategori_icon">
-                        <ImageView
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
-                            android:layout_centerInParent="true"
-                            android:src="@drawable/pakaian" />
+                <LinearLayout android:id="@+id/katPakaian" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:gravity="center" android:orientation="vertical" android:layout_marginBottom="16dp" android:clickable="true" android:focusable="true" android:background="?attr/selectableItemBackgroundBorderless">
+                    <RelativeLayout android:layout_width="60dp" android:layout_height="60dp" android:background="@drawable/bg_kategori_icon">
+                        <ImageView android:layout_width="35dp" android:layout_height="35dp" android:layout_centerInParent="true" android:src="@drawable/pakaian" />
                     </RelativeLayout>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="Pakaian"
-                        android:textColor="#757575"
-                        android:textSize="11sp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Pakaian" android:textColor="#757575" android:textSize="12sp" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/katHalamanSepatu"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="8dp">
-
-                    <RelativeLayout
-                        android:layout_width="65dp"
-                        android:layout_height="65dp"
-                        android:background="@drawable/bg_kategori_icon">
-                        <ImageView
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
-                            android:layout_centerInParent="true"
-                            android:src="@drawable/sepatu" />
+                <LinearLayout android:id="@+id/katTas" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:gravity="center" android:orientation="vertical" android:layout_marginBottom="16dp" android:clickable="true" android:focusable="true" android:background="?attr/selectableItemBackgroundBorderless">
+                    <RelativeLayout android:layout_width="60dp" android:layout_height="60dp" android:background="@drawable/bg_kategori_icon">
+                        <ImageView android:layout_width="35dp" android:layout_height="35dp" android:layout_centerInParent="true" android:src="@drawable/tas" />
                     </RelativeLayout>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="Sepatu"
-                        android:textColor="#757575"
-                        android:textSize="11sp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Tas" android:textColor="#757575" android:textSize="12sp" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/katHalamanTas"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="8dp">
-
-                    <RelativeLayout
-                        android:layout_width="65dp"
-                        android:layout_height="65dp"
-                        android:background="@drawable/bg_kategori_icon">
-                        <ImageView
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
-                            android:layout_centerInParent="true"
-                            android:src="@drawable/tas" />
+                <LinearLayout android:id="@+id/katSepatu" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:gravity="center" android:orientation="vertical" android:layout_marginBottom="16dp" android:clickable="true" android:focusable="true" android:background="?attr/selectableItemBackgroundBorderless">
+                    <RelativeLayout android:layout_width="60dp" android:layout_height="60dp" android:background="@drawable/bg_kategori_icon">
+                        <ImageView android:layout_width="35dp" android:layout_height="35dp" android:layout_centerInParent="true" android:src="@drawable/sepatu" />
                     </RelativeLayout>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="Tas"
-                        android:textColor="#757575"
-                        android:textSize="11sp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Sepatu" android:textColor="#757575" android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout android:id="@+id/katElektronik" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:gravity="center" android:orientation="vertical" android:layout_marginBottom="16dp" android:clickable="true" android:focusable="true" android:background="?attr/selectableItemBackgroundBorderless">
+                    <RelativeLayout android:layout_width="60dp" android:layout_height="60dp" android:background="@drawable/bg_kategori_icon">
+                        <ImageView android:layout_width="35dp" android:layout_height="35dp" android:layout_centerInParent="true" android:src="@drawable/elektronik" />
+                    </RelativeLayout>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Elektronik" android:textColor="#757575" android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout android:id="@+id/katBuku" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:gravity="center" android:orientation="vertical" android:layout_marginBottom="16dp" android:clickable="true" android:focusable="true" android:background="?attr/selectableItemBackgroundBorderless">
+                    <RelativeLayout android:layout_width="60dp" android:layout_height="60dp" android:background="@drawable/bg_kategori_icon">
+                        <ImageView android:layout_width="35dp" android:layout_height="35dp" android:layout_centerInParent="true" android:src="@drawable/elektronik" app:tint="#6952D9"/>
+                    </RelativeLayout>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Buku" android:textColor="#757575" android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout android:id="@+id/katHobi" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:gravity="center" android:orientation="vertical" android:layout_marginBottom="16dp" android:clickable="true" android:focusable="true" android:background="?attr/selectableItemBackgroundBorderless">
+                    <RelativeLayout android:layout_width="60dp" android:layout_height="60dp" android:background="@drawable/bg_kategori_icon">
+                        <ImageView android:layout_width="35dp" android:layout_height="35dp" android:layout_centerInParent="true" android:src="@android:drawable/ic_menu_camera" app:tint="#6952D9"/>
+                    </RelativeLayout>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Hobi" android:textColor="#757575" android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout android:id="@+id/katKecantikan" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:gravity="center" android:orientation="vertical" android:layout_marginBottom="16dp" android:clickable="true" android:focusable="true" android:background="?attr/selectableItemBackgroundBorderless">
+                    <RelativeLayout android:layout_width="60dp" android:layout_height="60dp" android:background="@drawable/bg_kategori_icon">
+                        <ImageView android:layout_width="35dp" android:layout_height="35dp" android:layout_centerInParent="true" android:src="@android:drawable/ic_menu_view" app:tint="#6952D9"/>
+                    </RelativeLayout>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Kecantikan" android:textColor="#757575" android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout android:id="@+id/katRumah" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:gravity="center" android:orientation="vertical" android:layout_marginBottom="16dp" android:clickable="true" android:focusable="true" android:background="?attr/selectableItemBackgroundBorderless">
+                    <RelativeLayout android:layout_width="60dp" android:layout_height="60dp" android:background="@drawable/bg_kategori_icon">
+                        <ImageView android:layout_width="35dp" android:layout_height="35dp" android:layout_centerInParent="true" android:src="@android:drawable/ic_menu_manage" app:tint="#6952D9"/>
+                    </RelativeLayout>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Rumah" android:textColor="#757575" android:textSize="12sp" />
                 </LinearLayout>
 
             </GridLayout>
-
             <!-- SECTION KATEGORI POPULER -->
             <RelativeLayout
                 android:layout_width="match_parent"

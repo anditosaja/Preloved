@@ -7,6 +7,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.example.preloved.models.Product;
+import com.example.preloved.models.ProductImage;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -63,104 +67,97 @@ public class ProfilBarangActivity extends AppCompatActivity {
         MaterialCardView cardSerupa2 = findViewById(R.id.cardSerupa2);
         TextView tvTitleBarangSerupa = findViewById(R.id.tvTitleBarangSerupa);
 
-        // TANGKAP DATA INTENT EXTRA DARI HALAMAN SEBELUMNYA
-        if (getIntent() != null && getIntent().hasExtra("PROD_NAME")) {
-            String name = getIntent().getStringExtra("PROD_NAME");
-            String price = getIntent().getStringExtra("PROD_PRICE");
-            String oldPrice = getIntent().getStringExtra("PROD_OLD_PRICE");
-            String discount = getIntent().getStringExtra("PROD_DISCOUNT");
-            String location = getIntent().getStringExtra("PROD_LOCATION");
-            String condition = getIntent().getStringExtra("PROD_CONDITION");
-            String category = getIntent().getStringExtra("PROD_CATEGORY");
-            int imageRes = getIntent().getIntExtra("PROD_IMAGE", 0);
+        // TANGKAP DATA PRODUCT DARI HALAMAN SEBELUMNYA
+        if (getIntent() != null && getIntent().hasExtra("PRODUCT")) {
 
-            // Pengaman data kategori otomatis jika dibuka langsung dari MainActivity
-            if (category == null || category.isEmpty()) {
-                if (name != null && (name.contains("Shirt") || name.contains("Hoodie"))) {
-                    category = "Pakaian";
-                } else {
-                    category = "Sepatu";
+            Product product =
+                (Product) getIntent().getSerializableExtra("PRODUCT");
+
+            if (product != null) {
+
+                String name = product.getNama_barang();
+
+                // Data Utama
+                tvProductName.setText(product.getNama_barang());
+                tvProductPrice.setText("Rp " + product.getHarga_jual());
+                tvCondition.setText(product.getKondisi());
+                tvProductLocation.setText(product.getLokasi_kota());
+                tvDescription.setText(product.getDeskripsi());
+
+                if (product.getHarga_asli() != null &&
+                    !product.getHarga_asli().isEmpty()) {
+
+                    tvOldPrice.setText("Rp " + product.getHarga_asli());
+                }
+
+                // Kategori
+                String category = "Produk";
+
+                if (name != null) {
+                    if (name.toLowerCase().contains("shirt")
+                        || name.toLowerCase().contains("hoodie")
+                        || name.toLowerCase().contains("flannel")) {
+
+                        category = "Pakaian";
+                    }
+                }
+
+                tvProductCategory.setText("Kategori: " + category);
+
+                // Foto Produk dari Laravel
+                if (product.getImages() != null
+                    && !product.getImages().isEmpty()) {
+
+                    String imageUrl =
+                        "http://172.25.23.211:8000/storage/" +
+                            product.getImages().get(0).getImage_path();
+
+                    Glide.with(this)
+                        .load(imageUrl)
+                        .into(imgProduct);
+                }
+
+                // Barang Serupa (sementara)
+                if (name != null) {
+
+                    if (name.equalsIgnoreCase("Zaro Cargo Shirt")) {
+
+                        imgSerupa1.setImageResource(R.drawable.flannel);
+                        tvNamaSerupa1.setText("Flannel Casual");
+                        tvHargaSerupa1.setText("Rp120.000");
+
+                        imgSerupa2.setImageResource(R.drawable.hoodie);
+                        tvNamaSerupa2.setText("Streetwear Hoodie");
+                        tvHargaSerupa2.setText("Rp185.000");
+
+                    } else if (name.equalsIgnoreCase("Flannel Casual Shirt")) {
+
+                        imgSerupa1.setImageResource(R.drawable.zarocargo_shirt);
+                        tvNamaSerupa1.setText("Zaro Cargo");
+                        tvHargaSerupa1.setText("Rp150.000");
+
+                        imgSerupa2.setImageResource(R.drawable.hoodie);
+                        tvNamaSerupa2.setText("Streetwear Hoodie");
+                        tvHargaSerupa2.setText("Rp185.000");
+
+                    } else if (name.equalsIgnoreCase("Oversized Streetwear Hoodie")) {
+
+                        imgSerupa1.setImageResource(R.drawable.zarocargo_shirt);
+                        tvNamaSerupa1.setText("Zaro Cargo");
+                        tvHargaSerupa1.setText("Rp150.000");
+
+                        imgSerupa2.setImageResource(R.drawable.flannel);
+                        tvNamaSerupa2.setText("Flannel Casual");
+                        tvHargaSerupa2.setText("Rp120.000");
+
+                    } else {
+
+                        cardSerupa1.setVisibility(View.GONE);
+                        cardSerupa2.setVisibility(View.GONE);
+                        tvTitleBarangSerupa.setVisibility(View.GONE);
+                    }
                 }
             }
-
-            // Set Data Detail Utama
-            if (tvProductName != null) tvProductName.setText(name);
-            if (tvProductCategory != null) tvProductCategory.setText("Kategori: " + category);
-            if (tvProductPrice != null) tvProductPrice.setText(price);
-            if (tvOldPrice != null) tvOldPrice.setText(oldPrice);
-            if (tvDiscount != null) tvDiscount.setText(discount);
-            if (tvProductLocation != null) tvProductLocation.setText(location);
-            if (tvCondition != null) tvCondition.setText(condition);
-            if (imgProduct != null && imageRes != 0) imgProduct.setImageResource(imageRes);
-
-            if (tvDescription != null) {
-                tvDescription.setText("Produk preloved " + name + " berkualitas premium. Kondisi terawat dengan tingkat kemulusan " + condition + ". Sangat cocok digunakan untuk menunjang penampilan kasual sehari-hari.");
-            }
-
-            // --- LOGIKA SINKRONISASI BARANG SERUPA (ANTI-DUPLIKAT) ---
-            if (name != null) {
-                if (name.equals("Zaro Cargo Shirt")) {
-                    if (imgSerupa1 != null) imgSerupa1.setImageResource(R.drawable.flannel);
-                    if (tvNamaSerupa1 != null) tvNamaSerupa1.setText("Flannel Casual");
-                    if (tvHargaSerupa1 != null) tvHargaSerupa1.setText("Rp120.000");
-
-                    if (imgSerupa2 != null) imgSerupa2.setImageResource(R.drawable.hoodie);
-                    if (tvNamaSerupa2 != null) tvNamaSerupa2.setText("Streetwear Hoodie");
-                    if (tvHargaSerupa2 != null) tvHargaSerupa2.setText("Rp185.000");
-
-                    if (cardSerupa1 != null) cardSerupa1.setVisibility(View.VISIBLE);
-                    if (cardSerupa2 != null) cardSerupa2.setVisibility(View.VISIBLE);
-                    if (tvTitleBarangSerupa != null) tvTitleBarangSerupa.setVisibility(View.VISIBLE);
-
-                } else if (name.equals("Flannel Casual Shirt")) {
-                    if (imgSerupa1 != null) imgSerupa1.setImageResource(R.drawable.zarocargo_shirt);
-                    if (tvNamaSerupa1 != null) tvNamaSerupa1.setText("Zaro Cargo");
-                    if (tvHargaSerupa1 != null) tvHargaSerupa1.setText("Rp150.000");
-
-                    if (imgSerupa2 != null) imgSerupa2.setImageResource(R.drawable.hoodie);
-                    if (tvNamaSerupa2 != null) tvNamaSerupa2.setText("Streetwear Hoodie");
-                    if (tvHargaSerupa2 != null) tvHargaSerupa2.setText("Rp185.000");
-
-                    if (cardSerupa1 != null) cardSerupa1.setVisibility(View.VISIBLE);
-                    if (cardSerupa2 != null) cardSerupa2.setVisibility(View.VISIBLE);
-                    if (tvTitleBarangSerupa != null) tvTitleBarangSerupa.setVisibility(View.VISIBLE);
-
-                } else if (name.equals("Oversized Streetwear Hoodie")) {
-                    if (imgSerupa1 != null) imgSerupa1.setImageResource(R.drawable.zarocargo_shirt);
-                    if (tvNamaSerupa1 != null) tvNamaSerupa1.setText("Zaro Cargo");
-                    if (tvHargaSerupa1 != null) tvHargaSerupa1.setText("Rp150.000");
-
-                    if (imgSerupa2 != null) imgSerupa2.setImageResource(R.drawable.flannel);
-                    if (tvNamaSerupa2 != null) tvNamaSerupa2.setText("Flannel Casual");
-                    if (tvHargaSerupa2 != null) tvHargaSerupa2.setText("Rp120.000");
-
-                    if (cardSerupa1 != null) cardSerupa1.setVisibility(View.VISIBLE);
-                    if (cardSerupa2 != null) cardSerupa2.setVisibility(View.VISIBLE);
-                    if (tvTitleBarangSerupa != null) tvTitleBarangSerupa.setVisibility(View.VISIBLE);
-
-                } else {
-                    // Sembunyikan section barang serupa jika membuka item diluar pakaian (seperti Sepatu)
-                    if (cardSerupa1 != null) cardSerupa1.setVisibility(View.GONE);
-                    if (cardSerupa2 != null) cardSerupa2.setVisibility(View.GONE);
-                    if (tvTitleBarangSerupa != null) tvTitleBarangSerupa.setVisibility(View.GONE);
-                }
-            }
-        }
-
-        // FUNGSI CORET HARGA (Strikethrough)
-        if (tvOldPrice != null) {
-            tvOldPrice.setPaintFlags(tvOldPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        }
-
-        // Interaksi Tombol Aksi Bawah
-        View btnBeli = findViewById(R.id.btnBeli);
-        if (btnBeli != null) {
-            btnBeli.setOnClickListener(v -> Toast.makeText(this, "Membuka halaman Pembayaran...", Toast.LENGTH_SHORT).show());
-        }
-
-        View btnChat = findViewById(R.id.btnChat);
-        if (btnChat != null) {
-            btnChat.setOnClickListener(v -> Toast.makeText(this, "Membuka ruang Chat...", Toast.LENGTH_SHORT).show());
         }
     }
-}
+};

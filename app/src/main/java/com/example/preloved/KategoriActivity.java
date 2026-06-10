@@ -29,62 +29,58 @@ public class KategoriActivity extends AppCompatActivity {
             });
         }
 
+        // --- TOMBOL KEMBALI (BACK) ---
         ImageView btnBack = findViewById(R.id.btnBack);
         if (btnBack != null) {
             btnBack.setOnClickListener(v -> finish());
         }
 
+        // --- INTERAKSI PILIHAN MENU KATEGORI (Sesuai ID XML & Database MySQL) ---
+        LinearLayout katPakaian = findViewById(R.id.katPakaian);
+        LinearLayout katTas = findViewById(R.id.katTas);
+        LinearLayout katSepatu = findViewById(R.id.katSepatu);
+        LinearLayout katElektronik = findViewById(R.id.katElektronik);
+        LinearLayout katBuku = findViewById(R.id.katBuku);
+        LinearLayout katHobi = findViewById(R.id.katHobi);
+        LinearLayout katKecantikan = findViewById(R.id.katKecantikan);
+        LinearLayout katRumah = findViewById(R.id.katRumah);
+
+        if (katPakaian != null) katPakaian.setOnClickListener(v -> bukaDaftarBarang("Pakaian", 1));
+        if (katTas != null) katTas.setOnClickListener(v -> bukaDaftarBarang("Tas", 2));
+        if (katSepatu != null) katSepatu.setOnClickListener(v -> bukaDaftarBarang("Sepatu", 3));
+        if (katElektronik != null) katElektronik.setOnClickListener(v -> bukaDaftarBarang("Elektronik", 4));
+        if (katBuku != null) katBuku.setOnClickListener(v -> bukaDaftarBarang("Buku", 5));
+        if (katHobi != null) katHobi.setOnClickListener(v -> bukaDaftarBarang("Hobi", 6));
+        if (katKecantikan != null) katKecantikan.setOnClickListener(v -> bukaDaftarBarang("Kecantikan", 7));
+        if (katRumah != null) katRumah.setOnClickListener(v -> bukaDaftarBarang("Rumah Tangga", 8));
+
+        // ====================================================================
+        // BOTTOM NAVIGATION BAR
+        // ====================================================================
         LinearLayout navBeranda = findViewById(R.id.navBeranda);
         if (navBeranda != null) {
-            navBeranda.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                    overridePendingTransition(0, 0);
-                }
-            });
-        }
-
-        // --- FITUR LOGIKA KLIK KATEGORI ---
-        LinearLayout katHalamanPakaian = findViewById(R.id.katHalamanPakaian);
-        LinearLayout katHalamanSepatu = findViewById(R.id.katHalamanSepatu);
-        LinearLayout katHalamanTas = findViewById(R.id.katHalamanTas);
-
-        if (katHalamanPakaian != null) {
-            katHalamanPakaian.setOnClickListener(v -> {
-                Intent intent = new Intent(KategoriActivity.this, DaftarBarangActivity.class);
-                intent.putExtra("NAMA_KATEGORI", "Pakaian");
+            navBeranda.setOnClickListener(v -> {
+                Intent intent = new Intent(KategoriActivity.this, MainActivity.class);
                 startActivity(intent);
+                overridePendingTransition(0, 0);
+                finish(); // Tutup KategoriActivity agar kembali bersih ke Beranda
             });
         }
 
-        if (katHalamanSepatu != null) {
-            katHalamanSepatu.setOnClickListener(v -> {
-                Intent intent = new Intent(KategoriActivity.this, DaftarBarangActivity.class);
-                intent.putExtra("NAMA_KATEGORI", "Sepatu");
-                startActivity(intent);
+        LinearLayout navKategori = findViewById(R.id.navKategori);
+        if (navKategori != null) {
+            navKategori.setOnClickListener(v -> {
+                // Sedang berada di halaman Kategori, tidak perlu aksi pindah
             });
         }
 
-        if (katHalamanTas != null) {
-            katHalamanTas.setOnClickListener(v -> {
-                Intent intent = new Intent(KategoriActivity.this, DaftarBarangActivity.class);
-                intent.putExtra("NAMA_KATEGORI", "Tas");
-                startActivity(intent);
-            });
-        }
-
-        // --- LOGIKA SAMBUNG TOMBOL TENGAH JUAL (+) ---
-        View navJual = findViewById(R.id.bottomNavigation);
+        LinearLayout navJual = findViewById(R.id.navJual);
         if (navJual != null) {
-            // Mengambil layout child urutan ke-2 (tombol tengah) secara aman
-            View btnJualKategori = ((LinearLayout) navJual).getChildAt(2);
-            if (btnJualKategori != null) {
-                btnJualKategori.setOnClickListener(v -> {
-                    Intent intent = new Intent(KategoriActivity.this, JualActivity.class);
-                    startActivity(intent);
-                });
-            }
+            navJual.setOnClickListener(v -> {
+                Intent intent = new Intent(KategoriActivity.this, JualActivity.class);
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+            });
         }
 
         LinearLayout navChat = findViewById(R.id.navChat);
@@ -95,5 +91,22 @@ public class KategoriActivity extends AppCompatActivity {
                 overridePendingTransition(0, 0);
             });
         }
+
+        LinearLayout navProfil = findViewById(R.id.navProfil);
+        if (navProfil != null) {
+            navProfil.setOnClickListener(v -> {
+                Intent intent = new Intent(KategoriActivity.this, ProfilActivity.class);
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+            });
+        }
+    }
+
+    // --- FUNGSI BANTUAN UNTUK MELEMPAR DATA KE DAFTAR BARANG ---
+    private void bukaDaftarBarang(String namaKategori, int categoryId) {
+        Intent intent = new Intent(KategoriActivity.this, DaftarBarangActivity.class);
+        intent.putExtra("NAMA_KATEGORI", namaKategori);
+        intent.putExtra("CATEGORY_ID", categoryId);
+        startActivity(intent);
     }
 }

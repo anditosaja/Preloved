@@ -1,27 +1,26 @@
 package com.example.preloved.models;
 
 public class User {
-
     private int user_id;
     private String nama_lengkap;
-    private String username;
     private String email;
+    private String username;
     private String foto_profil;
 
-    public int getUser_id() {
+    public int getUserId() {
         return user_id;
     }
 
-    public String getNama_lengkap() {
+    public String getNamaLengkap() {
         return nama_lengkap;
-    }
-
-    public String getUsername() {
-        return username;
     }
 
     public String getEmail() {
         return email;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public String getFoto_profil() {

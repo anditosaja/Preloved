@@ -1,0 +1,96 @@
+[1mdiff --git a/app/src/main/java/com/example/preloved/network/ApiService.java b/app/src/main/java/com/example/preloved/network/ApiService.java[m
+[1mindex 3d9eeb1..389c551 100644[m
+[1m--- a/app/src/main/java/com/example/preloved/network/ApiService.java[m
+[1m+++ b/app/src/main/java/com/example/preloved/network/ApiService.java[m
+[36m@@ -1,21 +1,35 @@[m
+ package com.example.preloved.network;[m
+[32m+[m[32mimport com.example.preloved.models.ImageResponse;[m
+ import com.example.preloved.models.LoginRequest;[m
+ import com.example.preloved.models.LoginResponse;[m
+ import com.example.preloved.models.Product;[m
+[32m+[m[32mimport com.example.preloved.models.ProductRequest;[m
+[32m+[m[32mimport com.example.preloved.models.ProductResponse;[m
+[32m+[m[32mimport com.example.preloved.models.RegisterRequest;[m
+[32m+[m[32mimport com.example.preloved.models.RegisterResponse;[m
+[32m+[m[32mimport com.example.preloved.models.UserChatResponse;[m
+ [m
+ import java.util.List;[m
+ [m
+[32m+[m[32mimport okhttp3.MultipartBody;[m
+[32m+[m[32mimport okhttp3.ResponseBody;[m
+ import retrofit2.Call;[m
+ import retrofit2.http.Body;[m
+[32m+[m[32mimport retrofit2.http.Field;[m
+[32m+[m[32mimport retrofit2.http.FormUrlEncoded;[m
+[32m+[m[32mimport retrofit2.http.Header;[m
+[32m+[m[32mimport retrofit2.http.Multipart;[m
+ import retrofit2.http.POST;[m
+ import retrofit2.http.GET;[m
+[32m+[m[32mimport retrofit2.http.Part;[m
+[32m+[m[32mimport retrofit2.http.Path;[m
+ import retrofit2.http.Query;[m
+ [m
+ public interface ApiService {[m
+ [m
+     @POST("login")[m
+     Call<LoginResponse> login([m
+[31m-            @Body LoginRequest request[m
+[32m+[m[32m        @Body LoginRequest request[m
+     );[m
+ [m
+     @GET("products")[m
+[36m@@ -25,5 +39,53 @@[m [mpublic interface ApiService {[m
+     Call<List<Product>> getTrendingProducts();[m
+ [m
+     @GET("products")[m
+[31m-    Call<List<Product>> getProductsByCategory(@Query("category_id") int categoryId);[m
+[32m+[m[32m    Call<List<Product>> getProductsByCategory([m
+[32m+[m[32m        @Query("category_id") int categoryId[m
+[32m+[m[32m    );[m
+[32m+[m
+[32m+[m[32m    @GET("users-chat")[m
+[32m+[m[32m    Call<List<UserChatResponse>> getGlobalUsers([m
+[32m+[m[32m        @Header("Authorization") String token[m
+[32m+[m[32m    );[m
+[32m+[m
+[32m+[m[32m    @GET("chats/{userId}")[m
+[32m+[m[32m    Call<ResponseBody> getChatDetail([m
+[32m+[m[32m        @Header("Authorization") String token,[m
+[32m+[m[32m        @Path("userId") int userId[m
+[32m+[m[32m    );[m
+[32m+[m
+[32m+[m[32m    @FormUrlEncoded[m
+[32m+[m[32m    @POST("chats")[m
+[32m+[m[32m    Call<ResponseBody> kirimPesan([m
+[32m+[m[32m        @Header("Authorization") String token,[m
+[32m+[m[32m        @Field("product_id") int productId,[m
+[32m+[m[32m        @Field("receiver_id") int receiverId,[m
+[32m+[m[32m        @Field("message") String message[m
+[32m+[m[32m    );[m
+[32m+[m
+[32m+[m[32m    @POST("products")[m
+[32m+[m[32m    Call<ProductResponse> createProduct([m
+[32m+[m[32m        @Header("Authorization") String token,[m
+[32m+[m[32m        @Body ProductRequest request[m
+[32m+[m[32m    );[m
+[32m+[m
+[32m+[m[32m    @Multipart[m
+[32m+[m[32m    @POST("products/{id}/images")[m
+[32m+[m[32m    Call<ImageResponse> uploadProductImage([m
+[32m+[m[32m        @Header("Authorization") String token,[m
+[32m+[m[32m        @Path("id") int productId,[m
+[32m+[m[32m        @Part MultipartBody.Part image[m
+[32m+[m[32m    );[m
+[32m+[m
+[32m+[m[32m    @Multipart[m
+[32m+[m[32m    @POST("profile/photo")[m
+[32m+[m[32m    Call<ResponseBody> uploadFotoProfil([m
+[32m+[m[32m        @Header("Authorization") String token,[m
+[32m+[m[32m        @Part MultipartBody.Part photo[m
+[32m+[m[32m    );[m
+[32m+[m
+[32m+[m[32m    @POST("register")[m
+[32m+[m[32m    Call<RegisterResponse> register([m
+[32m+[m[32m        @Body RegisterRequest request[m
+[32m+[m[32m    );[m
+ }[m

@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
-    <!-- Top Bar -->
     <RelativeLayout
         android:id="@+id/topBar"
         android:layout_width="match_parent"
@@ -24,7 +23,6 @@
             android:textStyle="bold" />
     </RelativeLayout>
 
-    <!-- Kotak Pencarian Chat -->
     <LinearLayout
         android:id="@+id/searchArea"
         android:layout_width="match_parent"
@@ -44,132 +42,20 @@
             android:hint="Cari obrolan..."
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:inputType="text"
+            android:importantForAutofill="no" />
     </LinearLayout>
 
-    <!-- Daftar List Chat Dummy -->
-    <ScrollView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvUserList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/searchArea"
         android:layout_above="@id/bottomNavigation"
-        android:scrollbars="none">
+        android:paddingHorizontal="16dp"
+        android:clipToPadding="false" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingHorizontal="16dp">
-
-            <!-- Baris Chat 1: Penjual Danil Caesar -->
-            <RelativeLayout
-                android:id="@+id/itemChat1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingVertical="12dp"
-                android:background="?attr/selectableItemBackground"
-                android:clickable="true"
-                android:focusable="true">
-
-                <ImageView
-                    android:id="@+id/avatar1"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/avatar_danil" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/avatar1"
-                    android:layout_marginStart="12dp"
-                    android:layout_centerVertical="true"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Danil Caesar Handoko"
-                        android:textColor="#000000"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="Apakah tas Chio-nya boleh kurang harganya?"
-                        android:textColor="#757575"
-                        android:textSize="13sp"
-                        android:maxLines="1"
-                        android:ellipsize="end" />
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:text="14.22"
-                    android:textColor="#9E9E9E"
-                    android:textSize="11sp" />
-            </RelativeLayout>
-
-            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E0E0E0"/>
-
-            <!-- Baris Chat 2: Pembeli Dummy Lain -->
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingVertical="12dp">
-
-                <ImageView
-                    android:id="@+id/avatar2"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/avatar"
-                    app:tint="#757575"/>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/avatar2"
-                    android:layout_marginStart="12dp"
-                    android:layout_centerVertical="true"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Toko Preloved Depok"
-                        android:textColor="#000000"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="Halo kak, baju Zaro Cargo ready yaa silakan diorder"
-                        android:textColor="#757575"
-                        android:textSize="13sp"
-                        android:maxLines="1"
-                        android:ellipsize="end" />
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:text="Kemarin"
-                    android:textColor="#9E9E9E"
-                    android:textSize="11sp" />
-            </RelativeLayout>
-
-            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E0E0E0"/>
-
-        </LinearLayout>
-    </ScrollView>
-
-    <!-- Bottom Navigation Bar Mandiri -->
     <LinearLayout
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
@@ -179,48 +65,30 @@
         android:elevation="16dp"
         android:orientation="horizontal">
 
-        <LinearLayout
-            android:id="@+id/navBeranda"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:focusable="true">
-            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/beranda" />
+        <LinearLayout android:id="@+id/navBeranda" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:background="?attr/selectableItemBackgroundBorderless" android:clickable="true" android:focusable="true">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/beranda" app:tint="#757575" />
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Beranda" android:textSize="10sp" android:textColor="#757575" />
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/navKategori"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:focusable="true">
-            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/kategori" />
+        <LinearLayout android:id="@+id/navKategori" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:background="?attr/selectableItemBackgroundBorderless" android:clickable="true" android:focusable="true">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/kategori" app:tint="#757575" />
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Kategori" android:textSize="10sp" android:textColor="#757575" />
         </LinearLayout>
 
-        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
+        <LinearLayout android:id="@+id/navJual" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:background="?attr/selectableItemBackgroundBorderless" android:clickable="true" android:focusable="true">
             <RelativeLayout android:layout_width="45dp" android:layout_height="45dp" android:background="@drawable/bg_badge_angka">
-                <ImageView android:layout_width="30dp" android:layout_height="30dp" android:layout_centerInParent="true" android:src="@android:drawable/ic_input_add" app:tint="#FFFFFF"/>
+                <ImageView android:layout_width="30dp" android:layout_height="30dp" android:layout_centerInParent="true" android:src="@android:drawable/ic_input_add" app:tint="#FFFFFF" />
             </RelativeLayout>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="Jual" android:textSize="10sp" android:textColor="#757575" />
         </LinearLayout>
 
-        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
-            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/chat" app:tint="#6952D9"/>
+        <LinearLayout android:id="@+id/navChat" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:background="?attr/selectableItemBackgroundBorderless" android:clickable="true" android:focusable="true">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/chat" app:tint="#6952D9" />
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Chat" android:textSize="10sp" android:textStyle="bold" android:textColor="#6952D9" />
         </LinearLayout>
 
-        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
-            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/profile" />
+        <LinearLayout android:id="@+id/navProfil" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:background="?attr/selectableItemBackgroundBorderless" android:clickable="true" android:focusable="true">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/profile" app:tint="#757575" />
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Profil" android:textSize="10sp" android:textColor="#757575" />
         </LinearLayout>
     </LinearLayout>

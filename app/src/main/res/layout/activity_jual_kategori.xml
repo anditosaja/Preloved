@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <RelativeLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:layout_marginTop="8dp">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/maki_arrow" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Pilih Kategori"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottomArea"
+        android:layout_below="@+id/topBar"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="24dp">
+
+                <View android:layout_width="match_parent" android:layout_height="2dp" android:layout_centerVertical="true" android:layout_marginStart="30dp" android:layout_marginEnd="30dp" android:layout_marginBottom="12dp" android:background="#E0E0E0" />
+                <View android:layout_width="200dp" android:layout_height="2dp" android:layout_centerVertical="true" android:layout_marginStart="30dp" android:layout_marginBottom="12dp" android:background="#6952D9" />
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:weightSum="5">
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
+                        <RelativeLayout android:layout_width="40dp" android:layout_height="40dp" android:background="@drawable/bg_stepper_inactive">
+                            <ImageView android:layout_width="20dp" android:layout_height="20dp" android:layout_centerInParent="true" android:src="@android:drawable/ic_menu_camera" app:tint="#BDBDBD"/>
+                        </RelativeLayout>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Foto" android:textSize="12sp" android:textColor="#BDBDBD"/>
+                    </LinearLayout>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
+                        <RelativeLayout android:layout_width="40dp" android:layout_height="40dp" android:background="@drawable/bg_stepper_inactive">
+                            <ImageView android:layout_width="20dp" android:layout_height="20dp" android:layout_centerInParent="true" android:src="@android:drawable/ic_menu_sort_by_size" app:tint="#BDBDBD"/>
+                        </RelativeLayout>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Detail" android:textSize="12sp" android:textColor="#BDBDBD"/>
+                    </LinearLayout>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
+                        <RelativeLayout android:layout_width="40dp" android:layout_height="40dp" android:background="@drawable/bg_stepper_active">
+                            <ImageView android:layout_width="20dp" android:layout_height="20dp" android:layout_centerInParent="true" android:src="@drawable/kategori" app:tint="#FFFFFF"/>
+                        </RelativeLayout>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Kategori" android:textSize="12sp" android:textColor="#6952D9" android:textStyle="bold"/>
+                    </LinearLayout>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
+                        <RelativeLayout android:layout_width="40dp" android:layout_height="40dp" android:background="@drawable/bg_stepper_inactive">
+                            <ImageView android:layout_width="20dp" android:layout_height="20dp" android:layout_centerInParent="true" android:src="@android:drawable/ic_menu_help" app:tint="#BDBDBD"/>
+                        </RelativeLayout>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Kondisi" android:textSize="12sp" android:textColor="#BDBDBD"/>
+                    </LinearLayout>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
+                        <RelativeLayout android:layout_width="40dp" android:layout_height="40dp" android:background="@drawable/bg_stepper_inactive">
+                            <ImageView android:layout_width="20dp" android:layout_height="20dp" android:layout_centerInParent="true" android:src="@drawable/done" app:tint="#BDBDBD"/>
+                        </RelativeLayout>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Selesai" android:textSize="12sp" android:textColor="#BDBDBD"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pilih Kategori Barang"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="#000000"
+                android:layout_marginBottom="16dp"/>
+
+            <RadioGroup
+                android:id="@+id/rgKategori"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RadioButton android:id="@+id/rbPakaian" android:layout_width="match_parent" android:layout_height="60dp" android:text=" Pakaian" android:textSize="16sp" android:layout_marginBottom="8dp" android:background="@drawable/bg_dashed_border" android:paddingStart="16dp" />
+                <RadioButton android:id="@+id/rbTas" android:layout_width="match_parent" android:layout_height="60dp" android:text=" Tas &amp; Aksesoris" android:textSize="16sp" android:layout_marginBottom="8dp" android:background="@drawable/bg_dashed_border" android:paddingStart="16dp" />
+                <RadioButton android:id="@+id/rbSepatu" android:layout_width="match_parent" android:layout_height="60dp" android:text=" Sepatu" android:textSize="16sp" android:layout_marginBottom="8dp" android:background="@drawable/bg_dashed_border" android:paddingStart="16dp" />
+                <RadioButton android:id="@+id/rbElektronik" android:layout_width="match_parent" android:layout_height="60dp" android:text=" Elektronik" android:textSize="16sp" android:layout_marginBottom="8dp" android:background="@drawable/bg_dashed_border" android:paddingStart="16dp" />
+                <RadioButton android:id="@+id/rbBuku" android:layout_width="match_parent" android:layout_height="60dp" android:text=" Buku" android:textSize="16sp" android:layout_marginBottom="8dp" android:background="@drawable/bg_dashed_border" android:paddingStart="16dp" />
+                <RadioButton android:id="@+id/rbHobi" android:layout_width="match_parent" android:layout_height="60dp" android:text=" Hobi" android:textSize="16sp" android:layout_marginBottom="8dp" android:background="@drawable/bg_dashed_border" android:paddingStart="16dp" />
+                <RadioButton android:id="@+id/rbKecantikan" android:layout_width="match_parent" android:layout_height="60dp" android:text=" Kecantikan" android:textSize="16sp" android:layout_marginBottom="8dp" android:background="@drawable/bg_dashed_border" android:paddingStart="16dp" />
+                <RadioButton android:id="@+id/rbRumah" android:layout_width="match_parent" android:layout_height="60dp" android:text=" Rumah Tangga" android:textSize="16sp" android:layout_marginBottom="8dp" android:background="@drawable/bg_dashed_border" android:paddingStart="16dp" />
+                <RadioButton android:id="@+id/rbLainnya" android:layout_width="match_parent" android:layout_height="60dp" android:text=" Lainnya" android:textSize="16sp" android:layout_marginBottom="8dp" android:background="@drawable/bg_dashed_border" android:paddingStart="16dp" />
+            </RadioGroup>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/bottomArea"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:padding="16dp"
+        android:background="#FFFFFF">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnLanjutkan"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Lanjutkan"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            app:cornerRadius="12dp"
+            android:backgroundTint="#6952D9" />
+    </LinearLayout>
+</RelativeLayout>

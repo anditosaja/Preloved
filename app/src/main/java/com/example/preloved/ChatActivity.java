@@ -2,63 +2,65 @@ package com.example.preloved;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.LinearLayout;
-
-import androidx.activity.EdgeToEdge;
+import android.util.Log;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.example.preloved.adapters.ChatAdapter; // Sesuaikan jika nama adaptermu beda
+import com.example.preloved.adapters.UserListAdapter;
+import com.example.preloved.models.UserChatResponse;
+import com.example.preloved.network.ApiService;
+import com.example.preloved.network.RetrofitClient;
+import com.example.preloved.utils.SessionManager;
+import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ChatActivity extends AppCompatActivity {
+
+    private RecyclerView rvUserList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_chat);
 
-        View mainView = findViewById(R.id.main);
-        if (mainView != null) {
-            ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
-                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-                v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
-                return insets;
-            });
-        }
+        rvUserList = findViewById(R.id.rvUserList);
+        rvUserList.setLayoutManager(new LinearLayoutManager(this));
 
-        View itemChat1 = findViewById(R.id.itemChat1);
+        ambilDataChatDariLaravel();
+    }
 
-        if (itemChat1 != null) {
-            itemChat1.setOnClickListener(v -> {
-                // Berpindah ke halaman ChatDetail
-                // Pastikan ChatActivityDetail sudah kamu buat dan terdaftar di Manifest
-                Intent intent = new Intent(this, ChatActivityDetail.class);
-                startActivity(intent);
-            });
-        }
+    private void ambilDataChatDariLaravel() {
+        SessionManager sessionManager = new SessionManager(this);
+        String token = sessionManager.getToken();
 
-        // Navigasi balik ke Beranda
-        LinearLayout navBeranda = findViewById(R.id.navBeranda);
-        if (navBeranda != null) {
-            navBeranda.setOnClickListener(v -> {
-                Intent intent = new Intent(ChatActivity.this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
-                overridePendingTransition(0, 0);
-            });
-        }
+        if (token == null || token.isEmpty()) return;
 
-        // Navigasi ke Kategori
-        LinearLayout navKategori = findViewById(R.id.navKategori);
-        if (navKategori != null) {
-            navKategori.setOnClickListener(v -> {
-                Intent intent = new Intent(ChatActivity.this, KategoriActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
-                overridePendingTransition(0, 0);
-            });
-        }
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        apiService.getGlobalUsers("Bearer " + token).enqueue(new Callback<List<UserChatResponse>>() {
+            @Override
+            public void onResponse(Call<List<UserChatResponse>> call, Response<List<UserChatResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+
+                    // Variabel 'adapter' dideklarasikan di sini saja
+                    UserListAdapter adapter = new UserListAdapter(response.body(), user -> {
+                        Intent intent = new Intent(ChatActivity.this, ChatActivityDetail.class);
+                        intent.putExtra("NAMA_PENGIRIM", user.getNamaLengkap());
+                        intent.putExtra("RECEIVER_ID", user.getUserId());
+                        startActivity(intent);
+                    });
+
+                    rvUserList.setAdapter(adapter); // rvUserList harus sudah di-findViewById
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<UserChatResponse>> call, Throwable t) {
+                Toast.makeText(ChatActivity.this, "Koneksi gagal", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

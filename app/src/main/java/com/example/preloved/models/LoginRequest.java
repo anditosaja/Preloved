@@ -1,7 +1,6 @@
 package com.example.preloved.models;
 
 public class LoginRequest {
-
     private String email;
     private String password;
 
