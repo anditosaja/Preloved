@@ -31,7 +31,7 @@ public class Register extends AppCompatActivity {
     private ImageButton btnHelp;
 
     // URL API Register (Gunakan 10.0.2.2 jika pakai Emulator)
-    private static final String URL_REGISTER = "http://192.168.110.82/api_android/register.php";
+    private static final String URL_REGISTER = "http://10.124.80.23/api_android/register.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

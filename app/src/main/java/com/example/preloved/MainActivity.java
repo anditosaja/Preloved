@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Tarik Gambar Pertama Produk dari Server Laravel via Glide
         if (product.getImages() != null && !product.getImages().isEmpty() && ivImage != null) {
-            String imageUrl = "http://192.168.110.82:8000/storage/" + product.getImages().get(0).getImage_path();
+            String imageUrl = "http://10.124.80.23:8000/storage/" + product.getImages().get(0).getImage_path();
             Glide.with(this).load(imageUrl).into(ivImage);
         }
 
@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupCardRekomendasi(MaterialCardView card, ImageView ivImage, Product product) {
         if (product.getImages() != null && !product.getImages().isEmpty() && ivImage != null) {
-            String imageUrl = "http://192.168.110.82:8000/storage/" + product.getImages().get(0).getImage_path();
+            String imageUrl = "http://10.124.80.23:8000/storage/" + product.getImages().get(0).getImage_path();
             Glide.with(this).load(imageUrl).into(ivImage);
         }
 

@@ -92,4 +92,8 @@ public interface ApiService {
     Call<RegisterResponse> register(
         @Body RegisterRequest request
     );
+
+    @GET("my-products")
+    Call<List<Product>> getMyProducts(@Header("Authorization") String token);
+
 }

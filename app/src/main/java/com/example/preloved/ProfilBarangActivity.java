@@ -109,7 +109,7 @@ public class ProfilBarangActivity extends AppCompatActivity {
                     && !product.getImages().isEmpty()) {
 
                     String imageUrl =
-                        "http://192.168.110.82:8000/storage/" +
+                        "http://10.124.80.23:8000/storage/" +
                             product.getImages().get(0).getImage_path();
 
                     Glide.with(this)

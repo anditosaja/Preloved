@@ -1,6 +1,7 @@
 package com.example.preloved;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -50,7 +51,7 @@ public class ProfilActivity extends AppCompatActivity {
     private ShapeableImageView imgFotoProfil;
 
     // Gunakan alamat IP emulator yang mengarah ke localhost Laravel lo
-    private static final String URL_GET_PROFILE = "http://192.168.110.82:8000/api/profile";
+    private static final String URL_GET_PROFILE = "http://10.124.80.23:8000/api/profile";
 
     private ActivityResultLauncher<String> bukaGaleri;
 
@@ -117,11 +118,15 @@ public class ProfilActivity extends AppCompatActivity {
             }
         });
 
-        // Contoh klik Menu Barang Saya
+        // =========================================================
+        // KLIK MENU BARANG SAYA
+        // =========================================================
         findViewById(R.id.menuBarangSaya).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(ProfilActivity.this, "Membuka Barang Saya", Toast.LENGTH_SHORT).show();
+                // Pindah ke halaman BarangSayaActivity
+                Intent intent = new Intent(ProfilActivity.this, BarangSayaActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -201,7 +206,7 @@ public class ProfilActivity extends AppCompatActivity {
                         txtEmailProfil.setText(email);
 
                         if (!fotoProfil.isEmpty() && !fotoProfil.equals("null")) {
-                            String imageUrl = "http://192.168.110.82:8000/storage/" + fotoProfil;
+                            String imageUrl = "http://10.124.80.23:8000/storage/" + fotoProfil;
                             Glide.with(ProfilActivity.this)
                                 .load(imageUrl)
                                 .circleCrop() // Opsional: Biar fotonya otomatis bulat
