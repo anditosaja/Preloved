@@ -103,4 +103,10 @@ public interface ApiService {
         @Header("Authorization") String token,
         @Body TopUpRequest request
     );
+
+    @GET("products/search")
+    Call<List<Product>> searchProducts(
+        @Query("q") String keyword,
+        @Query("category_id") Integer categoryId
+    );
 }

@@ -71,9 +71,11 @@
         <activity
             android:name=".ChatActivityDetail"
             android:exported="false" />
-
         <activity
             android:name=".TopUpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".HasilPencarianActivity"
             android:exported="false" />
     </application>
 

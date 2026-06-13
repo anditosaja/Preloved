@@ -1,5 +1,7 @@
 package com.example.preloved;
 
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -92,6 +94,28 @@ public class MainActivity extends AppCompatActivity {
                 isFav2[0] = !isFav2[0];
                 ivFavorite2.setImageResource(isFav2[0] ? R.drawable.heart_fill : R.drawable.heart);
                 ivFavorite2.setColorFilter(isFav2[0] ? android.graphics.Color.RED : android.graphics.Color.parseColor("#BDBDBD"));
+            });
+        }
+
+        // ================= LOGIKA SEARCH BAR =================
+        EditText etSearchDashboard = findViewById(R.id.etSearchDashboard);
+        if (etSearchDashboard != null) {
+            etSearchDashboard.setOnEditorActionListener((v, actionId, event) -> {
+                // Jika user mencet tombol "Search" atau "Enter" di keyboard HP
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    String keywordPencarian = etSearchDashboard.getText().toString().trim();
+
+                    if (!keywordPencarian.isEmpty()) {
+                        // Lompat ke HasilPencarianActivity bawa koper isi keyword
+                        Intent intent = new Intent(MainActivity.this, HasilPencarianActivity.class);
+                        intent.putExtra("KEYWORD", keywordPencarian);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(MainActivity.this, "Ketik nama barang dulu bray!", Toast.LENGTH_SHORT).show();
+                    }
+                    return true; // Menandakan event klik sudah ditangani
+                }
+                return false;
             });
         }
     }

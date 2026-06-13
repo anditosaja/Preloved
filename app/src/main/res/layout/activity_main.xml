@@ -57,6 +57,7 @@
                 android:padding="4dp">
 
                 <EditText
+                    android:id="@+id/etSearchDashboard"
                     android:layout_width="0dp"
                     android:layout_height="45dp"
                     android:layout_weight="1"
@@ -67,6 +68,8 @@
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
                     android:textSize="14sp"
+                    android:inputType="text"
+                    android:imeOptions="actionSearch"
                     tools:ignore="Autofill,HardcodedText,TextFields" />
 
                 <ImageView
