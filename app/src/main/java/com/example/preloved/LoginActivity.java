@@ -28,6 +28,19 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // ========================================================
+        // PENJAGA PINTU AUTO-LOGIN (Langsung Lempar ke MainActivity)
+        // ========================================================
+        SessionManager sessionManager = new SessionManager(this);
+        if (sessionManager.isLoggedIn()) {
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish(); // Tutup LoginActivity biar gak bisa di-back
+            return;   // Hentikan eksekusi kode di bawahnya agar UI login tidak di-render
+        }
+
+        // Kalau belum login, baru tampilin halaman login
         setContentView(R.layout.activity_login);
 
         etEmail = findViewById(R.id.editTextLoginEmail);
@@ -91,8 +104,9 @@ public class LoginActivity extends AppCompatActivity {
 
                     String token = response.body().getToken();
 
+                    // Gunakan getApplicationContext() agar session aman tersimpan
                     SessionManager sessionManager =
-                        new SessionManager(LoginActivity.this);
+                        new SessionManager(getApplicationContext());
 
                     sessionManager.saveToken(token);
 

@@ -8,28 +8,24 @@ public class SessionManager {
     private SharedPreferences pref;
 
     public SessionManager(Context context){
-        pref = context.getSharedPreferences(
-            "preloved",
-            Context.MODE_PRIVATE
-        );
+        // Pastikan nama brankasnya konsisten yaitu "preloved"
+        pref = context.getSharedPreferences("preloved", Context.MODE_PRIVATE);
     }
 
     public void saveToken(String token){
         pref.edit()
             .putString("TOKEN", token)
-            .apply();
+            .commit(); // <-- Ubah apply() jadi commit()
     }
 
     public String getToken(){
-        return pref.getString(
-            "TOKEN",
-            null
-        );
+        return pref.getString("TOKEN", null);
     }
 
     public String getBearerToken() {
         String token = getToken();
-        return "Bearer " + token;
+        // Cegah return null agar aman saat dilempar ke header API
+        return (token != null && !token.isEmpty()) ? "Bearer " + token : "";
     }
 
     public void saveUserId(int userId){
@@ -39,20 +35,21 @@ public class SessionManager {
     }
 
     public int getUserId(){
-        return pref.getInt(
-            "USER_ID",
-            0
-        );
+        return pref.getInt("USER_ID", 0);
     }
 
     public boolean isLoggedIn() {
-        // Jika TOKEN tidak null (artinya ada isinya), berarti user sudah login
-        return getToken() != null;
+        // User dianggap login kalau tokennya ada dan tidak kosong
+        String token = getToken();
+        return token != null && !token.isEmpty();
+    }
+
+    public void clearSession() {
+        // Langsung bersihkan brankas "preloved" yang sudah di-init di atas
+        pref.edit().clear().apply();
     }
 
     public void logout(){
-        pref.edit()
-            .clear()
-            .apply();
+        clearSession();
     }
 }

@@ -8,6 +8,8 @@ import com.example.preloved.models.ProductRequest;
 import com.example.preloved.models.ProductResponse;
 import com.example.preloved.models.RegisterRequest;
 import com.example.preloved.models.RegisterResponse;
+import com.example.preloved.models.TopUpRequest;
+import com.example.preloved.models.TopUpResponse;
 import com.example.preloved.models.UserChatResponse;
 
 import java.util.List;
@@ -96,4 +98,9 @@ public interface ApiService {
     @GET("my-products")
     Call<List<Product>> getMyProducts(@Header("Authorization") String token);
 
+    @POST("topup")
+    Call<TopUpResponse> submitTopUp(
+        @Header("Authorization") String token,
+        @Body TopUpRequest request
+    );
 }

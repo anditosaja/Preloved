@@ -19,6 +19,7 @@ import com.example.preloved.models.HomeResponse;
 import com.example.preloved.models.Product;
 import com.example.preloved.network.ApiService;
 import com.example.preloved.network.RetrofitClient;
+import com.example.preloved.utils.SessionManager; // Pastikan import ini ada
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.List;
@@ -28,16 +29,11 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    // --- DEKLARASI UI TRENDING (Menampilkan Data Produk Terbaru) ---
     private MaterialCardView cardTrending1, cardTrending2;
     private TextView tvProdName1, tvProdPrice1, tvProdLoc1;
     private TextView tvProdName2, tvProdPrice2, tvProdLoc2;
     private ImageView ivTrending1, ivTrending2;
-
-    // Tambahan Deklarasi Icon Favorit
     private ImageView ivFavorite1, ivFavorite2;
-
-    // --- DEKLARASI UI REKOMENDASI (Menampilkan Data Trending Terbanyak) ---
     private MaterialCardView cardRekomendasi1, cardRekomendasi2, cardRekomendasi3;
     private ImageView ivRekomendasi1, ivRekomendasi2, ivRekomendasi3;
 
@@ -47,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        // ================= WINDOW INSET =================
         View mainView = findViewById(R.id.main);
         if (mainView != null) {
             ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
@@ -57,18 +52,12 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        // Inisialisasi komponen UI XML ke Java
         inisialisasiUI();
-
-        // Atur interaksi tombol klik navigasi dan kategori
         aturNavigasi();
-
-        // Jalankan trigger penarikan data dari API Laravel
         ambilDataDariLaravel();
     }
 
     private void inisialisasiUI() {
-        // UI Bagian Trending Card
         cardTrending1 = findViewById(R.id.cardTrending1);
         cardTrending2 = findViewById(R.id.cardTrending2);
         tvProdName1 = findViewById(R.id.tvProdName1);
@@ -79,12 +68,8 @@ public class MainActivity extends AppCompatActivity {
         tvProdLoc2 = findViewById(R.id.tvProdLoc2);
         ivTrending1 = findViewById(R.id.ivTrending1);
         ivTrending2 = findViewById(R.id.ivTrending2);
-
-        // Inisialisasi Icon Favorit
         ivFavorite1 = findViewById(R.id.ivFavorite1);
         ivFavorite2 = findViewById(R.id.ivFavorite2);
-
-        // UI Bagian Rekomendasi Card
         cardRekomendasi1 = findViewById(R.id.cardRekomendasi1);
         cardRekomendasi2 = findViewById(R.id.cardRekomendasi2);
         cardRekomendasi3 = findViewById(R.id.cardRekomendasi3);
@@ -92,18 +77,12 @@ public class MainActivity extends AppCompatActivity {
         ivRekomendasi2 = findViewById(R.id.ivRekomendasi2);
         ivRekomendasi3 = findViewById(R.id.ivRekomendasi3);
 
-        // ================= LOGIKA KLIK FAVORIT (TOGGLE HEART) =================
         final boolean[] isFav1 = {false};
         if (ivFavorite1 != null) {
             ivFavorite1.setOnClickListener(v -> {
-                isFav1[0] = !isFav1[0]; // Balik keadaannya (dari true ke false, atau sebaliknya)
-                if (isFav1[0]) {
-                    ivFavorite1.setImageResource(R.drawable.heart_fill); // Berubah jadi merah penuh
-                    ivFavorite1.setColorFilter(android.graphics.Color.parseColor("#FF0000"));
-                } else {
-                    ivFavorite1.setImageResource(R.drawable.heart); // Berubah jadi garis abu-abu lagi
-                    ivFavorite1.setColorFilter(android.graphics.Color.parseColor("#BDBDBD"));
-                }
+                isFav1[0] = !isFav1[0];
+                ivFavorite1.setImageResource(isFav1[0] ? R.drawable.heart_fill : R.drawable.heart);
+                ivFavorite1.setColorFilter(isFav1[0] ? android.graphics.Color.RED : android.graphics.Color.parseColor("#BDBDBD"));
             });
         }
 
@@ -111,25 +90,17 @@ public class MainActivity extends AppCompatActivity {
         if (ivFavorite2 != null) {
             ivFavorite2.setOnClickListener(v -> {
                 isFav2[0] = !isFav2[0];
-                if (isFav2[0]) {
-                    ivFavorite2.setImageResource(R.drawable.heart_fill);
-                    ivFavorite2.setColorFilter(android.graphics.Color.parseColor("#FF0000"));
-                } else {
-                    ivFavorite2.setImageResource(R.drawable.heart);
-                    ivFavorite2.setColorFilter(android.graphics.Color.parseColor("#BDBDBD"));
-                }
+                ivFavorite2.setImageResource(isFav2[0] ? R.drawable.heart_fill : R.drawable.heart);
+                ivFavorite2.setColorFilter(isFav2[0] ? android.graphics.Color.RED : android.graphics.Color.parseColor("#BDBDBD"));
             });
         }
     }
 
     private void aturNavigasi() {
-        // ================= KATEGORI TEXT & LIHAT SEMUA =================
         TextView tvLihatSemuaKategori = findViewById(R.id.tvLihatSemuaKategori);
-        if (tvLihatSemuaKategori != null) {
-            tvLihatSemuaKategori.setOnClickListener(v -> pindahHalaman(KategoriActivity.class, false));
-        }
+        if (tvLihatSemuaKategori != null) tvLihatSemuaKategori.setOnClickListener(v -> pindahHalaman(KategoriActivity.class, false));
 
-        // ================= KATEGORI GRID BUTTON (SINKRON KE DAFTARBARANG) =================
+        // Kategori Grid
         LinearLayout btnKatPakaian = findViewById(R.id.btnKatPakaian);
         LinearLayout btnKatTas = findViewById(R.id.btnKatTas);
         LinearLayout btnKatSepatu = findViewById(R.id.btnKatSepatu);
@@ -142,31 +113,12 @@ public class MainActivity extends AppCompatActivity {
         if (btnKatElektronik != null) btnKatElektronik.setOnClickListener(v -> keDaftarBarang("Elektronik", 4));
         if (btnKatLainnya != null) btnKatLainnya.setOnClickListener(v -> pindahHalaman(KategoriActivity.class, false));
 
-        // ================= BOTTOM NAVIGATION BAR ACTIONS =================
-        LinearLayout navBeranda = findViewById(R.id.navBeranda);
-        if (navBeranda != null) {
-            navBeranda.setOnClickListener(v -> ambilDataDariLaravel()); // Refresh data halaman depan
-        }
-
-        LinearLayout navKategori = findViewById(R.id.navKategori);
-        if (navKategori != null) {
-            navKategori.setOnClickListener(v -> pindahHalaman(KategoriActivity.class, true));
-        }
-
-        LinearLayout navJual = findViewById(R.id.navJual);
-        if (navJual != null) {
-            navJual.setOnClickListener(v -> pindahHalaman(JualActivity.class, false));
-        }
-
-        LinearLayout navChat = findViewById(R.id.navChat);
-        if (navChat != null) {
-            navChat.setOnClickListener(v -> pindahHalaman(ChatActivity.class, true));
-        }
-
-        LinearLayout navProfil = findViewById(R.id.navProfil);
-        if (navProfil != null) {
-            navProfil.setOnClickListener(v -> pindahHalaman(ProfilActivity.class, true));
-        }
+        // Bottom Navigation
+        findViewById(R.id.navBeranda).setOnClickListener(v -> ambilDataDariLaravel());
+        findViewById(R.id.navKategori).setOnClickListener(v -> pindahHalaman(KategoriActivity.class, true));
+        findViewById(R.id.navJual).setOnClickListener(v -> pindahHalaman(JualActivity.class, false));
+        findViewById(R.id.navChat).setOnClickListener(v -> pindahHalaman(ChatActivity.class, true));
+        findViewById(R.id.navProfil).setOnClickListener(v -> pindahHalaman(ProfilActivity.class, true));
     }
 
     private void ambilDataDariLaravel() {
@@ -176,32 +128,39 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<HomeResponse>() {
             @Override
             public void onResponse(Call<HomeResponse> call, Response<HomeResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
 
-                    // Ambil array data dari object response Laravel
+                // CEK JIKA TOKEN KADALUARSA
+                if (response.code() == 401) {
+                    Toast.makeText(MainActivity.this, "Sesi berakhir, silakan login kembali", Toast.LENGTH_SHORT).show();
+
+                    // Hapus token dan tendang ke Login
+                    SessionManager sessionManager = new SessionManager(MainActivity.this);
+                    sessionManager.clearSession();
+
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                    return;
+                }
+                if (response.isSuccessful() && response.body() != null) {
                     List<Product> dataTerbaru = response.body().getRecommended();
                     List<Product> dataTrending = response.body().getTrending();
 
-                    // SILANG DATA: Produk baru masuk langsung ditampilkan di baris KARTU TRENDING
                     if (dataTerbaru != null && !dataTerbaru.isEmpty()) {
                         if (dataTerbaru.size() >= 1) setupCardTrending(1, dataTerbaru.get(0));
                         if (dataTerbaru.size() >= 2) setupCardTrending(2, dataTerbaru.get(1));
                     }
-
-                    // SILANG DATA: Produk trending lama di database digeser ke baris REKOMENDASI bawah
                     if (dataTrending != null && !dataTrending.isEmpty()) {
                         if (dataTrending.size() >= 1) setupCardRekomendasi(cardRekomendasi1, ivRekomendasi1, dataTrending.get(0));
                         if (dataTrending.size() >= 2) setupCardRekomendasi(cardRekomendasi2, ivRekomendasi2, dataTrending.get(1));
                         if (dataTrending.size() >= 3) setupCardRekomendasi(cardRekomendasi3, ivRekomendasi3, dataTrending.get(2));
                     }
-                } else {
-                    Toast.makeText(MainActivity.this, "Gagal memproses struktur produk", Toast.LENGTH_SHORT).show();
                 }
             }
-
             @Override
             public void onFailure(Call<HomeResponse> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "Gagal konek API: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Gagal konek: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -217,26 +176,19 @@ public class MainActivity extends AppCompatActivity {
         if (tvPrice != null) tvPrice.setText("Rp" + product.getHarga_jual());
         if (tvLoc != null) tvLoc.setText("📍 " + product.getLokasi_kota());
 
-        // Tarik Gambar Pertama Produk dari Server Laravel via Glide
         if (product.getImages() != null && !product.getImages().isEmpty() && ivImage != null) {
-            String imageUrl = "http://10.124.80.23:8000/storage/" + product.getImages().get(0).getImage_path();
+            String imageUrl = "http://10.255.149.23:8000/storage/" + product.getImages().get(0).getImage_path();
             Glide.with(this).load(imageUrl).into(ivImage);
         }
-
-        if (card != null) {
-            card.setOnClickListener(v -> bukaDetailProduk(product));
-        }
+        if (card != null) card.setOnClickListener(v -> bukaDetailProduk(product));
     }
 
     private void setupCardRekomendasi(MaterialCardView card, ImageView ivImage, Product product) {
         if (product.getImages() != null && !product.getImages().isEmpty() && ivImage != null) {
-            String imageUrl = "http://10.124.80.23:8000/storage/" + product.getImages().get(0).getImage_path();
+            String imageUrl = "http://10.255.149.23:8000/storage/" + product.getImages().get(0).getImage_path();
             Glide.with(this).load(imageUrl).into(ivImage);
         }
-
-        if (card != null) {
-            card.setOnClickListener(v -> bukaDetailProduk(product));
-        }
+        if (card != null) card.setOnClickListener(v -> bukaDetailProduk(product));
     }
 
     private void bukaDetailProduk(Product product) {
@@ -245,7 +197,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    // --- FUNGSI PEMBANTU UNTUK MENGOPRASI ROUTE DAN ID FILTER ---
     private void keDaftarBarang(String namaKategori, int id) {
         Intent intent = new Intent(MainActivity.this, DaftarBarangActivity.class);
         intent.putExtra("NAMA_KATEGORI", namaKategori);
@@ -256,8 +207,6 @@ public class MainActivity extends AppCompatActivity {
     private void pindahHalaman(Class<?> targetActivity, boolean tanpaAnimasi) {
         Intent intent = new Intent(MainActivity.this, targetActivity);
         startActivity(intent);
-        if (tanpaAnimasi) {
-            overridePendingTransition(0, 0);
-        }
+        if (tanpaAnimasi) overridePendingTransition(0, 0);
     }
 }

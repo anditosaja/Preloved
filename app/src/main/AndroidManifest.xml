@@ -71,6 +71,10 @@
         <activity
             android:name=".ChatActivityDetail"
             android:exported="false" />
+
+        <activity
+            android:name=".TopUpActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

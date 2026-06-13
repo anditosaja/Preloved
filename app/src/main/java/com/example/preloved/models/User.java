@@ -7,6 +7,8 @@ public class User {
     private String username;
     private String foto_profil;
 
+    private double balance;
+
     public int getUserId() {
         return user_id;
     }
@@ -25,5 +27,9 @@ public class User {
 
     public String getFoto_profil() {
         return foto_profil;
+    }
+
+    public double getBalance() {
+        return balance;
     }
 }

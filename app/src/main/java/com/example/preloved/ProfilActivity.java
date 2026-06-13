@@ -51,7 +51,7 @@ public class ProfilActivity extends AppCompatActivity {
     private ShapeableImageView imgFotoProfil;
 
     // Gunakan alamat IP emulator yang mengarah ke localhost Laravel lo
-    private static final String URL_GET_PROFILE = "http://10.124.80.23:8000/api/profile";
+    private static final String URL_GET_PROFILE = "http://10.255.149.23:8000/api/profile";
 
     private ActivityResultLauncher<String> bukaGaleri;
 
@@ -129,6 +129,53 @@ public class ProfilActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        // =========================================================
+        // KLIK MENU SALDO PRELOVED (MASUK KE TOP UP)
+        // =========================================================
+        findViewById(R.id.menuSaldo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfilActivity.this, TopUpActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // =========================================================
+        // KLIK MENU LOGOUT (KELUAR)
+        // =========================================================
+        findViewById(R.id.menuLogout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 1. Panggil SessionManager
+                SessionManager sessionManager = new SessionManager(getApplicationContext());
+
+                // 2. Hapus token dan semua data sesi
+                sessionManager.logout();
+
+                Toast.makeText(ProfilActivity.this, "Berhasil keluar", Toast.LENGTH_SHORT).show();
+
+                // 3. Pindah ke LoginActivity dan HAPUS semua history halaman
+                Intent intent = new Intent(ProfilActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+
+                // 4. Tutup halaman profil ini
+                finish();
+            }
+        });
+    }
+
+    // =========================================================
+    // REFRESH DATA SAAT KEMBALI KE HALAMAN INI
+    // =========================================================
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Kalau tokennya ada, panggil ulang data profil supaya saldo terbaru muncul
+        if (token != null && !token.isEmpty()) {
+            loadDataProfilDariLaravel();
+        }
     }
 
     private void uploadFotoKeLaravel(Uri fileUri) {
@@ -194,7 +241,7 @@ public class ProfilActivity extends AppCompatActivity {
                         String fotoProfil = jsonObject.optString("foto_profil", "");
                         double rating = jsonObject.optDouble("rating", 0.0);
                         int jumlahUlasan = jsonObject.optInt("jumlah_ulasan", 0);
-                        int saldo = jsonObject.optInt("saldo_preloved", 0);
+                        int saldo = jsonObject.optInt("balance", 0);
 
                         // Set nilai ke UI
                         txtNama.setText(namaLengkap);
@@ -206,7 +253,7 @@ public class ProfilActivity extends AppCompatActivity {
                         txtEmailProfil.setText(email);
 
                         if (!fotoProfil.isEmpty() && !fotoProfil.equals("null")) {
-                            String imageUrl = "http://10.124.80.23:8000/storage/" + fotoProfil;
+                            String imageUrl = "http://10.255.149.23:8000/storage/" + fotoProfil;
                             Glide.with(ProfilActivity.this)
                                 .load(imageUrl)
                                 .circleCrop() // Opsional: Biar fotonya otomatis bulat
