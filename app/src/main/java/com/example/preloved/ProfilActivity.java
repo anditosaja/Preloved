@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,15 +44,15 @@ import retrofit2.Callback;
 
 public class ProfilActivity extends AppCompatActivity {
 
-    private TextView txtNama, txtUsername, txtRating, txtUlasan, txtStatRating, txtStatusVerifikasi;
-    private Button btnAksiVerifikasi;
+    private TextView txtNama, txtUsername, txtRating, txtUlasan, txtStatRating;
     private String token;
     private TextView txtSaldoProfil, txtEmailProfil;
     private ShapeableImageView imgFotoProfil;
 
-
     // Gunakan alamat IP emulator yang mengarah ke localhost Laravel lo
-    private static final String URL_GET_PROFILE = "http://172.25.23.211:8000/api/profile";
+    private static final String URL_GET_PROFILE = "http://192.168.110.82:8000/api/profile";
+
+    private ActivityResultLauncher<String> bukaGaleri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +65,6 @@ public class ProfilActivity extends AppCompatActivity {
         txtRating = findViewById(R.id.txtRatingProfil);
         txtUlasan = findViewById(R.id.txtJumlahUlasan);
         txtStatRating = findViewById(R.id.txtStatRating);
-        txtStatusVerifikasi = findViewById(R.id.txtStatusVerifikasi);
-        btnAksiVerifikasi = findViewById(R.id.btnAksiVerifikasi);
         txtSaldoProfil = findViewById(R.id.txtSaldoProfil);
         txtEmailProfil = findViewById(R.id.txtEmailProfil);
         imgFotoProfil = findViewById(R.id.imgFotoProfil);
@@ -90,7 +87,7 @@ public class ProfilActivity extends AppCompatActivity {
             }
         );
 
-// 2. Klik foto profil untuk buka galeri
+        // 2. Klik foto profil untuk buka galeri
         imgFotoProfil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,7 +125,6 @@ public class ProfilActivity extends AppCompatActivity {
             }
         });
     }
-    private ActivityResultLauncher<String> bukaGaleri;
 
     private void uploadFotoKeLaravel(Uri fileUri) {
         try {
@@ -174,6 +170,7 @@ public class ProfilActivity extends AppCompatActivity {
             Toast.makeText(this, "Gagal memproses gambar dari galeri", Toast.LENGTH_SHORT).show();
         }
     }
+
     private void loadDataProfilDariLaravel() {
         RequestQueue queue = Volley.newRequestQueue(this);
 
@@ -181,18 +178,17 @@ public class ProfilActivity extends AppCompatActivity {
             Request.Method.GET,
             URL_GET_PROFILE,
             null,
-            new Response.Listener<JSONObject>() { // "Response" di sini adalah class Volley
+            new Response.Listener<JSONObject>() {
                 @Override
-                public void onResponse(JSONObject jsonObject) { //  Ganti namanya jadi jsonObject
+                public void onResponse(JSONObject jsonObject) {
                     try {
-                        // Ambil data dari objek jsonObject, BUKAN response
+                        // Ambil data dari objek jsonObject
                         String namaLengkap = jsonObject.getString("nama_lengkap");
                         String username = jsonObject.getString("username");
                         String email = jsonObject.optString("email", "Email tidak tersedia");
                         String fotoProfil = jsonObject.optString("foto_profil", "");
                         double rating = jsonObject.optDouble("rating", 0.0);
                         int jumlahUlasan = jsonObject.optInt("jumlah_ulasan", 0);
-                        int isVerified = jsonObject.getInt("is_verified"); // Menggunakan boolean sesuai Laravel
                         int saldo = jsonObject.optInt("saldo_preloved", 0);
 
                         // Set nilai ke UI
@@ -205,20 +201,11 @@ public class ProfilActivity extends AppCompatActivity {
                         txtEmailProfil.setText(email);
 
                         if (!fotoProfil.isEmpty() && !fotoProfil.equals("null")) {
-                            String imageUrl = "http://192.168.18.169:8000/storage/" + fotoProfil;
+                            String imageUrl = "http://192.168.110.82:8000/storage/" + fotoProfil;
                             Glide.with(ProfilActivity.this)
                                 .load(imageUrl)
                                 .circleCrop() // Opsional: Biar fotonya otomatis bulat
                                 .into(imgFotoProfil);
-                        }
-
-                        // Cek Status Verifikasi
-                        if (isVerified == 1) {
-                            txtStatusVerifikasi.setText("Akun Terverifikasi");
-                            btnAksiVerifikasi.setVisibility(View.GONE);
-                        } else {
-                            txtStatusVerifikasi.setText("Akun Belum Terverifikasi");
-                            btnAksiVerifikasi.setVisibility(View.VISIBLE);
                         }
 
                     } catch (JSONException e) {
@@ -233,9 +220,7 @@ public class ProfilActivity extends AppCompatActivity {
                     Toast.makeText(ProfilActivity.this, "Gagal koneksi ke server: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
-        )
-
-        {
+        ) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();

@@ -296,12 +296,17 @@
                                     android:textSize="14sp"
                                     android:textStyle="bold" />
 
+                                <!-- ICON FAVORIT 1 DIBUAT DINAMIS -->
                                 <ImageView
-                                    android:layout_width="20dp"
-                                    android:layout_height="20dp"
+                                    android:id="@+id/ivFavorite1"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
                                     android:layout_alignParentEnd="true"
-                                    android:src="@drawable/heart_fill"
-                                    app:tint="#FF0000"
+                                    android:src="@drawable/heart"
+                                    app:tint="#BDBDBD"
+                                    android:clickable="true"
+                                    android:focusable="true"
+                                    android:background="?attr/selectableItemBackgroundBorderless"
                                     android:contentDescription="Favorite" />
 
                                 <TextView
@@ -368,12 +373,17 @@
                                     android:textSize="14sp"
                                     android:textStyle="bold" />
 
+                                <!-- ICON FAVORIT 2 DIBUAT DINAMIS -->
                                 <ImageView
-                                    android:layout_width="20dp"
-                                    android:layout_height="20dp"
+                                    android:id="@+id/ivFavorite2"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
                                     android:layout_alignParentEnd="true"
                                     android:src="@drawable/heart"
                                     app:tint="#BDBDBD"
+                                    android:clickable="true"
+                                    android:focusable="true"
+                                    android:background="?attr/selectableItemBackgroundBorderless"
                                     android:contentDescription="Favorite border" />
 
                                 <TextView

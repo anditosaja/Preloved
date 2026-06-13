@@ -76,7 +76,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                     finalImageUrl = imagePath;
                 } else {
                     // Menggunakan IP lokal terbaru server Laravel kamu
-                    finalImageUrl = "http://192.168.18.169:8000/storage/" + imagePath;
+                    finalImageUrl = "http://192.168.110.82:8000/storage/" + imagePath;
                 }
             }
 

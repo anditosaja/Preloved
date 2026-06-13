@@ -34,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvProdName2, tvProdPrice2, tvProdLoc2;
     private ImageView ivTrending1, ivTrending2;
 
+    // Tambahan Deklarasi Icon Favorit
+    private ImageView ivFavorite1, ivFavorite2;
+
     // --- DEKLARASI UI REKOMENDASI (Menampilkan Data Trending Terbanyak) ---
     private MaterialCardView cardRekomendasi1, cardRekomendasi2, cardRekomendasi3;
     private ImageView ivRekomendasi1, ivRekomendasi2, ivRekomendasi3;
@@ -77,6 +80,10 @@ public class MainActivity extends AppCompatActivity {
         ivTrending1 = findViewById(R.id.ivTrending1);
         ivTrending2 = findViewById(R.id.ivTrending2);
 
+        // Inisialisasi Icon Favorit
+        ivFavorite1 = findViewById(R.id.ivFavorite1);
+        ivFavorite2 = findViewById(R.id.ivFavorite2);
+
         // UI Bagian Rekomendasi Card
         cardRekomendasi1 = findViewById(R.id.cardRekomendasi1);
         cardRekomendasi2 = findViewById(R.id.cardRekomendasi2);
@@ -84,6 +91,35 @@ public class MainActivity extends AppCompatActivity {
         ivRekomendasi1 = findViewById(R.id.ivRekomendasi1);
         ivRekomendasi2 = findViewById(R.id.ivRekomendasi2);
         ivRekomendasi3 = findViewById(R.id.ivRekomendasi3);
+
+        // ================= LOGIKA KLIK FAVORIT (TOGGLE HEART) =================
+        final boolean[] isFav1 = {false};
+        if (ivFavorite1 != null) {
+            ivFavorite1.setOnClickListener(v -> {
+                isFav1[0] = !isFav1[0]; // Balik keadaannya (dari true ke false, atau sebaliknya)
+                if (isFav1[0]) {
+                    ivFavorite1.setImageResource(R.drawable.heart_fill); // Berubah jadi merah penuh
+                    ivFavorite1.setColorFilter(android.graphics.Color.parseColor("#FF0000"));
+                } else {
+                    ivFavorite1.setImageResource(R.drawable.heart); // Berubah jadi garis abu-abu lagi
+                    ivFavorite1.setColorFilter(android.graphics.Color.parseColor("#BDBDBD"));
+                }
+            });
+        }
+
+        final boolean[] isFav2 = {false};
+        if (ivFavorite2 != null) {
+            ivFavorite2.setOnClickListener(v -> {
+                isFav2[0] = !isFav2[0];
+                if (isFav2[0]) {
+                    ivFavorite2.setImageResource(R.drawable.heart_fill);
+                    ivFavorite2.setColorFilter(android.graphics.Color.parseColor("#FF0000"));
+                } else {
+                    ivFavorite2.setImageResource(R.drawable.heart);
+                    ivFavorite2.setColorFilter(android.graphics.Color.parseColor("#BDBDBD"));
+                }
+            });
+        }
     }
 
     private void aturNavigasi() {
@@ -183,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Tarik Gambar Pertama Produk dari Server Laravel via Glide
         if (product.getImages() != null && !product.getImages().isEmpty() && ivImage != null) {
-            String imageUrl = "http://172.25.23.211:8000/storage/" + product.getImages().get(0).getImage_path();
+            String imageUrl = "http://192.168.110.82:8000/storage/" + product.getImages().get(0).getImage_path();
             Glide.with(this).load(imageUrl).into(ivImage);
         }
 
@@ -194,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupCardRekomendasi(MaterialCardView card, ImageView ivImage, Product product) {
         if (product.getImages() != null && !product.getImages().isEmpty() && ivImage != null) {
-            String imageUrl = "http://172.25.23.211:8000/storage/" + product.getImages().get(0).getImage_path();
+            String imageUrl = "http://192.168.110.82:8000/storage/" + product.getImages().get(0).getImage_path();
             Glide.with(this).load(imageUrl).into(ivImage);
         }
 

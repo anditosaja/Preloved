@@ -32,7 +32,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     // URL API Laravel (Sesuaikan port jika berbeda, 8000 adalah bawaan php artisan serve)
     // Jika menjalankan Laravel di laptop dan ngetes via emulator, pakai 10.0.2.2
-    private static final String URL_REGISTER = "http://10.0.2.2:8000/api/register";
+    private static final String URL_REGISTER = "http://192.168.110.82:8000/api/register";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -2,6 +2,7 @@ package com.example.preloved;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,6 +21,7 @@ import com.example.preloved.models.Product;
 import com.example.preloved.network.ApiService;
 import com.example.preloved.network.RetrofitClient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -87,10 +89,22 @@ public class DaftarBarangActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    List<Product> products = response.body();
 
-                    if (products.isEmpty()) {
-                        // Jika tidak ada barang di kategori ini
+                    List<Product> semuaProduk = response.body();
+                    List<Product> produkSesuaiKategori = new ArrayList<>();
+
+                    // =========================================================
+                    // FILTERING MANUAL: Seleksi ketat berdasarkan categoryId
+                    // =========================================================
+                    for (Product p : semuaProduk) {
+                        // Jika id kategori produk sama dengan id kategori yang diklik user
+                        if (p.getCategoryId() == categoryId) {
+                            produkSesuaiKategori.add(p);
+                        }
+                    }
+
+                    if (produkSesuaiKategori.isEmpty()) {
+                        // Jika hasil seleksi kosong (tidak ada barang di kategori ini)
                         rvProducts.setVisibility(View.GONE);
                         tvEmptyState.setVisibility(View.VISIBLE);
                     } else {
@@ -98,16 +112,18 @@ public class DaftarBarangActivity extends AppCompatActivity {
                         tvEmptyState.setVisibility(View.GONE);
                         rvProducts.setVisibility(View.VISIBLE);
 
-                        ProductAdapter adapter = new ProductAdapter(products);
+                        ProductAdapter adapter = new ProductAdapter(produkSesuaiKategori);
                         rvProducts.setAdapter(adapter);
                     }
                 } else {
+                    Log.e("API_ERROR", "Response gagal: " + response.code());
                     Toast.makeText(DaftarBarangActivity.this, "Gagal mengambil data", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Product>> call, Throwable t) {
+                Log.e("API_FAILURE", "Koneksi mati: " + t.getMessage());
                 Toast.makeText(DaftarBarangActivity.this, "Koneksi ke server gagal", Toast.LENGTH_SHORT).show();
             }
         });
