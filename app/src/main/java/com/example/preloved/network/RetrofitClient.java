@@ -1,28 +1,22 @@
 package com.example.preloved.network;
 
+import com.example.preloved.network.Config; // Otomatis import kelas Config
+
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-    private static final String BASE_URL =
-            "http://192.168.18.169:8000/api/";
-
     private static Retrofit retrofit;
 
     public static Retrofit getClient() {
 
-        if(retrofit == null){
-
+        if (retrofit == null) {
             retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(
-                            GsonConverterFactory.create()
-
-                    )
-                    .build();
-
-
+                // Memanggil BASE_URL dari kelas Config dan ditambah "api/"
+                .baseUrl(Config.BASE_URL + "api/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
         }
 
         return retrofit;

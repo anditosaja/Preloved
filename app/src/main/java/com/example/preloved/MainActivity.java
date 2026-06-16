@@ -203,7 +203,10 @@ public class MainActivity extends AppCompatActivity {
         if (tvLoc != null) tvLoc.setText("📍 " + product.getLokasi_kota());
 
         if (product.getImages() != null && !product.getImages().isEmpty() && ivImage != null) {
-            String imageUrl = "http://192.168.18.169:8000/storage/" + product.getImages().get(0).getImage_path();
+            String imagePath = product.getImages().get(0).getImage_path();
+            String imageUrl = imagePath.startsWith("http") ? imagePath : com.example.preloved.network.Config.IMAGE_URL + imagePath;
+
+            // PASTIKAN BARIS INI ADA DAN MENGGUNAKAN 'imageUrl'
             Glide.with(this).load(imageUrl).into(ivImage);
         }
 
@@ -235,7 +238,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupCardRekomendasi(MaterialCardView card, ImageView ivImage, Product product) {
         if (product.getImages() != null && !product.getImages().isEmpty() && ivImage != null) {
-            String imageUrl = "http://192.168.18.169:8000/storage/" + product.getImages().get(0).getImage_path();
+            String imagePath = product.getImages().get(0).getImage_path();
+            String imageUrl = imagePath.startsWith("http") ? imagePath : com.example.preloved.network.Config.IMAGE_URL + imagePath;
+
+            // PASTIKAN BARIS INI ADA DAN MENGGUNAKAN 'imageUrl'
             Glide.with(this).load(imageUrl).into(ivImage);
         }
         if (card != null) card.setOnClickListener(v -> bukaDetailProduk(product));

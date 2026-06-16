@@ -16,6 +16,7 @@ import com.example.preloved.network.ApiService;
 import com.example.preloved.network.RetrofitClient;
 import com.example.preloved.utils.FavoriteManager;
 import com.example.preloved.utils.SessionManager;
+import com.example.preloved.network.Config;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -187,7 +188,7 @@ public class ProfilBarangActivity extends AppCompatActivity {
                 // Foto Produk
                 if (product.getImages() != null && !product.getImages().isEmpty()) {
                     String imagePath = product.getImages().get(0).getImage_path();
-                    String imageUrl = imagePath.startsWith("http") ? imagePath : "http://192.168.18.169:8000/storage/" + imagePath;
+                    String imageUrl = imagePath.startsWith("http") ? imagePath : Config.IMAGE_URL + imagePath;
 
                     Glide.with(this)
                         .load(imageUrl)
@@ -205,7 +206,7 @@ public class ProfilBarangActivity extends AppCompatActivity {
 
                     // Load foto profil penjual
                     if (penjual.getFotoProfil() != null && !penjual.getFotoProfil().isEmpty()) {
-                        String avatarUrl = penjual.getFotoProfil().startsWith("http") ? penjual.getFotoProfil() : "http://192.168.18.169:8000/storage/" + penjual.getFotoProfil();
+                        String avatarUrl = penjual.getFotoProfil().startsWith("http") ? penjual.getFotoProfil() : Config.IMAGE_URL + penjual.getFotoProfil();
                         Glide.with(this)
                             .load(avatarUrl)
                             .placeholder(android.R.drawable.sym_contact_card)

@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.preloved.network.ApiService;
 import com.example.preloved.network.RetrofitClient;
+import com.example.preloved.network.Config;
 import com.example.preloved.utils.SessionManager;
 import com.google.android.material.button.MaterialButton;
 
@@ -246,7 +247,7 @@ public class BarangSayaActivity extends AppCompatActivity {
                         imagePath = imageObj.optString("image_path", "");
                     }
 
-                    String imageUrl = imagePath.startsWith("http") ? imagePath : "http://192.168.18.169:8000/storage/" + imagePath;
+                    String imageUrl = imagePath.startsWith("http") ? imagePath : Config.IMAGE_URL + imagePath;
 
                     Glide.with(BarangSayaActivity.this)
                         .load(imageUrl)

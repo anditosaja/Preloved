@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import android.net.Uri;
+
+import com.example.preloved.network.Config;
 import com.example.preloved.network.RetrofitClient;
 import com.example.preloved.utils.SessionManager;
 
@@ -51,7 +53,7 @@ public class ProfilActivity extends AppCompatActivity {
     private ShapeableImageView imgFotoProfil;
 
     // Gunakan alamat IP emulator yang mengarah ke localhost Laravel lo
-    private static final String URL_GET_PROFILE = "http://192.168.18.169:8000/api/profile";
+    private static final String URL_GET_PROFILE = Config.BASE_URL + "api/profile";
 
     private ActivityResultLauncher<String> bukaGaleri;
 
@@ -274,7 +276,7 @@ public class ProfilActivity extends AppCompatActivity {
                         txtEmailProfil.setText(email);
 
                         if (!fotoProfil.isEmpty() && !fotoProfil.equals("null")) {
-                            String imageUrl = "http://192.168.18.169:8000/storage/" + fotoProfil;
+                            String imageUrl = fotoProfil.startsWith("http") ? fotoProfil : Config.IMAGE_URL + fotoProfil;
                             Glide.with(ProfilActivity.this)
                                 .load(imageUrl)
                                 .circleCrop() // Opsional: Biar fotonya otomatis bulat

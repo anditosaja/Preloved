@@ -14,6 +14,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.preloved.network.Config;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -32,7 +33,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     // URL API Laravel (Sesuaikan port jika berbeda, 8000 adalah bawaan php artisan serve)
     // Jika menjalankan Laravel di laptop dan ngetes via emulator, pakai 10.0.2.2
-    private static final String URL_REGISTER = "http://192.168.18.169:8000/api/register";
+    private static final String URL_REGISTER = Config.BASE_URL + "/api/register";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
