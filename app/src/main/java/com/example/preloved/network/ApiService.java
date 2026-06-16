@@ -9,6 +9,7 @@ import com.example.preloved.models.ProductRequest;
 import com.example.preloved.models.ProductResponse;
 import com.example.preloved.models.RegisterRequest;
 import com.example.preloved.models.RegisterResponse;
+import com.example.preloved.models.Review;
 import com.example.preloved.models.TopUpRequest;
 import com.example.preloved.models.TopUpResponse;
 import com.example.preloved.models.UserChatResponse;
@@ -158,6 +159,22 @@ public interface ApiService {
         @Header("Authorization") String token
     );
 
+    @FormUrlEncoded
+    @POST("reviews")
+    Call<ResponseBody> submitReview(
+        @Header("Authorization") String token,
+        @Field("order_id") int orderId,
+        @Field("rating") int rating,
+        @Field("comment") String comment
+    );
+
+    // 2. Endpoint untuk mengambil List Review milik Seller
+    // Endpoint untuk mengambil daftar ulasan sebuah toko
+    @GET("reviews/seller/{sellerId}")
+    Call<java.util.List<com.example.preloved.models.Review>> getSellerReviews(
+        @Header("Authorization") String token, // [TAMBAHAN BARU]
+        @Path("sellerId") int sellerId
+    );
     @GET("products/search")
     Call<List<Product>> searchProducts(
         @Query("q") String keyword,

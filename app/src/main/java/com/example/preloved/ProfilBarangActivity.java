@@ -156,11 +156,21 @@ public class ProfilBarangActivity extends AppCompatActivity {
                         Glide.with(this).load(aUrl).placeholder(android.R.drawable.sym_contact_card).into(imgSellerAvatar);
                     }
 
+                    // [SOLUSI BUG] Set tampilan awal tombol mengikuti berdasarkan data asli dari Laravel
+                    if (penjual.isFollowing()) {
+                        btnIkuti.setText("Mengikuti");
+                        btnIkuti.setBackgroundColor(android.graphics.Color.parseColor("#6952D9"));
+                        btnIkuti.setTextColor(android.graphics.Color.WHITE);
+                    } else {
+                        btnIkuti.setText("Ikuti");
+                        btnIkuti.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+                        btnIkuti.setTextColor(android.graphics.Color.parseColor("#6952D9"));
+                    }
+
                     // =========================================================
                     // LOGIKA TOGGLE FOLLOW / UNFOLLOW
                     // =========================================================
                     btnIkuti.setOnClickListener(v -> {
-                        // Kunci tombol sementara biar user gak spam klik berturut-turut
                         btnIkuti.setEnabled(false);
 
                         ApiService api = RetrofitClient.getClient().create(ApiService.class);
@@ -174,10 +184,8 @@ public class ProfilBarangActivity extends AppCompatActivity {
 
                         String auth = token.startsWith("Bearer ") ? token : "Bearer " + token;
 
-                        // Cek status tulisan tombol saat ini buat nentuin aksi selanjutnya
-                        boolean isCurrentlyFollowing = btnIkuti.getText().toString().equalsIgnoreCase("Mengikuti");
-
-                        if (isCurrentlyFollowing) {
+                        // [SOLUSI BUG] Mengacu langsung pada state data boolean, bukan teks tombol lagi
+                        if (penjual.isFollowing()) {
                             // ---------------------------------------------------------
                             // AKSI BERHENTI MENGIKUTI (UNFOLLOW)
                             // ---------------------------------------------------------
@@ -187,12 +195,13 @@ public class ProfilBarangActivity extends AppCompatActivity {
                                     if (response.isSuccessful()) {
                                         Toast.makeText(ProfilBarangActivity.this, "Berhenti mengikuti " + namaPenjual, Toast.LENGTH_SHORT).show();
 
-                                        // Kembalikan UI ke default (tombol transparan, tulisan ungu)
+                                        // Ubah state data lokal menjadi false
+                                        penjual.setFollowing(false);
+
                                         btnIkuti.setText("Ikuti");
                                         btnIkuti.setBackgroundColor(android.graphics.Color.TRANSPARENT);
                                         btnIkuti.setTextColor(android.graphics.Color.parseColor("#6952D9"));
 
-                                        // Kurangi angka follower secara lokal (mencegah minus)
                                         int updateAngka = penjual.getFollowersCount() - 1;
                                         if (updateAngka < 0) updateAngka = 0;
 
@@ -201,7 +210,7 @@ public class ProfilBarangActivity extends AppCompatActivity {
                                     } else {
                                         Toast.makeText(ProfilBarangActivity.this, "Gagal berhenti mengikuti", Toast.LENGTH_SHORT).show();
                                     }
-                                    btnIkuti.setEnabled(true); // Buka kunci tombol
+                                    btnIkuti.setEnabled(true);
                                 }
 
                                 @Override
@@ -221,23 +230,23 @@ public class ProfilBarangActivity extends AppCompatActivity {
                                     if (response.isSuccessful()) {
                                         Toast.makeText(ProfilBarangActivity.this, "Berhasil mengikuti " + namaPenjual, Toast.LENGTH_SHORT).show();
 
-                                        // Ubah UI jadi status sudah mengikuti (tombol ungu solid)
+                                        // Ubah state data lokal menjadi true
+                                        penjual.setFollowing(true);
+
                                         btnIkuti.setText("Mengikuti");
                                         btnIkuti.setBackgroundColor(android.graphics.Color.parseColor("#6952D9"));
                                         btnIkuti.setTextColor(android.graphics.Color.WHITE);
 
-                                        // Naikkan angka follower secara lokal
                                         int updateAngka = penjual.getFollowersCount() + 1;
                                         penjual.setFollowersCount(updateAngka);
                                         tvSellerFollowers.setText("(" + updateAngka + ")");
 
                                     } else if (response.code() == 422) {
-                                        // Validasi nggak boleh nge-follow lapak sendiri
                                         Toast.makeText(ProfilBarangActivity.this, "Anda tidak bisa mengikuti toko sendiri", Toast.LENGTH_LONG).show();
                                     } else {
                                         Toast.makeText(ProfilBarangActivity.this, "Gagal mengikuti seller", Toast.LENGTH_SHORT).show();
                                     }
-                                    btnIkuti.setEnabled(true); // Buka kunci tombol
+                                    btnIkuti.setEnabled(true);
                                 }
 
                                 @Override

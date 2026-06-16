@@ -15,6 +15,12 @@
         android:theme="@style/Theme.Preloved"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".DaftarUlasanActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TulisReviewActivity"
+            android:exported="false" />
+        <activity
             android:name=".FavoriteActivity"
             android:exported="false" />
         <activity

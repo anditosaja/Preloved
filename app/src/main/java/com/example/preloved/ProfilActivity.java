@@ -48,6 +48,8 @@ public class ProfilActivity extends AppCompatActivity {
 
     private TextView txtNama, txtUsername, txtRating, txtUlasan, txtStatRating, txtFollowersProfil;
     private String token;
+
+    private int currentUserId = -1;
     private TextView txtSaldoProfil, txtEmailProfil;
     private ShapeableImageView imgFotoProfil;
 
@@ -136,6 +138,21 @@ public class ProfilActivity extends AppCompatActivity {
                 startActivity(intent);
             });
         }
+
+        findViewById(R.id.txtRatingProfil).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Cegah pindah halaman kalau ID masih -1 (data belum ke-load)
+                if (currentUserId != -1) {
+                    Intent intent = new Intent(ProfilActivity.this, DaftarUlasanActivity.class);
+                    // Sekarang ID-nya dijamin bukan 0 lagi!
+                    intent.putExtra("SELLER_ID", currentUserId);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(ProfilActivity.this, "Menunggu data profil...", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         // =========================================================
         // KLIK MENU PESANAN SAYA (PEMBELI / KONFIRMASI)
@@ -254,6 +271,9 @@ public class ProfilActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(JSONObject jsonObject) {
                     try {
+
+                        currentUserId = jsonObject.getInt("user_id");
+
                         // Ambil data dari objek jsonObject
                         String namaLengkap = jsonObject.getString("nama_lengkap");
                         String username = jsonObject.getString("username");

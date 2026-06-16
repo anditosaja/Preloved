@@ -1,5 +1,6 @@
 package com.example.preloved;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -78,6 +79,13 @@ public class PesananSayaActivity extends AppCompatActivity {
         loadPesananSaya();
     }
 
+    // Panggil ulang load data ketika kembali ke activity ini (misal setelah selesai nulis review)
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadPesananSaya();
+    }
+
     private void loadPesananSaya() {
         if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.GONE);
@@ -100,8 +108,6 @@ public class PesananSayaActivity extends AppCompatActivity {
                             tvEmptyData.setVisibility(View.VISIBLE);
                         } else {
                             recyclerView.setVisibility(View.VISIBLE);
-
-                            // Pasang data JSON dinamis ke Adapter Pembeli
                             BuyerOrderAdapter adapter = new BuyerOrderAdapter(jsonArray);
                             recyclerView.setAdapter(adapter);
                         }
@@ -122,7 +128,7 @@ public class PesananSayaActivity extends AppCompatActivity {
         });
     }
 
-    // Fungsi konfirmasi pesanan diterima untuk mencairkan saldo ke penjual
+    // Fungsi untuk eksekusi Pesanan Diterima dan lanjut ke Halaman Review
     private void eksekusiPesananDiterima(int orderId) {
         String authHeader = token.startsWith("Bearer ") ? token : "Bearer " + token;
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
@@ -131,8 +137,13 @@ public class PesananSayaActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(PesananSayaActivity.this, "Transaksi Selesai! Dana diteruskan ke penjual.", Toast.LENGTH_SHORT).show();
-                    loadPesananSaya(); // Refresh otomatis list pesanan pembeli
+                    Toast.makeText(PesananSayaActivity.this, "Pesanan Diterima! Silakan berikan ulasan.", Toast.LENGTH_SHORT).show();
+
+                    // LANGSUNG ARAHKAN KE HALAMAN TULIS REVIEW
+                    Intent intent = new Intent(PesananSayaActivity.this, TulisReviewActivity.class);
+                    intent.putExtra("ORDER_ID", orderId);
+                    startActivity(intent);
+
                 } else {
                     Toast.makeText(PesananSayaActivity.this, "Gagal menyelesaikan pesanan", Toast.LENGTH_SHORT).show();
                 }
@@ -174,7 +185,6 @@ public class PesananSayaActivity extends AppCompatActivity {
                 String namaBarang = productObj.optString("nama_barang", "Produk");
                 int categoryId = productObj.optInt("category_id", 0);
 
-                // Set teks secara dinamis menggantikan teks mentah XML
                 holder.tvProductName.setText(namaBarang);
                 holder.tvCategory.setText("Kategori ID: " + categoryId + " | Total: Rp " + new DecimalFormat("#,###").format(hargaFinal));
 
@@ -182,17 +192,28 @@ public class PesananSayaActivity extends AppCompatActivity {
                 if (status.equalsIgnoreCase("paid")) {
                     holder.tvStatus.setText("Status: Menunggu Penjual Mengirim");
                     holder.tvStatus.setTextColor(android.graphics.Color.parseColor("#FF9800"));
-                    holder.btnAction.setVisibility(View.GONE); // Belum dikirim, tombol sembunyi
+                    holder.btnAction.setVisibility(View.GONE);
                 } else if (status.equalsIgnoreCase("shipped")) {
                     holder.tvStatus.setText("Status: Barang Sedang Dikirim");
                     holder.tvStatus.setTextColor(android.graphics.Color.parseColor("#2196F3"));
-                    holder.btnAction.setVisibility(View.VISIBLE); // Sudah dikirim, tombol muncul
+
+                    holder.btnAction.setVisibility(View.VISIBLE);
                     holder.btnAction.setText("Pesanan Diterima");
                     holder.btnAction.setOnClickListener(v -> eksekusiPesananDiterima(orderId));
                 } else if (status.equalsIgnoreCase("completed")) {
                     holder.tvStatus.setText("Status: Transaksi Selesai");
                     holder.tvStatus.setTextColor(android.graphics.Color.parseColor("#4CAF50"));
-                    holder.btnAction.setVisibility(View.GONE); // Selesai, tombol hilang
+
+                    // Jika sudah selesai, kita munculkan tombol Beri Ulasan
+                    // (Catatan: Ini akan terus muncul. Jika Laravel melempar 422 "Review sudah dibuat",
+                    // TulisReviewActivity akan meng-handle dan menampilkan Toast)
+                    holder.btnAction.setVisibility(View.VISIBLE);
+                    holder.btnAction.setText("Beri Ulasan");
+                    holder.btnAction.setOnClickListener(v -> {
+                        Intent intent = new Intent(PesananSayaActivity.this, TulisReviewActivity.class);
+                        intent.putExtra("ORDER_ID", orderId);
+                        startActivity(intent);
+                    });
                 } else {
                     holder.tvStatus.setText("Status: " + status.toUpperCase());
                     holder.btnAction.setVisibility(View.GONE);
