@@ -35,18 +35,18 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class BarangSayaActivity extends AppCompatActivity {
+public class PesananSayaActivity extends AppCompatActivity {
 
-    private RecyclerView rvMyProducts;
-    private TextView tvEmptyState;
+    private RecyclerView recyclerView;
     private ProgressBar progressBar;
+    private TextView tvEmptyData;
     private String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_barang_saya);
+        setContentView(R.layout.activity_pesanan_saya);
 
         View mainView = findViewById(R.id.main);
         if (mainView != null) {
@@ -57,116 +57,100 @@ public class BarangSayaActivity extends AppCompatActivity {
             });
         }
 
-        SessionManager sessionManager = new SessionManager(this);
-        token = sessionManager.getToken();
-
-        tvEmptyState = findViewById(R.id.tvEmptyState);
-        rvMyProducts = findViewById(R.id.rvMyProducts);
-        progressBar = findViewById(R.id.progressBar);
+        // Inisialisasi UI
         ImageView btnBack = findViewById(R.id.btnBack);
+        recyclerView = findViewById(R.id.recyclerViewOrders);
+        progressBar = findViewById(R.id.progressBar);
+        tvEmptyData = findViewById(R.id.tvEmptyData);
 
-        if (rvMyProducts != null) {
-            // Menggunakan LinearLayoutManager agar tampilan list pesanan rapi vertikal
-            rvMyProducts.setLayoutManager(new LinearLayoutManager(this));
+        if (recyclerView != null) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
         }
 
         if (btnBack != null) {
             btnBack.setOnClickListener(v -> finish());
         }
 
-        tarikBarangSaya();
+        SessionManager sessionManager = new SessionManager(this);
+        token = sessionManager.getToken();
+
+        loadPesananSaya();
     }
 
-    private void tarikBarangSaya() {
-        if (token == null || token.isEmpty()) {
-            Toast.makeText(this, "Silakan login terlebih dahulu", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
+    private void loadPesananSaya() {
         if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
-        rvMyProducts.setVisibility(View.GONE);
-        tvEmptyState.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.GONE);
+        tvEmptyData.setVisibility(View.GONE);
 
         String authHeader = token.startsWith("Bearer ") ? token : "Bearer " + token;
 
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-        // Memanggil rute getMySales untuk mendapatkan data pesanan masuk yang perlu di ACC
-        Call<ResponseBody> call = apiService.getMySales(authHeader);
-
-        call.enqueue(new Callback<ResponseBody>() {
+        apiService.getMyOrders(authHeader).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (progressBar != null) progressBar.setVisibility(View.GONE);
 
                 if (response.isSuccessful() && response.body() != null) {
                     try {
-                        String jsonString = response.body().string();
-                        JSONArray jsonArray = new JSONArray(jsonString);
+                        String jsonResponse = response.body().string();
+                        JSONArray jsonArray = new JSONArray(jsonResponse);
 
                         if (jsonArray.length() == 0) {
-                            rvMyProducts.setVisibility(View.GONE);
-                            tvEmptyState.setVisibility(View.VISIBLE);
+                            tvEmptyData.setVisibility(View.VISIBLE);
                         } else {
-                            tvEmptyState.setVisibility(View.GONE);
-                            rvMyProducts.setVisibility(View.VISIBLE);
+                            recyclerView.setVisibility(View.VISIBLE);
 
-                            // Pasang data ke adapter internal
-                            SalesAdapter adapter = new SalesAdapter(jsonArray);
-                            rvMyProducts.setAdapter(adapter);
+                            // Pasang data JSON dinamis ke Adapter Pembeli
+                            BuyerOrderAdapter adapter = new BuyerOrderAdapter(jsonArray);
+                            recyclerView.setAdapter(adapter);
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
-                        Toast.makeText(BarangSayaActivity.this, "Gagal memproses data", Toast.LENGTH_SHORT).show();
+                        Log.e("PESANAN_SAYA", "Error parsing JSON", e);
+                        Toast.makeText(PesananSayaActivity.this, "Gagal membaca data", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    try {
-                        String errorBody = response.errorBody() != null ? response.errorBody().string() : "Unknown Error";
-                        Log.e("API_ERROR_SALES", "Code: " + response.code() + " | " + errorBody);
-                    } catch (Exception e) {
-                        e.getStackTrace();
-                    }
-                    Toast.makeText(BarangSayaActivity.this, "Gagal mengambil data penjualan", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PesananSayaActivity.this, "Gagal memuat pesanan", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 if (progressBar != null) progressBar.setVisibility(View.GONE);
-                Toast.makeText(BarangSayaActivity.this, "Koneksi gagal: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(PesananSayaActivity.this, "Koneksi bermasalah", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    // Fungsi untuk memproses ACC Pesanan ke Laravel
-    private void eksekusiAccPesanan(int orderId) {
+    // Fungsi konfirmasi pesanan diterima untuk mencairkan saldo ke penjual
+    private void eksekusiPesananDiterima(int orderId) {
         String authHeader = token.startsWith("Bearer ") ? token : "Bearer " + token;
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
 
-        apiService.acceptOrder(authHeader, orderId).enqueue(new Callback<ResponseBody>() {
+        apiService.completeOrder(authHeader, orderId).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(BarangSayaActivity.this, "Pesanan berhasil di-ACC!", Toast.LENGTH_SHORT).show();
-                    tarikBarangSaya(); // Refresh data list otomatis
+                    Toast.makeText(PesananSayaActivity.this, "Transaksi Selesai! Dana diteruskan ke penjual.", Toast.LENGTH_SHORT).show();
+                    loadPesananSaya(); // Refresh otomatis list pesanan pembeli
                 } else {
-                    Toast.makeText(BarangSayaActivity.this, "Gagal konfirmasi ke server", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PesananSayaActivity.this, "Gagal menyelesaikan pesanan", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(BarangSayaActivity.this, "Error koneksi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(PesananSayaActivity.this, "Koneksi gagal: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     // ========================================================
-    // INNER CLASS ADAPTER (Mencegah Mismatch ID Komponen Item)
+    // ADAPTER DINAMIS SISI PEMBELI (PESANAN SAYA)
     // ========================================================
-    private class SalesAdapter extends RecyclerView.Adapter<SalesAdapter.ViewHolder> {
+    private class BuyerOrderAdapter extends RecyclerView.Adapter<BuyerOrderAdapter.ViewHolder> {
         private final JSONArray ordersArray;
 
-        public SalesAdapter(JSONArray ordersArray) {
+        public BuyerOrderAdapter(JSONArray ordersArray) {
             this.ordersArray = ordersArray;
         }
 
@@ -183,52 +167,51 @@ public class BarangSayaActivity extends AppCompatActivity {
                 JSONObject orderObj = ordersArray.getJSONObject(position);
                 int orderId = orderObj.getInt("order_id");
                 String status = orderObj.optString("status", "pending");
+                double hargaFinal = orderObj.optDouble("harga_final", 0);
 
                 JSONObject productObj = orderObj.getJSONObject("product");
                 String namaBarang = productObj.optString("nama_barang", "Produk");
                 int categoryId = productObj.optInt("category_id", 0);
-                double hargaFinal = orderObj.optDouble("harga_final", 0);
 
+                // Set teks secara dinamis menggantikan teks mentah XML
                 holder.tvProductName.setText(namaBarang);
-                holder.tvCategory.setText("Kategori ID: " + categoryId + " | Rp " + new DecimalFormat("#,###").format(hargaFinal));
+                holder.tvCategory.setText("Kategori ID: " + categoryId + " | Total: Rp " + new DecimalFormat("#,###").format(hargaFinal));
 
-                // Logika Penentuan Status Penjualan
+                // Logika Status Dinamis Sisi Pembeli
                 if (status.equalsIgnoreCase("paid")) {
-                    holder.tvStatus.setText("Status: Menunggu ACC Penjual");
+                    holder.tvStatus.setText("Status: Menunggu Penjual Mengirim");
                     holder.tvStatus.setTextColor(android.graphics.Color.parseColor("#FF9800"));
-                    holder.btnAction.setVisibility(View.VISIBLE);
-                    holder.btnAction.setText("ACC Pesanan");
-                    holder.btnAction.setOnClickListener(v -> eksekusiAccPesanan(orderId));
+                    holder.btnAction.setVisibility(View.GONE); // Belum dikirim, tombol sembunyi
                 } else if (status.equalsIgnoreCase("shipped")) {
                     holder.tvStatus.setText("Status: Barang Sedang Dikirim");
                     holder.tvStatus.setTextColor(android.graphics.Color.parseColor("#2196F3"));
-                    holder.btnAction.setVisibility(View.GONE);
+                    holder.btnAction.setVisibility(View.VISIBLE); // Sudah dikirim, tombol muncul
+                    holder.btnAction.setText("Pesanan Diterima");
+                    holder.btnAction.setOnClickListener(v -> eksekusiPesananDiterima(orderId));
                 } else if (status.equalsIgnoreCase("completed")) {
-                    holder.tvStatus.setText("Status: Transaksi Selesai (Dana Cair)");
+                    holder.tvStatus.setText("Status: Transaksi Selesai");
                     holder.tvStatus.setTextColor(android.graphics.Color.parseColor("#4CAF50"));
-                    holder.btnAction.setVisibility(View.GONE);
+                    holder.btnAction.setVisibility(View.GONE); // Selesai, tombol hilang
                 } else {
                     holder.tvStatus.setText("Status: " + status.toUpperCase());
                     holder.btnAction.setVisibility(View.GONE);
                 }
 
-                // Load Gambar Kecil menggunakan Array Images dari Laravel
+                // Load Gambar Dinamis
                 JSONArray imagesArray = productObj.optJSONArray("images");
                 if (imagesArray != null && imagesArray.length() > 0) {
                     JSONObject imageObj = imagesArray.getJSONObject(0);
-                    String imagePath = imageObj.optString("image_url", ""); // Menyesuaikan nama kolom migrasi gambar
-                    if(imagePath.isEmpty()) {
+                    String imagePath = imageObj.optString("image_url", "");
+                    if (imagePath.isEmpty()) {
                         imagePath = imageObj.optString("image_path", "");
                     }
 
                     String imageUrl = imagePath.startsWith("http") ? imagePath : "http://192.168.18.169:8000/storage/" + imagePath;
 
-                    Glide.with(BarangSayaActivity.this)
+                    Glide.with(PesananSayaActivity.this)
                         .load(imageUrl)
                         .placeholder(android.R.drawable.ic_menu_gallery)
                         .into(holder.imgProduct);
-                } else {
-                    holder.imgProduct.setImageResource(android.graphics.drawable.GradientDrawable.RECTANGLE);
                 }
 
             } catch (Exception e) {

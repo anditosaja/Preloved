@@ -129,6 +129,20 @@ public class ProfilActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        // =========================================================
+        // KLIK MENU PESANAN SAYA (PEMBELI / KONFIRMASI)
+        // =========================================================
+        View menuPesananSaya = findViewById(R.id.menuPesanan); // Sesuaikan dengan id di XML kamu
+        if (menuPesananSaya != null) {
+            menuPesananSaya.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Pindah ke halaman PesananSayaActivity
+                    Intent intent = new Intent(ProfilActivity.this, PesananSayaActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
 
         // =========================================================
         // KLIK MENU SALDO PRELOVED (MASUK KE TOP UP)

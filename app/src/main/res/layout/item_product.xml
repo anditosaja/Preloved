@@ -38,6 +38,17 @@
             android:layout_height="wrap_content"
             android:padding="8dp"/>
 
+        <TextView
+            android:id="@+id/tvSoldBadge"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#80000000" android:text="SOLD"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:visibility="gone" /> ```
+
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

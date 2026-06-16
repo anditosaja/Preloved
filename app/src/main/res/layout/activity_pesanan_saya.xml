@@ -26,7 +26,7 @@
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Barang Saya (Penjualan)"
+            android:text="Pesanan Saya"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="#000000" />
@@ -37,7 +37,7 @@
         android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvMyProducts"
+            android:id="@+id/recyclerViewOrders"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
@@ -52,10 +52,10 @@
             android:visibility="gone" />
 
         <TextView
-            android:id="@+id/tvEmptyState"
+            android:id="@+id/tvEmptyData"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Belum ada pesanan masuk dari pembeli."
+            android:text="Kamu belum membeli barang apapun."
             android:layout_gravity="center"
             android:visibility="gone" />
     </FrameLayout>

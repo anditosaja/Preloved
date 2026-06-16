@@ -105,140 +105,171 @@ public class ProfilBarangActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     tvProductPrice.setText("Rp " + product.getHarga_jual());
                 }
+                // =========================================================
+                // [TAMBAHAN BARU]: LOGIKA DINAMIS STATUS BARANG DI DETAIL
+                // =========================================================
+                if (product.getStatus_barang() != null && !product.getStatus_barang().equalsIgnoreCase("available")) {
+                    // 1. Buat gambar utama menjadi abu-abu
+                    android.graphics.ColorMatrix matrix = new android.graphics.ColorMatrix();
+                    matrix.setSaturation(0f);
+                    android.graphics.ColorMatrixColorFilter filter = new android.graphics.ColorMatrixColorFilter(matrix);
+                    imgProduct.setColorFilter(filter);
 
-                // Format Harga Asli (Dicoret)
-                if (product.getHarga_asli() != null && !product.getHarga_asli().isEmpty()) {
-                    try {
-                        double hargaAsli = Double.parseDouble(product.getHarga_asli());
-                        tvOldPrice.setText("Rp " + new DecimalFormat("#,###").format(hargaAsli));
-                    } catch (Exception e) {
-                        tvOldPrice.setText("Rp " + product.getHarga_asli());
+                    // 2. Ubah fungsi dan tampilan tombol beli
+                    if (btnBeli != null) {
+                        btnBeli.setText("Habis Terjual (SOLD)");
+                        btnBeli.setEnabled(false); // Nonaktifkan tombol agar tidak bisa diklik
+                        btnBeli.setBackgroundColor(android.graphics.Color.parseColor("#9E9E9E")); // Ubah jadi warna abu-abu tanda mati
                     }
-                    tvOldPrice.setPaintFlags(tvOldPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
+                    // Tampilkan notifikasi singkat jika diperlukan
+                    Toast.makeText(this, "Produk ini sudah terjual", Toast.LENGTH_SHORT).show();
                 } else {
-                    tvOldPrice.setVisibility(View.GONE);
-                }
-
-                String category = "Produk";
-                if (name != null) {
-                    if (name.toLowerCase().contains("shirt")
-                        || name.toLowerCase().contains("hoodie")
-                        || name.toLowerCase().contains("flannel")) {
-                        category = "Pakaian";
-                    }
-                }
-                tvProductCategory.setText("Kategori: " + category);
-
-                // Foto Produk
-                if (product.getImages() != null && !product.getImages().isEmpty()) {
-                    String imagePath = product.getImages().get(0).getImage_path();
-                    String imageUrl = imagePath.startsWith("http") ? imagePath : "http://192.168.18.169:8000/storage/" + imagePath;
-
-                    Glide.with(this)
-                        .load(imageUrl)
-                        .placeholder(android.R.drawable.ic_menu_gallery)
-                        .into(imgProduct);
-                }
-
-                // ================= NAVIGASI KE ORDER ACTIVITY =================
-                if (btnBeli != null) {
-                    btnBeli.setOnClickListener(v -> {
-                        Intent intent = new Intent(ProfilBarangActivity.this, OrderActivity.class);
-                        // Masukin objek product ke dalam koper intent biar ditangkep sama OrderActivity
-                        intent.putExtra("PRODUCT", product);
-                        startActivity(intent);
-                    });
-                }
-
-                // ================= LOGIKA DINAMIS PENJUAL & FOLLOW =================
-                if (product.getSeller() != null) {
-                    Seller penjual = product.getSeller();
-
-                    tvSellerName.setText(penjual.getName());
-                    tvSellerFollowers.setText("(" + penjual.getFollowersCount() + ")");
-                    tvSellerRating.setText("4.8");
-
-                    // Load foto profil penjual
-                    if (penjual.getFotoProfil() != null && !penjual.getFotoProfil().isEmpty()) {
-                        String avatarUrl = penjual.getFotoProfil().startsWith("http") ? penjual.getFotoProfil() : "http://192.168.18.169:8000/storage/" + penjual.getFotoProfil();
-                        Glide.with(this)
-                            .load(avatarUrl)
-                            .placeholder(android.R.drawable.sym_contact_card)
-                            .into(imgSellerAvatar);
-                    }
-
-                    // Aksi Klik Tombol Ikuti
-                    btnIkuti.setOnClickListener(v -> {
-                        btnIkuti.setText("Mengikuti");
-                        btnIkuti.setTextColor(android.graphics.Color.WHITE);
-                        btnIkuti.setBackgroundColor(android.graphics.Color.parseColor("#6952D9"));
-
-                        int currentFollowers = penjual.getFollowersCount();
-                        penjual.setFollowersCount(currentFollowers + 1);
-                        tvSellerFollowers.setText("(" + penjual.getFollowersCount() + ")");
-                        btnIkuti.setEnabled(false);
-
-                        SessionManager sessionManager = new SessionManager(this);
-                        String token = sessionManager.getBearerToken();
-
-                        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-                        apiService.followUser(token, penjual.getId()).enqueue(new Callback<ResponseBody>() {
-                            @Override
-                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                                if (response.isSuccessful()) {
-                                    Toast.makeText(ProfilBarangActivity.this, "Berhasil mengikuti " + penjual.getName(), Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(ProfilBarangActivity.this, "Gagal follow. Coba lagi.", Toast.LENGTH_SHORT).show();
-                                    btnIkuti.setText("Ikuti");
-                                    btnIkuti.setBackgroundColor(android.graphics.Color.TRANSPARENT);
-                                    btnIkuti.setTextColor(android.graphics.Color.parseColor("#6952D9"));
-                                    penjual.setFollowersCount(currentFollowers);
-                                    tvSellerFollowers.setText("(" + penjual.getFollowersCount() + ")");
-                                    btnIkuti.setEnabled(true);
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                                Toast.makeText(ProfilBarangActivity.this, "Koneksi terputus: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                                btnIkuti.setText("Ikuti");
-                                btnIkuti.setBackgroundColor(android.graphics.Color.TRANSPARENT);
-                                btnIkuti.setTextColor(android.graphics.Color.parseColor("#6952D9"));
-                                penjual.setFollowersCount(currentFollowers);
-                                tvSellerFollowers.setText("(" + penjual.getFollowersCount() + ")");
-                                btnIkuti.setEnabled(true);
-                            }
+                    // Jika masih tersedia, pastikan kondisi normal
+                    imgProduct.clearColorFilter();
+                    if (btnBeli != null) {
+                        btnBeli.setEnabled(true);
+                        // Kembalikan ke fungsi intent order lama kamu
+                        btnBeli.setOnClickListener(v -> {
+                            Intent intent = new Intent(ProfilBarangActivity.this, OrderActivity.class);
+                            intent.putExtra("PRODUCT", product);
+                            startActivity(intent);
                         });
-                    });
-                }
+                        // Format Harga Asli (Dicoret)
+                        if (product.getHarga_asli() != null && !product.getHarga_asli().isEmpty()) {
+                            try {
+                                double hargaAsli = Double.parseDouble(product.getHarga_asli());
+                                tvOldPrice.setText("Rp " + new DecimalFormat("#,###").format(hargaAsli));
+                            } catch (Exception e) {
+                                tvOldPrice.setText("Rp " + product.getHarga_asli());
+                            }
+                            tvOldPrice.setPaintFlags(tvOldPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                        } else {
+                            tvOldPrice.setVisibility(View.GONE);
+                        }
 
-                // ================= BARANG SERUPA (Statis) =================
-                if (name != null) {
-                    if (name.equalsIgnoreCase("Zaro Cargo Shirt")) {
-                        imgSerupa1.setImageResource(R.drawable.flannel);
-                        tvNamaSerupa1.setText("Flannel Casual");
-                        tvHargaSerupa1.setText("Rp120.000");
-                        imgSerupa2.setImageResource(R.drawable.hoodie);
-                        tvNamaSerupa2.setText("Streetwear Hoodie");
-                        tvHargaSerupa2.setText("Rp185.000");
-                    } else if (name.equalsIgnoreCase("Flannel Casual Shirt")) {
-                        imgSerupa1.setImageResource(R.drawable.zarocargo_shirt);
-                        tvNamaSerupa1.setText("Zaro Cargo");
-                        tvHargaSerupa1.setText("Rp150.000");
-                        imgSerupa2.setImageResource(R.drawable.hoodie);
-                        tvNamaSerupa2.setText("Streetwear Hoodie");
-                        tvHargaSerupa2.setText("Rp185.000");
-                    } else if (name.equalsIgnoreCase("Oversized Streetwear Hoodie")) {
-                        imgSerupa1.setImageResource(R.drawable.zarocargo_shirt);
-                        tvNamaSerupa1.setText("Zaro Cargo");
-                        tvHargaSerupa1.setText("Rp150.000");
-                        imgSerupa2.setImageResource(R.drawable.flannel);
-                        tvNamaSerupa2.setText("Flannel Casual");
-                        tvHargaSerupa2.setText("Rp120.000");
-                    } else {
-                        cardSerupa1.setVisibility(View.GONE);
-                        cardSerupa2.setVisibility(View.GONE);
-                        tvTitleBarangSerupa.setVisibility(View.GONE);
+                        String category = "Produk";
+                        if (name != null) {
+                            if (name.toLowerCase().contains("shirt")
+                                || name.toLowerCase().contains("hoodie")
+                                || name.toLowerCase().contains("flannel")) {
+                                category = "Pakaian";
+                            }
+                        }
+                        tvProductCategory.setText("Kategori: " + category);
+
+                        // Foto Produk
+                        if (product.getImages() != null && !product.getImages().isEmpty()) {
+                            String imagePath = product.getImages().get(0).getImage_path();
+                            String imageUrl = imagePath.startsWith("http") ? imagePath : "http://192.168.18.169:8000/storage/" + imagePath;
+
+                            Glide.with(this)
+                                .load(imageUrl)
+                                .placeholder(android.R.drawable.ic_menu_gallery)
+                                .into(imgProduct);
+                        }
+
+                        // ================= NAVIGASI KE ORDER ACTIVITY =================
+                        if (btnBeli != null) {
+                            btnBeli.setOnClickListener(v -> {
+                                Intent intent = new Intent(ProfilBarangActivity.this, OrderActivity.class);
+                                // Masukin objek product ke dalam koper intent biar ditangkep sama OrderActivity
+                                intent.putExtra("PRODUCT", product);
+                                startActivity(intent);
+                            });
+                        }
+
+                        // ================= LOGIKA DINAMIS PENJUAL & FOLLOW =================
+                        if (product.getSeller() != null) {
+                            Seller penjual = product.getSeller();
+
+                            tvSellerName.setText(penjual.getName());
+                            tvSellerFollowers.setText("(" + penjual.getFollowersCount() + ")");
+                            tvSellerRating.setText("4.8");
+
+                            // Load foto profil penjual
+                            if (penjual.getFotoProfil() != null && !penjual.getFotoProfil().isEmpty()) {
+                                String avatarUrl = penjual.getFotoProfil().startsWith("http") ? penjual.getFotoProfil() : "http://192.168.18.169:8000/storage/" + penjual.getFotoProfil();
+                                Glide.with(this)
+                                    .load(avatarUrl)
+                                    .placeholder(android.R.drawable.sym_contact_card)
+                                    .into(imgSellerAvatar);
+                            }
+
+                            // Aksi Klik Tombol Ikuti
+                            btnIkuti.setOnClickListener(v -> {
+                                btnIkuti.setText("Mengikuti");
+                                btnIkuti.setTextColor(android.graphics.Color.WHITE);
+                                btnIkuti.setBackgroundColor(android.graphics.Color.parseColor("#6952D9"));
+
+                                int currentFollowers = penjual.getFollowersCount();
+                                penjual.setFollowersCount(currentFollowers + 1);
+                                tvSellerFollowers.setText("(" + penjual.getFollowersCount() + ")");
+                                btnIkuti.setEnabled(false);
+
+                                SessionManager sessionManager = new SessionManager(this);
+                                String token = sessionManager.getBearerToken();
+
+                                ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+                                apiService.followUser(token, penjual.getId()).enqueue(new Callback<ResponseBody>() {
+                                    @Override
+                                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                        if (response.isSuccessful()) {
+                                            Toast.makeText(ProfilBarangActivity.this, "Berhasil mengikuti " + penjual.getName(), Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(ProfilBarangActivity.this, "Gagal follow. Coba lagi.", Toast.LENGTH_SHORT).show();
+                                            btnIkuti.setText("Ikuti");
+                                            btnIkuti.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+                                            btnIkuti.setTextColor(android.graphics.Color.parseColor("#6952D9"));
+                                            penjual.setFollowersCount(currentFollowers);
+                                            tvSellerFollowers.setText("(" + penjual.getFollowersCount() + ")");
+                                            btnIkuti.setEnabled(true);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                        Toast.makeText(ProfilBarangActivity.this, "Koneksi terputus: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                        btnIkuti.setText("Ikuti");
+                                        btnIkuti.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+                                        btnIkuti.setTextColor(android.graphics.Color.parseColor("#6952D9"));
+                                        penjual.setFollowersCount(currentFollowers);
+                                        tvSellerFollowers.setText("(" + penjual.getFollowersCount() + ")");
+                                        btnIkuti.setEnabled(true);
+                                    }
+                                });
+                            });
+                        }
+
+                        // ================= BARANG SERUPA (Statis) =================
+                        if (name != null) {
+                            if (name.equalsIgnoreCase("Zaro Cargo Shirt")) {
+                                imgSerupa1.setImageResource(R.drawable.flannel);
+                                tvNamaSerupa1.setText("Flannel Casual");
+                                tvHargaSerupa1.setText("Rp120.000");
+                                imgSerupa2.setImageResource(R.drawable.hoodie);
+                                tvNamaSerupa2.setText("Streetwear Hoodie");
+                                tvHargaSerupa2.setText("Rp185.000");
+                            } else if (name.equalsIgnoreCase("Flannel Casual Shirt")) {
+                                imgSerupa1.setImageResource(R.drawable.zarocargo_shirt);
+                                tvNamaSerupa1.setText("Zaro Cargo");
+                                tvHargaSerupa1.setText("Rp150.000");
+                                imgSerupa2.setImageResource(R.drawable.hoodie);
+                                tvNamaSerupa2.setText("Streetwear Hoodie");
+                                tvHargaSerupa2.setText("Rp185.000");
+                            } else if (name.equalsIgnoreCase("Oversized Streetwear Hoodie")) {
+                                imgSerupa1.setImageResource(R.drawable.zarocargo_shirt);
+                                tvNamaSerupa1.setText("Zaro Cargo");
+                                tvHargaSerupa1.setText("Rp150.000");
+                                imgSerupa2.setImageResource(R.drawable.flannel);
+                                tvNamaSerupa2.setText("Flannel Casual");
+                                tvHargaSerupa2.setText("Rp120.000");
+                            } else {
+                                cardSerupa1.setVisibility(View.GONE);
+                                cardSerupa2.setVisibility(View.GONE);
+                                tvTitleBarangSerupa.setVisibility(View.GONE);
+                            }
+                        }
                     }
                 }
             }
