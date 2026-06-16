@@ -2,7 +2,6 @@ package com.example.preloved;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -47,12 +46,11 @@ import retrofit2.Callback;
 
 public class ProfilActivity extends AppCompatActivity {
 
-    private TextView txtNama, txtUsername, txtRating, txtUlasan, txtStatRating;
+    private TextView txtNama, txtUsername, txtRating, txtUlasan, txtStatRating, txtFollowersProfil;
     private String token;
     private TextView txtSaldoProfil, txtEmailProfil;
     private ShapeableImageView imgFotoProfil;
 
-    // Gunakan alamat IP emulator yang mengarah ke localhost Laravel lo
     private static final String URL_GET_PROFILE = Config.BASE_URL + "api/profile";
 
     private ActivityResultLauncher<String> bukaGaleri;
@@ -71,10 +69,10 @@ public class ProfilActivity extends AppCompatActivity {
         txtSaldoProfil = findViewById(R.id.txtSaldoProfil);
         txtEmailProfil = findViewById(R.id.txtEmailProfil);
         imgFotoProfil = findViewById(R.id.imgFotoProfil);
+        txtFollowersProfil = findViewById(R.id.txtFollowersProfil); // Deklarasikan di sini
 
-        // Ganti bagian SharedPreferences di ProfilActivity dengan ini:
         SessionManager sessionManager = new SessionManager(this);
-        token = sessionManager.getToken(); // Pakai fungsi dari SessionManager kita
+        token = sessionManager.getToken();
 
         // 1. Inisialisasi Launcher Galeri
         bukaGaleri = registerForActivityResult(
@@ -126,11 +124,11 @@ public class ProfilActivity extends AppCompatActivity {
         findViewById(R.id.menuBarangSaya).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Pindah ke halaman BarangSayaActivity
                 Intent intent = new Intent(ProfilActivity.this, BarangSayaActivity.class);
                 startActivity(intent);
             }
         });
+
         View menuFavorit = findViewById(R.id.menuFavorit);
         if (menuFavorit != null) {
             menuFavorit.setOnClickListener(v -> {
@@ -138,15 +136,15 @@ public class ProfilActivity extends AppCompatActivity {
                 startActivity(intent);
             });
         }
+
         // =========================================================
         // KLIK MENU PESANAN SAYA (PEMBELI / KONFIRMASI)
         // =========================================================
-        View menuPesananSaya = findViewById(R.id.menuPesanan); // Sesuaikan dengan id di XML kamu
+        View menuPesananSaya = findViewById(R.id.menuPesanan);
         if (menuPesananSaya != null) {
             menuPesananSaya.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // Pindah ke halaman PesananSayaActivity
                     Intent intent = new Intent(ProfilActivity.this, PesananSayaActivity.class);
                     startActivity(intent);
                 }
@@ -195,7 +193,6 @@ public class ProfilActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Kalau tokennya ada, panggil ulang data profil supaya saldo terbaru muncul
         if (token != null && !token.isEmpty()) {
             loadDataProfilDariLaravel();
         }
@@ -220,7 +217,7 @@ public class ProfilActivity extends AppCompatActivity {
             RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpeg"), tempFile);
             MultipartBody.Part body = MultipartBody.Part.createFormData("photo", tempFile.getName(), requestFile);
 
-            // 3. Panggil Retrofit (Sesuaikan nama kelas Retrofit Client kamu)
+            // 3. Panggil Retrofit
             ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
             Call<ResponseBody> call = apiService.uploadFotoProfil("Bearer " + token, body);
 
@@ -266,6 +263,9 @@ public class ProfilActivity extends AppCompatActivity {
                         int jumlahUlasan = jsonObject.optInt("jumlah_ulasan", 0);
                         int saldo = jsonObject.optInt("balance", 0);
 
+                        // [UPDATE] Tangkap followers_count dari JSON API profil kamu
+                        int jumlahFollower = jsonObject.optInt("followers_count", 0);
+
                         // Set nilai ke UI
                         txtNama.setText(namaLengkap);
                         txtUsername.setText("@" + username);
@@ -274,6 +274,9 @@ public class ProfilActivity extends AppCompatActivity {
                         txtUlasan.setText(" (" + jumlahUlasan + ")");
                         txtSaldoProfil.setText("Rp " + saldo);
                         txtEmailProfil.setText(email);
+
+                        // [UPDATE] Set text followers ke layar
+                        txtFollowersProfil.setText(jumlahFollower + " Pengikut");
 
                         if (!fotoProfil.isEmpty() && !fotoProfil.equals("null")) {
                             String imageUrl = fotoProfil.startsWith("http") ? fotoProfil : Config.IMAGE_URL + fotoProfil;

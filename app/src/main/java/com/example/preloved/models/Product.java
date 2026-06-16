@@ -13,8 +13,8 @@ public class Product implements Serializable {
     @SerializedName("category_id")
     private int categoryId;
 
-    @SerializedName("seller_id")
-    private int sellerId;
+    @SerializedName("seller")
+    private Seller seller;
 
     @SerializedName("nama_barang")
     private String nama_barang;
@@ -38,9 +38,6 @@ public class Product implements Serializable {
     private String warna;
 
     // [FIX UTAMA]: Diubah ke "seller" agar sinkron dengan relasi model Laravel lu bray!
-    @SerializedName("seller")
-    private Seller seller;
-
     @SerializedName("lokasi_kota")
     private String lokasi_kota;
 
@@ -65,7 +62,7 @@ public class Product implements Serializable {
     }
 
     public int getSellerId() {
-        return sellerId;
+        return (seller != null) ? seller.getId() : 0;
     }
 
     public String getNama_barang() {

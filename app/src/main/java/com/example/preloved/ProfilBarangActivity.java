@@ -14,9 +14,9 @@ import com.example.preloved.models.Product;
 import com.example.preloved.models.Seller;
 import com.example.preloved.network.ApiService;
 import com.example.preloved.network.RetrofitClient;
+import com.example.preloved.network.Config;
 import com.example.preloved.utils.FavoriteManager;
 import com.example.preloved.utils.SessionManager;
-import com.example.preloved.network.Config;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -66,7 +66,6 @@ public class ProfilBarangActivity extends AppCompatActivity {
         TextView tvProductCategory = findViewById(R.id.tvProductCategory);
         TextView tvProductPrice = findViewById(R.id.tvProductPrice);
         TextView tvOldPrice = findViewById(R.id.tvOldPrice);
-        TextView tvDiscount = findViewById(R.id.tvDiscount);
         TextView tvCondition = findViewById(R.id.tvCondition);
         TextView tvProductLocation = findViewById(R.id.tvProductLocation);
         TextView tvDescription = findViewById(R.id.tvDescription);
@@ -78,12 +77,10 @@ public class ProfilBarangActivity extends AppCompatActivity {
         TextView tvSellerFollowers = findViewById(R.id.tvSellerFollowers);
         com.google.android.material.button.MaterialButton btnIkuti = findViewById(R.id.btnIkuti);
 
-        // DEKLARASI TOMBOL BELI DARI LAYOUT BARU
         com.google.android.material.button.MaterialButton btnBeli = findViewById(R.id.btnBeli);
 
-        // TANGKAP DATA PRODUCT DARI HALAMAN SEBELUMNYA
+        // TANGKAP DATA PRODUCT
         if (getIntent() != null && getIntent().hasExtra("PRODUCT")) {
-
             Product product = (Product) getIntent().getSerializableExtra("PRODUCT");
 
             if (product != null) {
@@ -94,36 +91,25 @@ public class ProfilBarangActivity extends AppCompatActivity {
                 tvProductLocation.setText(product.getLokasi_kota());
                 tvDescription.setText(product.getDeskripsi());
 
-                // =======================================================
-                // LOGIKA FAVORIT DINAMIS DI HALAMAN DETAIL
-                // =======================================================
+                // LOGIKA FAVORIT
                 ImageView btnFavorite = findViewById(R.id.btnFavorite);
                 if (btnFavorite != null) {
-                    FavoriteManager favManager = new FavoriteManager(ProfilBarangActivity.this);
-
-                    // Set status nyala/mati awal saat masuk halaman
+                    FavoriteManager favManager = new FavoriteManager(this);
                     boolean isFav = favManager.isFavorite(product.getProductId());
                     btnFavorite.setImageResource(isFav ? R.drawable.heart_fill : R.drawable.heart);
                     btnFavorite.setColorFilter(isFav ? android.graphics.Color.RED : android.graphics.Color.parseColor("#BDBDBD"));
 
-                    // Saat tombol love dipencet
                     btnFavorite.setOnClickListener(v -> {
                         favManager.toggleFavorite(product);
-                        boolean newFavState = favManager.isFavorite(product.getProductId());
-
-                        btnFavorite.setImageResource(newFavState ? R.drawable.heart_fill : R.drawable.heart);
-                        btnFavorite.setColorFilter(newFavState ? android.graphics.Color.RED : android.graphics.Color.parseColor("#BDBDBD"));
-
-                        Toast.makeText(ProfilBarangActivity.this, newFavState ? "Ditambahkan ke Favorit" : "Dihapus dari Favorit", Toast.LENGTH_SHORT).show();
+                        boolean state = favManager.isFavorite(product.getProductId());
+                        btnFavorite.setImageResource(state ? R.drawable.heart_fill : R.drawable.heart);
+                        btnFavorite.setColorFilter(state ? android.graphics.Color.RED : android.graphics.Color.parseColor("#BDBDBD"));
                     });
                 }
 
-                // =========================================================
-                // PANGGIL FUNGSI LOAD BARANG SERUPA
-                // =========================================================
                 loadBarangSerupa(product.getProductId(), product.getCategoryId());
 
-                // Format Harga Jual
+                // Harga
                 try {
                     double harga = Double.parseDouble(product.getHarga_jual());
                     tvProductPrice.setText("Rp " + new DecimalFormat("#,###").format(harga));
@@ -131,183 +117,159 @@ public class ProfilBarangActivity extends AppCompatActivity {
                     tvProductPrice.setText("Rp " + product.getHarga_jual());
                 }
 
-                // =========================================================
-                // LOGIKA DINAMIS STATUS BARANG DI DETAIL (TERJUAL / TERSEDIA)
-                // =========================================================
+                // Status Barang
                 if (product.getStatus_barang() != null && !product.getStatus_barang().equalsIgnoreCase("available")) {
-                    // 1. Buat gambar utama menjadi abu-abu
                     android.graphics.ColorMatrix matrix = new android.graphics.ColorMatrix();
                     matrix.setSaturation(0f);
-                    android.graphics.ColorMatrixColorFilter filter = new android.graphics.ColorMatrixColorFilter(matrix);
-                    imgProduct.setColorFilter(filter);
-
-                    // 2. Ubah fungsi dan tampilan tombol beli
+                    imgProduct.setColorFilter(new android.graphics.ColorMatrixColorFilter(matrix));
                     if (btnBeli != null) {
                         btnBeli.setText("Habis Terjual (SOLD)");
-                        btnBeli.setEnabled(false); // Nonaktifkan tombol agar tidak bisa diklik
-                        btnBeli.setBackgroundColor(android.graphics.Color.parseColor("#9E9E9E")); // Ubah jadi abu-abu
+                        btnBeli.setEnabled(false);
+                        btnBeli.setBackgroundColor(android.graphics.Color.parseColor("#9E9E9E"));
                     }
-
-                    Toast.makeText(this, "Produk ini sudah terjual", Toast.LENGTH_SHORT).show();
                 } else {
-                    // Jika masih tersedia
                     imgProduct.clearColorFilter();
                     if (btnBeli != null) {
-                        btnBeli.setEnabled(true);
                         btnBeli.setOnClickListener(v -> {
-                            Intent intent = new Intent(ProfilBarangActivity.this, OrderActivity.class);
+                            Intent intent = new Intent(this, OrderActivity.class);
                             intent.putExtra("PRODUCT", product);
                             startActivity(intent);
                         });
                     }
                 }
 
-                // Format Harga Asli (Dicoret)
-                if (product.getHarga_asli() != null && !product.getHarga_asli().isEmpty()) {
-                    try {
-                        double hargaAsli = Double.parseDouble(product.getHarga_asli());
-                        tvOldPrice.setText("Rp " + new DecimalFormat("#,###").format(hargaAsli));
-                    } catch (Exception e) {
-                        tvOldPrice.setText("Rp " + product.getHarga_asli());
-                    }
-                    tvOldPrice.setPaintFlags(tvOldPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                } else {
-                    tvOldPrice.setVisibility(View.GONE);
-                }
-
-                String category = "Produk";
-                if (name != null) {
-                    if (name.toLowerCase().contains("shirt")
-                        || name.toLowerCase().contains("hoodie")
-                        || name.toLowerCase().contains("flannel")) {
-                        category = "Pakaian";
-                    }
-                }
-                tvProductCategory.setText("Kategori: " + category);
-
                 // Foto Produk
                 if (product.getImages() != null && !product.getImages().isEmpty()) {
-                    String imagePath = product.getImages().get(0).getImage_path();
-                    String imageUrl = imagePath.startsWith("http") ? imagePath : Config.IMAGE_URL + imagePath;
-
-                    Glide.with(this)
-                        .load(imageUrl)
-                        .placeholder(android.R.drawable.ic_menu_gallery)
-                        .into(imgProduct);
+                    String imgP = product.getImages().get(0).getImage_path();
+                    Glide.with(this).load(imgP.startsWith("http") ? imgP : Config.IMAGE_URL + imgP).into(imgProduct);
                 }
 
-                // ================= LOGIKA DINAMIS PENJUAL & FOLLOW =================
+                // Penjual & Follow
                 if (product.getSeller() != null) {
                     Seller penjual = product.getSeller();
-
-                    tvSellerName.setText(penjual.getName());
+                    String namaPenjual = penjual.getName() != null ? penjual.getName() : "Penjual";
+                    tvSellerName.setText(namaPenjual);
                     tvSellerFollowers.setText("(" + penjual.getFollowersCount() + ")");
-                    tvSellerRating.setText("4.8");
 
-                    // Load foto profil penjual
-                    if (penjual.getFotoProfil() != null && !penjual.getFotoProfil().isEmpty()) {
-                        String avatarUrl = penjual.getFotoProfil().startsWith("http") ? penjual.getFotoProfil() : Config.IMAGE_URL + penjual.getFotoProfil();
-                        Glide.with(this)
-                            .load(avatarUrl)
-                            .placeholder(android.R.drawable.sym_contact_card)
-                            .into(imgSellerAvatar);
+                    if (penjual.getFotoProfil() != null) {
+                        String aUrl = penjual.getFotoProfil().startsWith("http") ? penjual.getFotoProfil() : Config.IMAGE_URL + penjual.getFotoProfil();
+                        Glide.with(this).load(aUrl).placeholder(android.R.drawable.sym_contact_card).into(imgSellerAvatar);
                     }
 
-                    // Aksi Klik Tombol Ikuti
+                    // =========================================================
+                    // LOGIKA TOGGLE FOLLOW / UNFOLLOW
+                    // =========================================================
                     btnIkuti.setOnClickListener(v -> {
-                        btnIkuti.setText("Mengikuti");
-                        btnIkuti.setTextColor(android.graphics.Color.WHITE);
-                        btnIkuti.setBackgroundColor(android.graphics.Color.parseColor("#6952D9"));
-
-                        int currentFollowers = penjual.getFollowersCount();
-                        penjual.setFollowersCount(currentFollowers + 1);
-                        tvSellerFollowers.setText("(" + penjual.getFollowersCount() + ")");
+                        // Kunci tombol sementara biar user gak spam klik berturut-turut
                         btnIkuti.setEnabled(false);
 
-                        SessionManager sessionManager = new SessionManager(this);
-                        String token = sessionManager.getBearerToken();
+                        ApiService api = RetrofitClient.getClient().create(ApiService.class);
+                        String token = new SessionManager(ProfilBarangActivity.this).getToken();
 
-                        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-                        apiService.followUser(token, penjual.getId()).enqueue(new Callback<ResponseBody>() {
-                            @Override
-                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                                if (response.isSuccessful()) {
-                                    Toast.makeText(ProfilBarangActivity.this, "Berhasil mengikuti " + penjual.getName(), Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(ProfilBarangActivity.this, "Gagal follow. Coba lagi.", Toast.LENGTH_SHORT).show();
-                                    kembalikanTombolFollow(btnIkuti, penjual, currentFollowers);
+                        if (token == null || token.isEmpty()) {
+                            Toast.makeText(ProfilBarangActivity.this, "Silakan login terlebih dahulu", Toast.LENGTH_SHORT).show();
+                            btnIkuti.setEnabled(true);
+                            return;
+                        }
+
+                        String auth = token.startsWith("Bearer ") ? token : "Bearer " + token;
+
+                        // Cek status tulisan tombol saat ini buat nentuin aksi selanjutnya
+                        boolean isCurrentlyFollowing = btnIkuti.getText().toString().equalsIgnoreCase("Mengikuti");
+
+                        if (isCurrentlyFollowing) {
+                            // ---------------------------------------------------------
+                            // AKSI BERHENTI MENGIKUTI (UNFOLLOW)
+                            // ---------------------------------------------------------
+                            api.unfollowUser(auth, penjual.getId()).enqueue(new Callback<ResponseBody>() {
+                                @Override
+                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                    if (response.isSuccessful()) {
+                                        Toast.makeText(ProfilBarangActivity.this, "Berhenti mengikuti " + namaPenjual, Toast.LENGTH_SHORT).show();
+
+                                        // Kembalikan UI ke default (tombol transparan, tulisan ungu)
+                                        btnIkuti.setText("Ikuti");
+                                        btnIkuti.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+                                        btnIkuti.setTextColor(android.graphics.Color.parseColor("#6952D9"));
+
+                                        // Kurangi angka follower secara lokal (mencegah minus)
+                                        int updateAngka = penjual.getFollowersCount() - 1;
+                                        if (updateAngka < 0) updateAngka = 0;
+
+                                        penjual.setFollowersCount(updateAngka);
+                                        tvSellerFollowers.setText("(" + updateAngka + ")");
+                                    } else {
+                                        Toast.makeText(ProfilBarangActivity.this, "Gagal berhenti mengikuti", Toast.LENGTH_SHORT).show();
+                                    }
+                                    btnIkuti.setEnabled(true); // Buka kunci tombol
                                 }
-                            }
 
-                            @Override
-                            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                                Toast.makeText(ProfilBarangActivity.this, "Koneksi terputus: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                                kembalikanTombolFollow(btnIkuti, penjual, currentFollowers);
-                            }
-                        });
+                                @Override
+                                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                    Toast.makeText(ProfilBarangActivity.this, "Koneksi terputus", Toast.LENGTH_SHORT).show();
+                                    btnIkuti.setEnabled(true);
+                                }
+                            });
+
+                        } else {
+                            // ---------------------------------------------------------
+                            // AKSI MENGIKUTI (FOLLOW)
+                            // ---------------------------------------------------------
+                            api.followUser(auth, penjual.getId()).enqueue(new Callback<ResponseBody>() {
+                                @Override
+                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                    if (response.isSuccessful()) {
+                                        Toast.makeText(ProfilBarangActivity.this, "Berhasil mengikuti " + namaPenjual, Toast.LENGTH_SHORT).show();
+
+                                        // Ubah UI jadi status sudah mengikuti (tombol ungu solid)
+                                        btnIkuti.setText("Mengikuti");
+                                        btnIkuti.setBackgroundColor(android.graphics.Color.parseColor("#6952D9"));
+                                        btnIkuti.setTextColor(android.graphics.Color.WHITE);
+
+                                        // Naikkan angka follower secara lokal
+                                        int updateAngka = penjual.getFollowersCount() + 1;
+                                        penjual.setFollowersCount(updateAngka);
+                                        tvSellerFollowers.setText("(" + updateAngka + ")");
+
+                                    } else if (response.code() == 422) {
+                                        // Validasi nggak boleh nge-follow lapak sendiri
+                                        Toast.makeText(ProfilBarangActivity.this, "Anda tidak bisa mengikuti toko sendiri", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Toast.makeText(ProfilBarangActivity.this, "Gagal mengikuti seller", Toast.LENGTH_SHORT).show();
+                                    }
+                                    btnIkuti.setEnabled(true); // Buka kunci tombol
+                                }
+
+                                @Override
+                                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                    Toast.makeText(ProfilBarangActivity.this, "Koneksi terputus", Toast.LENGTH_SHORT).show();
+                                    btnIkuti.setEnabled(true);
+                                }
+                            });
+                        }
                     });
                 }
             }
         }
     }
 
-    private void kembalikanTombolFollow(com.google.android.material.button.MaterialButton btnIkuti, Seller penjual, int currentFollowers) {
-        btnIkuti.setText("Ikuti");
-        btnIkuti.setBackgroundColor(android.graphics.Color.TRANSPARENT);
-        btnIkuti.setTextColor(android.graphics.Color.parseColor("#6952D9"));
-        penjual.setFollowersCount(currentFollowers);
-        TextView tvSellerFollowers = findViewById(R.id.tvSellerFollowers);
-        tvSellerFollowers.setText("(" + penjual.getFollowersCount() + ")");
-        btnIkuti.setEnabled(true);
-    }
-
-    // =========================================================================
-    // FUNGSI LOAD BARANG SERUPA (Berada di luar onCreate)
-    // =========================================================================
     private void loadBarangSerupa(int currentProductId, int categoryId) {
-        RecyclerView rvBarangSerupa = findViewById(R.id.rvBarangSerupa);
-        TextView tvEmptyBarangSerupa = findViewById(R.id.tvEmptyBarangSerupa);
-
-        // Atur agar list menyamping (Horizontal)
-        rvBarangSerupa.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-
-        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-        Call<List<Product>> call = apiService.getProductsByCategory(categoryId);
-
-        call.enqueue(new Callback<List<Product>>() {
+        RecyclerView rv = findViewById(R.id.rvBarangSerupa);
+        rv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        ApiService api = RetrofitClient.getClient().create(ApiService.class);
+        api.getProductsByCategory(categoryId).enqueue(new Callback<List<Product>>() {
             @Override
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    List<Product> semuaProduk = response.body();
-                    List<Product> produkSerupa = new ArrayList<>();
-
-                    // Looping data yang didapat
-                    for (Product p : semuaProduk) {
-                        // Masukkan produk jika kategorinya sama, TAPI kecualikan produk yang sedang dilihat saat ini
-                        if (p.getCategoryId() == categoryId && p.getProductId() != currentProductId) {
-                            produkSerupa.add(p);
-                        }
+                    List<Product> list = new ArrayList<>();
+                    for (Product p : response.body()) {
+                        if (p.getCategoryId() == categoryId && p.getProductId() != currentProductId) list.add(p);
                     }
-
-                    // Tampilkan atau sembunyikan state kosong
-                    if (produkSerupa.isEmpty()) {
-                        rvBarangSerupa.setVisibility(View.GONE);
-                        tvEmptyBarangSerupa.setVisibility(View.VISIBLE);
-                    } else {
-                        tvEmptyBarangSerupa.setVisibility(View.GONE);
-                        rvBarangSerupa.setVisibility(View.VISIBLE);
-
-                        // Gunakan ProductAdapter yang sama dengan yang dipakai di Home/Kategori
-                        ProductAdapter adapter = new ProductAdapter(produkSerupa);
-                        rvBarangSerupa.setAdapter(adapter);
-                    }
+                    rv.setAdapter(new ProductAdapter(list));
                 }
             }
-
             @Override
-            public void onFailure(Call<List<Product>> call, Throwable t) {
-                Toast.makeText(ProfilBarangActivity.this, "Gagal memuat barang serupa", Toast.LENGTH_SHORT).show();
-            }
+            public void onFailure(Call<List<Product>> call, Throwable t) {}
         });
     }
 }

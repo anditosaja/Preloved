@@ -20,6 +20,7 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Header;
@@ -55,6 +56,7 @@ public interface ApiService {
     Call<ResponseBody> getMySales(
         @Header("Authorization") String token
     );
+
 
     // Endpoint untuk Penjual meng-ACC pesanan
     @Headers("Accept: application/json")
@@ -134,8 +136,16 @@ public interface ApiService {
         @Body TopUpRequest request
     );
 
+    @Headers("Accept: application/json")
     @POST("follow/{sellerId}")
     Call<ResponseBody> followUser(
+        @Header("Authorization") String token,
+        @Path("sellerId") int sellerId
+    );
+
+    @Headers("Accept: application/json")
+    @DELETE("follow/{sellerId}")
+    Call<ResponseBody> unfollowUser(
         @Header("Authorization") String token,
         @Path("sellerId") int sellerId
     );

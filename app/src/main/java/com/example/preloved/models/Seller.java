@@ -4,10 +4,10 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class Seller implements Serializable {
-    @SerializedName("id")
+    @SerializedName("user_id")
     private int id;
 
-    @SerializedName("name")
+    @SerializedName("username")
     private String name;
 
     @SerializedName("foto_profil") // Sesuaikan dengan field foto profil di tabel users Laravel lu
