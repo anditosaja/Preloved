@@ -90,7 +90,7 @@ public class BarangSayaActivity extends AppCompatActivity {
         String authHeader = token.startsWith("Bearer ") ? token : "Bearer " + token;
 
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-        // Memanggil rute getMySales untuk mendapatkan data pesanan masuk yang perlu di ACC
+        // Memanggil rute getMySales untuk mendapatkan SEMUA data produk (laku & belum)
         Call<ResponseBody> call = apiService.getMySales(authHeader);
 
         call.enqueue(new Callback<ResponseBody>() {
@@ -161,13 +161,13 @@ public class BarangSayaActivity extends AppCompatActivity {
     }
 
     // ========================================================
-    // INNER CLASS ADAPTER (Mencegah Mismatch ID Komponen Item)
+    // INNER CLASS ADAPTER
     // ========================================================
     private class SalesAdapter extends RecyclerView.Adapter<SalesAdapter.ViewHolder> {
-        private final JSONArray ordersArray;
+        private final JSONArray productsArray;
 
-        public SalesAdapter(JSONArray ordersArray) {
-            this.ordersArray = ordersArray;
+        public SalesAdapter(JSONArray productsArray) {
+            this.productsArray = productsArray;
         }
 
         @NonNull
@@ -180,43 +180,68 @@ public class BarangSayaActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             try {
-                JSONObject orderObj = ordersArray.getJSONObject(position);
-                int orderId = orderObj.getInt("order_id");
-                String status = orderObj.optString("status", "pending");
-
-                JSONObject productObj = orderObj.getJSONObject("product");
+                // Sekarang yang ditangkap adalah objek Product langsung
+                JSONObject productObj = productsArray.getJSONObject(position);
+                int productId = productObj.optInt("product_id");
                 String namaBarang = productObj.optString("nama_barang", "Produk");
                 int categoryId = productObj.optInt("category_id", 0);
-                double hargaFinal = orderObj.optDouble("harga_final", 0);
+                double hargaTampil = productObj.optDouble("harga_jual", 0);
+                String statusBarang = productObj.optString("status_barang", "available");
 
-                holder.tvProductName.setText(namaBarang);
-                holder.tvCategory.setText("Kategori ID: " + categoryId + " | Rp " + new DecimalFormat("#,###").format(hargaFinal));
+                int orderId = 0;
+                String statusOrder = "";
 
-                // Logika Penentuan Status Penjualan
-                if (status.equalsIgnoreCase("paid")) {
-                    holder.tvStatus.setText("Status: Menunggu ACC Penjual");
-                    holder.tvStatus.setTextColor(android.graphics.Color.parseColor("#FF9800"));
-                    holder.btnAction.setVisibility(View.VISIBLE);
-                    holder.btnAction.setText("ACC Pesanan");
-                    holder.btnAction.setOnClickListener(v -> eksekusiAccPesanan(orderId));
-                } else if (status.equalsIgnoreCase("shipped")) {
-                    holder.tvStatus.setText("Status: Barang Sedang Dikirim");
-                    holder.tvStatus.setTextColor(android.graphics.Color.parseColor("#2196F3"));
-                    holder.btnAction.setVisibility(View.GONE);
-                } else if (status.equalsIgnoreCase("completed")) {
-                    holder.tvStatus.setText("Status: Transaksi Selesai (Dana Cair)");
-                    holder.tvStatus.setTextColor(android.graphics.Color.parseColor("#4CAF50"));
-                    holder.btnAction.setVisibility(View.GONE);
-                } else {
-                    holder.tvStatus.setText("Status: " + status.toUpperCase());
-                    holder.btnAction.setVisibility(View.GONE);
+                // Cek apakah produk ini sudah memiliki pesanan masuk (nested JSON orders dari Laravel)
+                JSONArray nestedOrders = productObj.optJSONArray("orders");
+                if (nestedOrders != null && nestedOrders.length() > 0) {
+                    JSONObject latestOrder = nestedOrders.getJSONObject(0);
+                    orderId = latestOrder.optInt("order_id", 0);
+                    statusOrder = latestOrder.optString("status", "");
+                    // Pakai harga final dari order jika sudah dibeli
+                    hargaTampil = latestOrder.optDouble("harga_final", hargaTampil);
                 }
 
-                // Load Gambar Kecil menggunakan Array Images dari Laravel
+                holder.tvProductName.setText(namaBarang);
+                holder.tvCategory.setText("Kategori ID: " + categoryId + " | Rp " + new DecimalFormat("#,###").format(hargaTampil));
+
+                // ==========================================================
+                // LOGIKA TAMPILAN BERDASARKAN STATUS
+                // ==========================================================
+                if (statusBarang.equalsIgnoreCase("available")) {
+                    holder.tvStatus.setText("Status: Belum Terjual (Tersedia)");
+                    holder.tvStatus.setTextColor(android.graphics.Color.parseColor("#757575")); // Warna Abu-abu
+                    holder.btnAction.setVisibility(View.GONE);
+                } else {
+                    // Logika jika barang sudah terjual (Order Status)
+                    if (statusOrder.equalsIgnoreCase("paid")) {
+                        holder.tvStatus.setText("Status: Menunggu ACC Penjual");
+                        holder.tvStatus.setTextColor(android.graphics.Color.parseColor("#FF9800"));
+                        holder.btnAction.setVisibility(View.VISIBLE);
+                        holder.btnAction.setText("ACC Pesanan");
+                        int finalOrderId = orderId;
+                        holder.btnAction.setOnClickListener(v -> eksekusiAccPesanan(finalOrderId));
+                    } else if (statusOrder.equalsIgnoreCase("shipped")) {
+                        holder.tvStatus.setText("Status: Barang Sedang Dikirim");
+                        holder.tvStatus.setTextColor(android.graphics.Color.parseColor("#2196F3"));
+                        holder.btnAction.setVisibility(View.GONE);
+                    } else if (statusOrder.equalsIgnoreCase("completed")) {
+                        holder.tvStatus.setText("Status: Transaksi Selesai (Dana Cair)");
+                        holder.tvStatus.setTextColor(android.graphics.Color.parseColor("#4CAF50"));
+                        holder.btnAction.setVisibility(View.GONE);
+                    } else {
+                        // Jika status lain (contoh: cancelled, reserved)
+                        holder.tvStatus.setText("Status: " + (statusOrder.isEmpty() ? statusBarang.toUpperCase() : statusOrder.toUpperCase()));
+                        holder.btnAction.setVisibility(View.GONE);
+                    }
+                }
+
+                // ==========================================================
+                // LOAD GAMBAR
+                // ==========================================================
                 JSONArray imagesArray = productObj.optJSONArray("images");
                 if (imagesArray != null && imagesArray.length() > 0) {
                     JSONObject imageObj = imagesArray.getJSONObject(0);
-                    String imagePath = imageObj.optString("image_url", ""); // Menyesuaikan nama kolom migrasi gambar
+                    String imagePath = imageObj.optString("image_url", "");
                     if(imagePath.isEmpty()) {
                         imagePath = imageObj.optString("image_path", "");
                     }
@@ -238,7 +263,7 @@ public class BarangSayaActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return ordersArray.length();
+            return productsArray.length();
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {

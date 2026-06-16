@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.preloved.adapters.ProductAdapter;
+import com.example.preloved.models.HomeResponse;
 import com.example.preloved.models.Product;
 import com.example.preloved.network.ApiService;
 import com.example.preloved.network.RetrofitClient;
@@ -63,23 +64,79 @@ public class DaftarBarangActivity extends AppCompatActivity {
             btnBack.setOnClickListener(v -> finish());
         }
 
-        // Tangkap data kategori dari Halaman Sebelumnya
+        // Tangkap data dari Halaman Sebelumnya (Bisa dari Kategori, bisa dari Lihat Semua)
+        String tipeDaftar = getIntent().getStringExtra("TIPE_DAFTAR");
         String namaKategori = getIntent().getStringExtra("NAMA_KATEGORI");
         int categoryId = getIntent().getIntExtra("CATEGORY_ID", -1);
 
-        if (namaKategori != null) {
-            tvTitleKategori.setText(namaKategori);
-        }
-
-        // Jika ID valid, tarik data dari Laravel
-        if (categoryId != -1) {
+        // =========================================================
+        // LOGIKA PENENTUAN SUMBER DATA (TRENDING / REKOMENDASI / KATEGORI)
+        // =========================================================
+        if (tipeDaftar != null) {
+            if (tipeDaftar.equals("trending")) {
+                tvTitleKategori.setText("Trending");
+                tarikDataHome("trending");
+            } else if (tipeDaftar.equals("rekomendasi")) {
+                tvTitleKategori.setText("Rekomendasi Untukmu");
+                tarikDataHome("rekomendasi");
+            }
+        } else if (categoryId != -1) {
+            if (namaKategori != null) {
+                tvTitleKategori.setText(namaKategori);
+            }
             tarikDataKategori(categoryId);
         } else {
-            Toast.makeText(this, "Kategori tidak valid", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Data tidak valid", Toast.LENGTH_SHORT).show();
             tvEmptyState.setVisibility(View.VISIBLE);
         }
     }
 
+    // =========================================================
+    // FUNGSI TARIK DATA UNTUK TRENDING / REKOMENDASI
+    // =========================================================
+    private void tarikDataHome(String tipe) {
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        Call<HomeResponse> call = apiService.getTrendingProducts();
+
+        call.enqueue(new Callback<HomeResponse>() {
+            @Override
+            public void onResponse(Call<HomeResponse> call, Response<HomeResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<Product> targetList = new ArrayList<>();
+
+                    if (tipe.equals("trending")) {
+                        targetList = response.body().getTrending();
+                    } else {
+                        targetList = response.body().getRecommended();
+                    }
+
+                    if (targetList == null || targetList.isEmpty()) {
+                        rvProducts.setVisibility(View.GONE);
+                        tvEmptyState.setVisibility(View.VISIBLE);
+                    } else {
+                        tvEmptyState.setVisibility(View.GONE);
+                        rvProducts.setVisibility(View.VISIBLE);
+
+                        ProductAdapter adapter = new ProductAdapter(targetList);
+                        rvProducts.setAdapter(adapter);
+                    }
+                } else {
+                    Log.e("API_ERROR", "Response gagal: " + response.code());
+                    Toast.makeText(DaftarBarangActivity.this, "Gagal mengambil data", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<HomeResponse> call, Throwable t) {
+                Log.e("API_FAILURE", "Koneksi mati: " + t.getMessage());
+                Toast.makeText(DaftarBarangActivity.this, "Koneksi ke server gagal", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // =========================================================
+    // FUNGSI TARIK DATA KHUSUS KATEGORI
+    // =========================================================
     private void tarikDataKategori(int categoryId) {
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         // Memanggil endpoint: /api/products/search?category_id=X
@@ -93,22 +150,17 @@ public class DaftarBarangActivity extends AppCompatActivity {
                     List<Product> semuaProduk = response.body();
                     List<Product> produkSesuaiKategori = new ArrayList<>();
 
-                    // =========================================================
                     // FILTERING MANUAL: Seleksi ketat berdasarkan categoryId
-                    // =========================================================
                     for (Product p : semuaProduk) {
-                        // Jika id kategori produk sama dengan id kategori yang diklik user
                         if (p.getCategoryId() == categoryId) {
                             produkSesuaiKategori.add(p);
                         }
                     }
 
                     if (produkSesuaiKategori.isEmpty()) {
-                        // Jika hasil seleksi kosong (tidak ada barang di kategori ini)
                         rvProducts.setVisibility(View.GONE);
                         tvEmptyState.setVisibility(View.VISIBLE);
                     } else {
-                        // Jika barang ada, masukkan ke adapter dan tampilkan
                         tvEmptyState.setVisibility(View.GONE);
                         rvProducts.setVisibility(View.VISIBLE);
 

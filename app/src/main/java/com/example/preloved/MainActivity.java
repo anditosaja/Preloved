@@ -21,9 +21,8 @@ import com.example.preloved.models.HomeResponse;
 import com.example.preloved.models.Product;
 import com.example.preloved.network.ApiService;
 import com.example.preloved.network.RetrofitClient;
-import com.example.preloved.utils.SessionManager; // Pastikan import ini ada
+import com.example.preloved.utils.SessionManager;
 import com.google.android.material.card.MaterialCardView;
-import com.example.preloved.ProfilActivity;
 
 import java.util.List;
 import retrofit2.Call;
@@ -63,8 +62,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Setiap kali user balik ke Beranda (termasuk habis beli barang),
-        // kita paksa Android buat narik data profil & saldo terbaru dari Laravel bray!
+        // Setiap kali user balik ke Beranda, update data otomatis
         ambilDataDariLaravel();
     }
 
@@ -88,41 +86,21 @@ public class MainActivity extends AppCompatActivity {
         ivRekomendasi2 = findViewById(R.id.ivRekomendasi2);
         ivRekomendasi3 = findViewById(R.id.ivRekomendasi3);
 
-        final boolean[] isFav1 = {false};
-        if (ivFavorite1 != null) {
-            ivFavorite1.setOnClickListener(v -> {
-                isFav1[0] = !isFav1[0];
-                ivFavorite1.setImageResource(isFav1[0] ? R.drawable.heart_fill : R.drawable.heart);
-                ivFavorite1.setColorFilter(isFav1[0] ? android.graphics.Color.RED : android.graphics.Color.parseColor("#BDBDBD"));
-            });
-        }
-
-        final boolean[] isFav2 = {false};
-        if (ivFavorite2 != null) {
-            ivFavorite2.setOnClickListener(v -> {
-                isFav2[0] = !isFav2[0];
-                ivFavorite2.setImageResource(isFav2[0] ? R.drawable.heart_fill : R.drawable.heart);
-                ivFavorite2.setColorFilter(isFav2[0] ? android.graphics.Color.RED : android.graphics.Color.parseColor("#BDBDBD"));
-            });
-        }
-
         // ================= LOGIKA SEARCH BAR =================
         EditText etSearchDashboard = findViewById(R.id.etSearchDashboard);
         if (etSearchDashboard != null) {
             etSearchDashboard.setOnEditorActionListener((v, actionId, event) -> {
-                // Jika user mencet tombol "Search" atau "Enter" di keyboard HP
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     String keywordPencarian = etSearchDashboard.getText().toString().trim();
 
                     if (!keywordPencarian.isEmpty()) {
-                        // Lompat ke HasilPencarianActivity bawa koper isi keyword
                         Intent intent = new Intent(MainActivity.this, HasilPencarianActivity.class);
                         intent.putExtra("KEYWORD", keywordPencarian);
                         startActivity(intent);
                     } else {
-                        Toast.makeText(MainActivity.this, "Ketik nama barang dulu bray!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Ketik nama barang dulu!", Toast.LENGTH_SHORT).show();
                     }
-                    return true; // Menandakan event klik sudah ditangani
+                    return true;
                 }
                 return false;
             });
@@ -132,6 +110,24 @@ public class MainActivity extends AppCompatActivity {
     private void aturNavigasi() {
         TextView tvLihatSemuaKategori = findViewById(R.id.tvLihatSemuaKategori);
         if (tvLihatSemuaKategori != null) tvLihatSemuaKategori.setOnClickListener(v -> pindahHalaman(KategoriActivity.class, false));
+
+        TextView tvLihatSemuaTrending = findViewById(R.id.tvLihatSemuaTrending);
+        if (tvLihatSemuaTrending != null) {
+            tvLihatSemuaTrending.setOnClickListener(v -> {
+                Intent intent = new Intent(MainActivity.this, DaftarBarangActivity.class);
+                intent.putExtra("TIPE_DAFTAR", "trending");
+                startActivity(intent);
+            });
+        }
+
+        TextView tvLihatSemuaRekomendasi = findViewById(R.id.tvLihatSemuaRekomendasi);
+        if (tvLihatSemuaRekomendasi != null) {
+            tvLihatSemuaRekomendasi.setOnClickListener(v -> {
+                Intent intent = new Intent(MainActivity.this, DaftarBarangActivity.class);
+                intent.putExtra("TIPE_DAFTAR", "rekomendasi");
+                startActivity(intent);
+            });
+        }
 
         // Kategori Grid
         LinearLayout btnKatPakaian = findViewById(R.id.btnKatPakaian);
@@ -162,11 +158,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<HomeResponse> call, Response<HomeResponse> response) {
 
-                // CEK JIKA TOKEN KADALUARSA
                 if (response.code() == 401) {
                     Toast.makeText(MainActivity.this, "Sesi berakhir, silakan login kembali", Toast.LENGTH_SHORT).show();
-
-                    // Hapus token dan tendang ke Login
                     SessionManager sessionManager = new SessionManager(MainActivity.this);
                     sessionManager.clearSession();
 
@@ -213,6 +206,30 @@ public class MainActivity extends AppCompatActivity {
             String imageUrl = "http://192.168.18.169:8000/storage/" + product.getImages().get(0).getImage_path();
             Glide.with(this).load(imageUrl).into(ivImage);
         }
+
+        // =======================================================
+        // LOGIKA FAVORIT DINAMIS
+        // =======================================================
+        ImageView ivFav = (urutan == 1) ? ivFavorite1 : ivFavorite2;
+
+        if (ivFav != null) {
+            com.example.preloved.utils.FavoriteManager favManager = new com.example.preloved.utils.FavoriteManager(this);
+
+            // Cek status saat pertama kali dirender
+            boolean isFav = favManager.isFavorite(product.getProductId());
+            ivFav.setImageResource(isFav ? R.drawable.heart_fill : R.drawable.heart);
+            ivFav.setColorFilter(isFav ? android.graphics.Color.RED : android.graphics.Color.parseColor("#BDBDBD"));
+
+            // Aksi saat love dipencet
+            ivFav.setOnClickListener(v -> {
+                favManager.toggleFavorite(product);
+                boolean newFavState = favManager.isFavorite(product.getProductId());
+
+                ivFav.setImageResource(newFavState ? R.drawable.heart_fill : R.drawable.heart);
+                ivFav.setColorFilter(newFavState ? android.graphics.Color.RED : android.graphics.Color.parseColor("#BDBDBD"));
+            });
+        }
+
         if (card != null) card.setOnClickListener(v -> bukaDetailProduk(product));
     }
 

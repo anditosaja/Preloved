@@ -129,6 +129,13 @@ public class ProfilActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        View menuFavorit = findViewById(R.id.menuFavorit);
+        if (menuFavorit != null) {
+            menuFavorit.setOnClickListener(v -> {
+                Intent intent = new Intent(ProfilActivity.this, FavoriteActivity.class);
+                startActivity(intent);
+            });
+        }
         // =========================================================
         // KLIK MENU PESANAN SAYA (PEMBELI / KONFIRMASI)
         // =========================================================
