@@ -23,6 +23,7 @@ import com.example.preloved.network.ApiService;
 import com.example.preloved.network.RetrofitClient;
 import com.example.preloved.utils.SessionManager; // Pastikan import ini ada
 import com.google.android.material.card.MaterialCardView;
+import com.example.preloved.ProfilActivity;
 
 import java.util.List;
 import retrofit2.Call;
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        View mainView = findViewById(R.id.main);
+        View mainView = findViewById(R.id.activity_main);
         if (mainView != null) {
             ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
                 Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -56,6 +57,14 @@ public class MainActivity extends AppCompatActivity {
 
         inisialisasiUI();
         aturNavigasi();
+        ambilDataDariLaravel();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Setiap kali user balik ke Beranda (termasuk habis beli barang),
+        // kita paksa Android buat narik data profil & saldo terbaru dari Laravel bray!
         ambilDataDariLaravel();
     }
 
@@ -201,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
         if (tvLoc != null) tvLoc.setText("📍 " + product.getLokasi_kota());
 
         if (product.getImages() != null && !product.getImages().isEmpty() && ivImage != null) {
-            String imageUrl = "http://10.255.149.23:8000/storage/" + product.getImages().get(0).getImage_path();
+            String imageUrl = "http://192.168.18.169:8000/storage/" + product.getImages().get(0).getImage_path();
             Glide.with(this).load(imageUrl).into(ivImage);
         }
         if (card != null) card.setOnClickListener(v -> bukaDetailProduk(product));
@@ -209,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupCardRekomendasi(MaterialCardView card, ImageView ivImage, Product product) {
         if (product.getImages() != null && !product.getImages().isEmpty() && ivImage != null) {
-            String imageUrl = "http://10.255.149.23:8000/storage/" + product.getImages().get(0).getImage_path();
+            String imageUrl = "http://192.168.18.169:8000/storage/" + product.getImages().get(0).getImage_path();
             Glide.with(this).load(imageUrl).into(ivImage);
         }
         if (card != null) card.setOnClickListener(v -> bukaDetailProduk(product));

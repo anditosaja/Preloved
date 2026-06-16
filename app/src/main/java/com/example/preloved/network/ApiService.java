@@ -1,4 +1,5 @@
 package com.example.preloved.network;
+
 import com.example.preloved.models.HomeResponse;
 import com.example.preloved.models.ImageResponse;
 import com.example.preloved.models.LoginRequest;
@@ -15,6 +16,7 @@ import com.example.preloved.models.UserChatResponse;
 import java.util.List;
 
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -23,12 +25,11 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.GET;
-
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-
 
 public interface ApiService {
 
@@ -40,6 +41,30 @@ public interface ApiService {
     @GET("products")
     Call<List<Product>> getProducts();
 
+    // Ambil daftar barang yang dipesan user (Sebagai Pembeli)
+    @GET("my-orders")
+    Call<ResponseBody> getMyOrders(
+        @Header("Authorization") String token
+    );
+
+    // Ambil daftar barang yang laku (Sebagai Penjual)
+    @GET("my-sales")
+    Call<ResponseBody> getMySales(
+        @Header("Authorization") String token
+    );
+
+    // Endpoint untuk Penjual meng-ACC pesanan (Ubah status jadi Shipped)
+    @PUT("orders/{id}/accept")
+    Call<ResponseBody> acceptOrder(
+        @Header("Authorization") String token,
+        @Path("id") int orderId
+    );
+
+    @PUT("orders/{id}/complete")
+    Call<ResponseBody> completeOrder(
+        @Header("Authorization") String token,
+        @Path("id") int orderId
+    );
 
     @GET("products")
     Call<List<Product>> getProductsByCategory(
@@ -83,6 +108,7 @@ public interface ApiService {
     // --- Ubah tipe datanya menjadi HomeResponse agar tidak "Incompatible types" ---
     @GET("home")
     Call<HomeResponse> getTrendingProducts();
+
     @Multipart
     @POST("profile/photo")
     Call<ResponseBody> uploadFotoProfil(
@@ -104,9 +130,30 @@ public interface ApiService {
         @Body TopUpRequest request
     );
 
+    @POST("follow/{sellerId}")
+    Call<ResponseBody> followUser(
+        @Header("Authorization") String token,
+        @Path("sellerId") int sellerId
+    );
+
+    // ========================================================
+    // [BARU] ENDPOINT AMBIL DATA PROFIL USER YANG SEDANG LOGIN
+    // ========================================================
+    @GET("profile")
+    Call<ResponseBody> getMyProfile(
+        @Header("Authorization") String token
+    );
+
     @GET("products/search")
     Call<List<Product>> searchProducts(
         @Query("q") String keyword,
         @Query("category_id") Integer categoryId
+    );
+
+    // Endpoint untuk melakukan pembelian barang (orders)
+    @POST("orders")
+    Call<ResponseBody> prosesOrderBarang(
+        @Header("Authorization") String token,
+        @Body RequestBody body // Kita kirim raw JSON biar dibaca mulus sama Laravel
     );
 }

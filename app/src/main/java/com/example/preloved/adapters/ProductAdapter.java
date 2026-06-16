@@ -77,7 +77,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                     finalImageUrl = imagePath;
                 } else {
                     // PENTING 2: Ganti IP di bawah ini SAMAIN PERSIS dengan BASE_URL di RetrofitClient.java lu!
-                    finalImageUrl = "http://10.255.149.23:8000/storage/" + imagePath;
+                    finalImageUrl = "http://192.168.18.169:8000/storage/" + imagePath;
                 }
             }
 

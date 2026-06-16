@@ -15,6 +15,9 @@
         android:theme="@style/Theme.Preloved"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".SuccessActivity"
+            android:exported="false" />
+        <activity
             android:name=".BarangSayaActivity"
             android:exported="false" />
         <activity
@@ -76,6 +79,9 @@
             android:exported="false" />
         <activity
             android:name=".HasilPencarianActivity"
+            android:exported="false" />
+        <activity
+            android:name=".OrderActivity"
             android:exported="false" />
     </application>
 
