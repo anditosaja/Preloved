@@ -1,5 +1,6 @@
 package com.example.preloved.network;
 
+import com.example.preloved.models.CategoryPopulerResponse;
 import com.example.preloved.models.HomeResponse;
 import com.example.preloved.models.ImageResponse;
 import com.example.preloved.models.LoginRequest;
@@ -185,6 +186,9 @@ public interface ApiService {
     @POST("orders")
     Call<ResponseBody> prosesOrderBarang(
         @Header("Authorization") String token,
-        @Body RequestBody body // Kita kirim raw JSON biar dibaca mulus sama Laravel
+        @Body RequestBody body
     );
+
+    @GET("categories/populer")
+    Call<CategoryPopulerResponse> getKategoriPopuler();
 }

@@ -32,18 +32,6 @@
                     android:scaleType="fitCenter"
                     android:src="@drawable/group_2"
                     android:contentDescription="Logo" />
-
-                <ImageView
-                    android:id="@+id/btnNotifikasi"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:src="@drawable/ion_notifications_outline"
-                    android:contentDescription="Notifikasi" />
             </RelativeLayout>
 
             <!-- Search Bar -->
@@ -71,17 +59,8 @@
                     android:inputType="text"
                     android:imeOptions="actionSearch"
                     tools:ignore="Autofill,HardcodedText,TextFields" />
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginEnd="12dp"
-                    android:src="@drawable/qr"
-                    app:tint="#757575"
-                    android:contentDescription="Scan QR" />
             </LinearLayout>
 
-            <!-- Promo Banner -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -95,53 +74,48 @@
                     android:layout_height="wrap_content"
                     android:padding="16dp">
 
-                    <TextView
-                        android:id="@+id/tvBannerTitle"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cari barang bagus\ndengan budget friendly!"
-                        android:textColor="#FFFFFF"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        tools:ignore="HardcodedText" />
+                        android:orientation="vertical"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/ivBanner"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginEnd="8dp">
 
-                    <TextView
-                        android:id="@+id/tvBannerSubtitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/tvBannerTitle"
-                        android:layout_marginTop="8dp"
-                        android:text="Cari, temukan dan miliki\nbarang favoritmu!"
-                        android:textColor="#FFFFFF"
-                        android:textSize="12sp"
-                        tools:ignore="HardcodedText" />
+                        <TextView
+                            android:id="@+id/tvBannerTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Cari barang bagus\ndengan budget friendly!"
+                            android:textColor="#FFFFFF"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            tools:ignore="HardcodedText" />
 
-                    <Button
-                        android:id="@+id/btnJelajahi"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:layout_below="@id/tvBannerSubtitle"
-                        android:layout_marginTop="16dp"
-                        android:backgroundTint="#FFFFFF"
-                        android:text="Jelajahi"
-                        android:textAllCaps="false"
-                        android:textColor="#6952D9"
-                        android:textStyle="bold"
-                        app:cornerRadius="8dp"
-                        tools:ignore="HardcodedText" />
+                        <TextView
+                            android:id="@+id/tvBannerSubtitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Cari, temukan dan miliki\nbarang favoritmu!"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            tools:ignore="HardcodedText" />
+                    </LinearLayout>
 
                     <ImageView
-                        android:layout_width="282dp"
-                        android:layout_height="158dp"
+                        android:id="@+id/ivBanner"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginEnd="-50dp"
                         android:scaleType="fitCenter"
                         android:src="@drawable/tas_merah"
                         android:contentDescription="Banner Image" />
+
                 </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
-
             <!-- Section Title Kategori -->
             <RelativeLayout
                 android:layout_width="match_parent"

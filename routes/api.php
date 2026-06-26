@@ -33,7 +33,7 @@ Route::get(
 Route::get('/categories/{id}/products',[CategoryController::class, 'products']
 );
 
-
+Route::get('/categories/populer', [CategoryController::class, 'populer']);
 
 Route::middleware('auth:sanctum')->group(function () {
 Route::get('/favorites', [FavoriteController::class, 'index']);
