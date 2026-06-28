@@ -1,18 +1,24 @@
 package com.example.preloved.network;
 
+import com.example.preloved.models.AdminDashboardSummary;
+import com.example.preloved.models.AdminLoginResponse;
+import com.example.preloved.models.ApiResponse;
 import com.example.preloved.models.CategoryPopulerResponse;
 import com.example.preloved.models.HomeResponse;
 import com.example.preloved.models.ImageResponse;
 import com.example.preloved.models.LoginRequest;
 import com.example.preloved.models.LoginResponse;
+import com.example.preloved.models.Order;
 import com.example.preloved.models.Product;
 import com.example.preloved.models.ProductRequest;
 import com.example.preloved.models.ProductResponse;
 import com.example.preloved.models.RegisterRequest;
 import com.example.preloved.models.RegisterResponse;
 import com.example.preloved.models.Review;
+import com.example.preloved.models.Category;
 import com.example.preloved.models.TopUpRequest;
 import com.example.preloved.models.TopUpResponse;
+import com.example.preloved.models.User;
 import com.example.preloved.models.UserChatResponse;
 
 import java.util.List;
@@ -43,7 +49,10 @@ public interface ApiService {
     );
 
     @GET("products")
-    Call<List<Product>> getProducts();
+    Call<List<Product>>getProducts();
+
+    @GET("categories")
+    Call<List<Category>> getCategories();
 
     // Ambil daftar barang yang dipesan user (Sebagai Pembeli)
     @Headers("Accept: application/json")
@@ -191,4 +200,99 @@ public interface ApiService {
 
     @GET("categories/populer")
     Call<CategoryPopulerResponse> getKategoriPopuler();
+
+    // ===================== ADMIN: AUTH =====================
+
+    @POST("admin/login")
+    Call<AdminLoginResponse> adminLogin(@Body LoginRequest request);
+
+    @POST("admin/logout")
+    Call<ApiResponse<Object>> adminLogout(@Header("Authorization") String bearerToken);
+
+    // ===================== ADMIN: DASHBOARD =====================
+
+    @GET("admin/dashboard/summary")
+    Call<ApiResponse<AdminDashboardSummary>> getAdminDashboardSummary(
+        @Header("Authorization") String bearerToken
+    );
+
+    // ===================== ADMIN: KELOLA PENGGUNA =====================
+
+    @GET("admin/users")
+    Call<ApiResponse<List<User>>> getAdminUsers(
+        @Header("Authorization") String bearerToken,
+        @Query("status") String status,
+        @Query("q") String keyword
+    );
+
+    @PUT("admin/users/{id}/block")
+    Call<ApiResponse<User>> blockUser(
+        @Header("Authorization") String bearerToken,
+        @Path("id") int userId
+    );
+
+    @PUT("admin/users/{id}/unblock")
+    Call<ApiResponse<User>> unblockUser(
+        @Header("Authorization") String bearerToken,
+        @Path("id") int userId
+    );
+
+    @DELETE("admin/users/{id}")
+    Call<ApiResponse<Object>> deleteUser(
+        @Header("Authorization") String bearerToken,
+        @Path("id") int userId
+    );
+
+    // ===================== ADMIN: KELOLA PRODUK =====================
+
+    @GET("admin/products")
+    Call<ApiResponse<List<Product>>> getAdminProducts(
+        @Header("Authorization") String bearerToken,
+        @Query("status") String status,
+        @Query("q") String keyword
+    );
+
+    @PUT("admin/products/{id}/approve")
+    Call<ApiResponse<Product>> approveProduct(
+        @Header("Authorization") String bearerToken,
+        @Path("id") int productId
+    );
+
+    @FormUrlEncoded
+    @PUT("admin/products/{id}/suspend")
+    Call<ApiResponse<Product>> suspendProduct(
+        @Header("Authorization") String bearerToken,
+        @Path("id") int productId,
+        @Field("catatan_admin") String catatanAdmin
+    );
+
+    @FormUrlEncoded
+    @PUT("admin/products/{id}/reject")
+    Call<ApiResponse<Product>> rejectProduct(
+        @Header("Authorization") String bearerToken,
+        @Path("id") int productId,
+        @Field("catatan_admin") String catatanAdmin
+    );
+
+    @DELETE("admin/products/{id}")
+    Call<ApiResponse<Object>> deleteProduct(
+        @Header("Authorization") String bearerToken,
+        @Path("id") int productId
+    );
+
+    // ===================== ADMIN: KELOLA TRANSAKSI =====================
+
+    @GET("admin/orders")
+    Call<ApiResponse<List<Order>>> getAdminOrders(
+        @Header("Authorization") String bearerToken,
+        @Query("status") String status
+    );
+
+    @FormUrlEncoded
+    @PUT("admin/orders/{id}/status")
+    Call<ApiResponse<Order>> updateOrderStatus(
+        @Header("Authorization") String bearerToken,
+        @Path("id") int orderId,
+        @Field("status") String status
+    );
 }

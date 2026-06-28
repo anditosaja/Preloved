@@ -136,7 +136,7 @@ public class DaftarUlasanActivity extends AppCompatActivity {
 
             User pembeli = review.getReviewer();
             if (pembeli != null) {
-                holder.tvReviewerName.setText(pembeli.getNamaLengkap());
+                holder.tvReviewerName.setText(pembeli.getNama_lengkap());
                 if (pembeli.getFoto_profil() != null && !pembeli.getFoto_profil().isEmpty()) {
                     String urlAvatar = pembeli.getFoto_profil().startsWith("http") ? pembeli.getFoto_profil() : Config.IMAGE_URL + pembeli.getFoto_profil();
                     Glide.with(context).load(urlAvatar).placeholder(android.R.drawable.sym_contact_card).into(holder.imgReviewerAvatar);

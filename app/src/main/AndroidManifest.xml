@@ -95,6 +95,21 @@
         <activity
             android:name=".OrderActivity"
             android:exported="false" />
+        <activity
+            android:name=".AdminMainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminPenggunaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminProdukActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminTransaksiActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminKomplainActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
