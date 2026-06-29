@@ -49,6 +49,12 @@ class AuthController extends Controller
             ], 401);
         }
 
+        if ($user->status_akun === 'diblokir') {
+            return response()->json([
+                'message' => 'Akun Anda telah diblokir. Silakan hubungi admin.'
+            ], 403);
+        }
+
         $token = $user->createToken('android-token')->plainTextToken;
 
         return response()->json([

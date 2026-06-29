@@ -11,15 +11,40 @@ class FavoriteController extends Controller
 {
     public function index(Request $request)
     {
-        $favorites = Favorite::with([
-            'product.images',
-            'product.seller',
-            'product.category'
+        // Ambil semua data favorit milik user ini, beserta relasi produk, gambar, dan sellernya
+        $favorites = \App\Models\Favorite::with([
+            'product.images', 
+            'product.seller'
         ])
         ->where('user_id', $request->user()->user_id)
-        ->get();
+        ->latest()
+        ->get()
+        ->pluck('product'); // pluck('product') dipakai biar response JSON-nya langsung berisi array Product, persis kayak response halaman Home/Search.
 
         return response()->json($favorites);
+    }
+
+    public function toggleFavorite(Request $request, $productId)
+    {
+        $userId = $request->user()->user_id;
+
+        // Cek apakah sudah di-like
+        $favorite = \App\Models\Favorite::where('user_id', $userId)
+                                        ->where('product_id', $productId)
+                                        ->first();
+
+        if ($favorite) {
+            // Kalau sudah ada, hapus (Unlike)
+            $favorite->delete();
+            return response()->json(['message' => 'Dihapus dari favorit', 'is_favorited' => false]);
+        } else {
+            // Kalau belum ada, tambahkan (Like)
+            \App\Models\Favorite::create([
+                'user_id' => $userId,
+                'product_id' => $productId
+            ]);
+            return response()->json(['message' => 'Ditambahkan ke favorit', 'is_favorited' => true]);
+        }
     }
 
     public function store(Request $request, $productId)

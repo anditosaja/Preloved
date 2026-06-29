@@ -24,4 +24,19 @@ class CategoryController extends Controller
 
         return response()->json($category);
     }
+
+    public function populer()
+        {
+            $kategoriPopuler = Category::withCount(['products as total_terjual' => function ($query) {
+                $query->where('status_barang', 'sold');
+            }])
+            ->orderByDesc('total_terjual')
+            ->take(3)
+            ->get();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $kategoriPopuler
+            ]);
+        }
 }

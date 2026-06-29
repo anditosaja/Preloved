@@ -84,7 +84,9 @@ public function sellerReviews($sellerId)
 {
     return response()->json(
         Review::with([
-            'reviewer'
+            'reviewer',
+            'product.images',
+            'product.seller'
         ])
         ->where(
             'seller_id',

@@ -24,6 +24,7 @@ protected $fillable = [
     'foto_profil',
     'bio',
     'is_verified',
+    'status_akun',
     'rating',
     'jumlah_ulasan',
     'waktu_aktif_terakhir'

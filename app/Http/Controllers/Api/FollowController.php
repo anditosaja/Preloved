@@ -33,16 +33,16 @@ class FollowController extends Controller
             'follower_id' => $request->user()->user_id,
             'following_id' => $sellerId
         ]);
-        NotificationHelper::create(
-        $sellerId,
-        'Follower Baru',
-        'Seseorang mulai mengikuti akun Anda',
-        'follow'
-        );
-        return response()->json([
-            'message' => 'Berhasil follow seller',
-            'data' => $follow
-        ]);
+        // NotificationHelper::create(
+        // $sellerId,
+        // 'Follower Baru',
+        // 'Seseorang mulai mengikuti akun Anda',
+        // 'follow'
+        // );
+        // return response()->json([
+        //     'message' => 'Berhasil follow seller',
+        //     'data' => $follow
+        // ]);
     }
 
     public function unfollow(Request $request, $sellerId)
