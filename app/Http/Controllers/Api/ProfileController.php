@@ -9,11 +9,26 @@ use Illuminate\Support\Facades\Storage;
 class ProfileController extends Controller
 {
     public function show(Request $request)
-    {
-        return response()->json(
-            $request->user()
-        );
-    }
+        {
+            $user = $request->user();
+
+            // 1. Hitung jumlah barang terjual (status 'sold')
+            $barangTerjual = \App\Models\Product::where('seller_id', $user->user_id)
+                ->where('status_barang', 'sold')
+                ->count();
+
+            // 2. Hitung jumlah barang dijual (status 'available')
+            $barangDijual = \App\Models\Product::where('seller_id', $user->user_id)
+                ->where('status_barang', 'available')
+                ->count();
+
+            $userData = $user->toArray();
+
+            $userData['barang_terjual'] = $barangTerjual;
+            $userData['barang_dijual'] = $barangDijual;
+
+            return response()->json($userData);
+        }
     public function seller($userId)
 {
     $seller = User::with([

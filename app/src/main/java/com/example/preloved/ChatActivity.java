@@ -58,6 +58,9 @@ public class ChatActivity extends AppCompatActivity {
                     });
 
                     rvUserList.setAdapter(adapter);
+                } else {
+                    Log.e("CEK_CHAT", "Gagal load data. Kode Error: " + response.code());
+                    Toast.makeText(ChatActivity.this, "Gagal memuat chat (Error " + response.code() + ")", Toast.LENGTH_SHORT).show();
                 }
             }
 

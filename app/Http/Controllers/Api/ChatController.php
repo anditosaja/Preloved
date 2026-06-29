@@ -58,7 +58,7 @@ class ChatController extends Controller
         $result[] = [
             'user_id' => $partner->user_id,
             'nama_lengkap' => $partner->nama_lengkap,
-            'foto_profil' => $partner->foto_profil_url,
+            'foto_profil' => $partner->foto_profil,
             'last_message' => $lastMessage->message,
             'last_message_time' => $lastMessage->created_at,
             'unread_count' => $unread,
@@ -152,7 +152,7 @@ class ChatController extends Controller
         $result[] = [
             'user_id' => $user->user_id,
             'nama_lengkap' => $user->nama_lengkap,
-            'foto_profil' => $user->foto_profil_url,
+            'foto_profil' => $user->foto_profil,
             'last_message' => $lastChat ? $lastChat->message : "Belum ada pesan",
             'last_message_time' => $lastChat ? $lastChat->created_at : null
         ];

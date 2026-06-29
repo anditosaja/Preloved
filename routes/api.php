@@ -85,6 +85,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/chats', [ChatController::class, 'send']);
     Route::get('/chats/{userId}', [ChatController::class, 'detail']);
     Route::get('/chat-rooms', [ChatController::class, 'rooms']);
+    Route::get('/users-chat', [ChatController::class, 'getGlobalUsers']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
