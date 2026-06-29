@@ -58,14 +58,14 @@ public interface ApiService {
 
     // Ambil daftar barang yang dipesan user (Sebagai Pembeli)
     @Headers("Accept: application/json")
-    @GET("my-orders")
+    @GET("orders/purchases") //
     Call<ResponseBody> getMyOrders(
         @Header("Authorization") String token
     );
 
     // Ambil daftar barang yang laku (Sebagai Penjual)
     @Headers("Accept: application/json")
-    @GET("my-sales")
+    @GET("orders/sales") // <--- PASTIIN INI SAMA PERSIS
     Call<ResponseBody> getMySales(
         @Header("Authorization") String token
     );

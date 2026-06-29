@@ -116,7 +116,14 @@ public class PesananSayaActivity extends AppCompatActivity {
                         Toast.makeText(PesananSayaActivity.this, "Gagal membaca data", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(PesananSayaActivity.this, "Gagal memuat pesanan", Toast.LENGTH_SHORT).show();
+                    int errorCode = response.code();
+                    Toast.makeText(PesananSayaActivity.this, "Gagal memuat pesanan. Kode: " + errorCode, Toast.LENGTH_LONG).show();
+
+                    if (errorCode == 401) {
+                        Log.e("API_ERROR", "Token tidak valid atau expired");
+                    } else if (errorCode == 500) {
+                        Log.e("API_ERROR", "Ada error di file Controller Laravel");
+                    }
                 }
             }
 

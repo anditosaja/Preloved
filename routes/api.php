@@ -24,7 +24,7 @@ use App\Http\Controllers\Api\Admin\AdminComplaintController;
 
 /*
 |--------------------------------------------------------------------------
-| Rute Publik & User 
+| Rute Publik & User
 |--------------------------------------------------------------------------
 */
 
@@ -97,10 +97,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/orders', [OrderController::class, 'store']);
-    Route::get('/orders/purchases', [OrderController::class, 'myPurchases']);
-    Route::get('/orders/sales', [OrderController::class, 'mySales']);
-    Route::get('/orders/{id}', [OrderController::class, 'show']);
-    Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus']);
+   Route::get('/orders/purchases', [App\Http\Controllers\Api\OrderController::class, 'myOrders']);
+   Route::get('/orders/sales', [OrderController::class, 'mySales']);
+   Route::put('/orders/{id}/accept', [App\Http\Controllers\Api\OrderController::class, 'acceptOrder']);
+   Route::put('/orders/{id}/complete', [App\Http\Controllers\Api\OrderController::class, 'completeOrder']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -126,11 +126,11 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::prefix('admin')->group(function () {
 
     Route::post('/login', [AdminAuthController::class, 'login']);
-    
+
     Route::middleware(['auth:sanctum', 'admin'])->group(function () {
-        
-        
-           
+
+
+
     Route::post('/logout', [AdminAuthController::class, 'logout']);
         Route::get('/me', [AdminAuthController::class, 'me']);
 
