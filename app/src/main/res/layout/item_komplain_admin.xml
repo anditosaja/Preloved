@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    android:layout_marginHorizontal="2dp"
+    app:cardBackgroundColor="#FFFFFF"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardIconKomplain"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#FCE4EC">
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:src="@android:drawable/ic_menu_report_image"
+                app:tint="#D81B60"/>
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/tvTicketId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/cardIconKomplain"
+            android:layout_marginStart="12dp"
+            android:text="#CMP-000000-0000"
+            android:textColor="#000000"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvTanggalKomplain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvTicketId"
+            android:layout_toEndOf="@id/cardIconKomplain"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="2dp"
+            android:text="21 Mei 2024 • 11:20"
+            android:textColor="#9E9E9E"
+            android:textSize="12sp" />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentEnd="true"
+            android:src="@android:drawable/ic_media_next"
+            app:tint="#BDBDBD"/>
+
+        <TextView
+            android:id="@+id/tvSubjectKomplain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cardIconKomplain"
+            android:layout_marginTop="16dp"
+            android:text="Judul Komplain"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvUserKomplain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvSubjectKomplain"
+            android:layout_marginTop="6dp"
+            android:text="Oleh: -"
+            android:textColor="#757575"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tvProductKomplain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvUserKomplain"
+            android:layout_marginTop="4dp"
+            android:text="Produk: -"
+            android:textColor="#757575"
+            android:textSize="13sp" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/badgeStatusKomplain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            app:cardBackgroundColor="#FFF3E0"
+            app:cardCornerRadius="6dp"
+            app:cardElevation="0dp">
+
+            <TextView
+                android:id="@+id/tvStatusKomplain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
+                android:text="Menunggu"
+                android:textColor="#F57C00"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+        </com.google.android.material.card.MaterialCardView>
+
+    </RelativeLayout>
+</com.google.android.material.card.MaterialCardView>

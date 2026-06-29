@@ -2,25 +2,31 @@ package com.example.preloved;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.preloved.models.ApiResponse;
 import com.example.preloved.models.Order;
 import com.example.preloved.network.ApiService;
+import com.example.preloved.network.Config;
 import com.example.preloved.network.RetrofitClient;
 import com.example.preloved.utils.SessionManager;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,8 +42,10 @@ public class AdminTransaksiActivity extends AppCompatActivity {
     private TransaksiAdapter adapter;
     private final List<Order> daftarTransaksi = new ArrayList<>();
 
-    /** null = semua, atau pending/paid/shipped/completed/cancelled (sesuai enum status di Order) */
     private String filterStatus = null;
+
+    // Tab TextViews
+    private TextView tabTrxSemua, tabTrxMenunggu, tabTrxDiproses, tabTrxSelesai, tabTrxDibatalkan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,20 +76,33 @@ public class AdminTransaksiActivity extends AppCompatActivity {
     }
 
     private void setupTabs() {
-        View tabSemua = findViewById(R.id.tabTrxSemua);
-        View tabMenunggu = findViewById(R.id.tabTrxMenunggu);
-        View tabDiproses = findViewById(R.id.tabTrxDiproses);
-        View tabSelesai = findViewById(R.id.tabTrxSelesai);
-        View tabDibatalkan = findViewById(R.id.tabTrxDibatalkan);
+        tabTrxSemua = findViewById(R.id.tabTrxSemua);
+        tabTrxMenunggu = findViewById(R.id.tabTrxMenunggu);
+        tabTrxDiproses = findViewById(R.id.tabTrxDiproses);
+        tabTrxSelesai = findViewById(R.id.tabTrxSelesai);
+        tabTrxDibatalkan = findViewById(R.id.tabTrxDibatalkan);
 
-        if (tabSemua != null) tabSemua.setOnClickListener(v -> { filterStatus = null; loadTransaksi(); });
-        if (tabMenunggu != null) tabMenunggu.setOnClickListener(v -> { filterStatus = "pending"; loadTransaksi(); });
-        // "Diproses" mencakup transaksi yang sudah dibayar/dikirim tapi belum selesai.
-        // Backend hanya menerima 1 nilai status per request, jadi kita pilih "shipped"
-        // sebagai representasi utama tahap diproses.
-        if (tabDiproses != null) tabDiproses.setOnClickListener(v -> { filterStatus = "shipped"; loadTransaksi(); });
-        if (tabSelesai != null) tabSelesai.setOnClickListener(v -> { filterStatus = "completed"; loadTransaksi(); });
-        if (tabDibatalkan != null) tabDibatalkan.setOnClickListener(v -> { filterStatus = "cancelled"; loadTransaksi(); });
+        if (tabTrxSemua != null) tabTrxSemua.setOnClickListener(v -> { filterStatus = null; updateTabUI(tabTrxSemua); loadTransaksi(); });
+        if (tabTrxMenunggu != null) tabTrxMenunggu.setOnClickListener(v -> { filterStatus = "pending"; updateTabUI(tabTrxMenunggu); loadTransaksi(); });
+        if (tabTrxDiproses != null) tabTrxDiproses.setOnClickListener(v -> { filterStatus = "shipped"; updateTabUI(tabTrxDiproses); loadTransaksi(); });
+        if (tabTrxSelesai != null) tabTrxSelesai.setOnClickListener(v -> { filterStatus = "completed"; updateTabUI(tabTrxSelesai); loadTransaksi(); });
+        if (tabTrxDibatalkan != null) tabTrxDibatalkan.setOnClickListener(v -> { filterStatus = "cancelled"; updateTabUI(tabTrxDibatalkan); loadTransaksi(); });
+    }
+
+    private void updateTabUI(TextView activeTab) {
+        TextView[] allTabs = {tabTrxSemua, tabTrxMenunggu, tabTrxDiproses, tabTrxSelesai, tabTrxDibatalkan};
+        for (TextView tab : allTabs) {
+            if (tab == null) continue;
+            if (tab == activeTab) {
+                ViewCompat.setBackgroundTintList(tab, ColorStateList.valueOf(android.graphics.Color.parseColor("#6952D9")));
+                tab.setTextColor(android.graphics.Color.WHITE);
+                tab.setTypeface(null, android.graphics.Typeface.BOLD);
+            } else {
+                ViewCompat.setBackgroundTintList(tab, ColorStateList.valueOf(android.graphics.Color.TRANSPARENT));
+                tab.setTextColor(android.graphics.Color.parseColor("#757575"));
+                tab.setTypeface(null, android.graphics.Typeface.NORMAL);
+            }
+        }
     }
 
     private void loadTransaksi() {
@@ -104,10 +125,9 @@ public class AdminTransaksiActivity extends AppCompatActivity {
                     redirectToLogin();
                 }
             }
-
             @Override
             public void onFailure(Call<ApiResponse<List<Order>>> call, Throwable t) {
-                Toast.makeText(AdminTransaksiActivity.this, "Gagal memuat transaksi: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(AdminTransaksiActivity.this, "Gagal memuat transaksi", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -117,30 +137,23 @@ public class AdminTransaksiActivity extends AppCompatActivity {
         String[] labelList = {"Menunggu", "Dibayar", "Dikirim", "Selesai", "Dibatalkan"};
 
         new AlertDialog.Builder(this)
-                .setTitle("Ubah Status Transaksi #" + order.getOrder_id())
-                .setItems(labelList, (dialog, which) -> updateStatus(order, statusList[which]))
-                .show();
+            .setTitle("Ubah Status #" + order.getOrder_id())
+            .setItems(labelList, (dialog, which) -> updateStatus(order, statusList[which]))
+            .show();
     }
 
     private void updateStatus(Order order, String statusBaru) {
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-        String bearerToken = "Bearer " + sessionManager.getAdminToken();
-
-        apiService.updateOrderStatus(bearerToken, order.getOrder_id(), statusBaru).enqueue(new Callback<ApiResponse<Order>>() {
+        apiService.updateOrderStatus("Bearer " + sessionManager.getAdminToken(), order.getOrder_id(), statusBaru).enqueue(new Callback<ApiResponse<Order>>() {
             @Override
             public void onResponse(Call<ApiResponse<Order>> call, Response<ApiResponse<Order>> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(AdminTransaksiActivity.this, "Status transaksi diperbarui", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminTransaksiActivity.this, "Status diperbarui", Toast.LENGTH_SHORT).show();
                     loadTransaksi();
-                } else {
-                    Toast.makeText(AdminTransaksiActivity.this, "Gagal memperbarui status", Toast.LENGTH_SHORT).show();
                 }
             }
-
             @Override
-            public void onFailure(Call<ApiResponse<Order>> call, Throwable t) {
-                Toast.makeText(AdminTransaksiActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
-            }
+            public void onFailure(Call<ApiResponse<Order>> call, Throwable t) { }
         });
     }
 
@@ -150,34 +163,10 @@ public class AdminTransaksiActivity extends AppCompatActivity {
         LinearLayout navKomplain = findViewById(R.id.navAdminKomplain);
         LinearLayout navPengguna = findViewById(R.id.navAdminPengguna);
 
-        if (navDashboard != null) {
-            navDashboard.setOnClickListener(v -> {
-                startActivity(new Intent(AdminTransaksiActivity.this, AdminMainActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
-            });
-        }
-        if (navProduk != null) {
-            navProduk.setOnClickListener(v -> {
-                startActivity(new Intent(AdminTransaksiActivity.this, AdminProdukActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
-            });
-        }
-        if (navKomplain != null) {
-            navKomplain.setOnClickListener(v -> {
-                startActivity(new Intent(AdminTransaksiActivity.this, AdminKomplainActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
-            });
-        }
-        if (navPengguna != null) {
-            navPengguna.setOnClickListener(v -> {
-                startActivity(new Intent(AdminTransaksiActivity.this, AdminPenggunaActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
-            });
-        }
+        if (navDashboard != null) navDashboard.setOnClickListener(v -> { startActivity(new Intent(this, AdminMainActivity.class)); overridePendingTransition(0, 0); finish(); });
+        if (navProduk != null) navProduk.setOnClickListener(v -> { startActivity(new Intent(this, AdminProdukActivity.class)); overridePendingTransition(0, 0); finish(); });
+        if (navKomplain != null) navKomplain.setOnClickListener(v -> { startActivity(new Intent(this, AdminKomplainActivity.class)); overridePendingTransition(0, 0); finish(); });
+        if (navPengguna != null) navPengguna.setOnClickListener(v -> { startActivity(new Intent(this, AdminPenggunaActivity.class)); overridePendingTransition(0, 0); finish(); });
     }
 
     private void redirectToLogin() {
@@ -188,19 +177,18 @@ public class AdminTransaksiActivity extends AppCompatActivity {
         finish();
     }
 
+    // ==========================================
+    // ADAPTER TRANSAKSI + GLIDE
+    // ==========================================
     private class TransaksiAdapter extends RecyclerView.Adapter<TransaksiAdapter.ViewHolder> {
-
         private final List<Order> data;
 
-        TransaksiAdapter(List<Order> data) {
-            this.data = data;
-        }
+        TransaksiAdapter(List<Order> data) { this.data = data; }
 
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_transaksi_admin, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_transaksi_admin, parent, false);
             return new ViewHolder(view);
         }
 
@@ -208,39 +196,58 @@ public class AdminTransaksiActivity extends AppCompatActivity {
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             Order order = data.get(position);
 
-            holder.tvInvoice.setText("#INV-" + order.getOrder_id());
+            holder.tvInvoiceTransaksi.setText("#INV-" + order.getOrder_id());
 
             String tanggal = order.getCreated_at();
-            holder.tvTanggal.setText(tanggal != null ? tanggal.substring(0, Math.min(16, tanggal.length())).replace("T", " ") : "-");
+            holder.tvTanggalTransaksi.setText(tanggal != null ? tanggal.substring(0, Math.min(16, tanggal.length())).replace("T", " ") : "-");
 
             String namaProduk = order.getProduct() != null ? order.getProduct().getNama_barang() : "Produk tidak ditemukan";
-            holder.tvNamaProduk.setText(namaProduk);
+            holder.tvNamaProdukTransaksi.setText(namaProduk);
 
             String pembeli = order.getBuyer() != null ? order.getBuyer().getNama_lengkap() : "-";
             String penjual = order.getSeller() != null ? order.getSeller().getNama_lengkap() : "-";
-            holder.tvBuyerSeller.setText(pembeli + " • " + penjual);
+            holder.tvBuyerSellerTransaksi.setText(pembeli + " • " + penjual);
 
-            holder.tvHarga.setText("Rp" + order.getHarga_final());
+            try {
+                double harga = Double.parseDouble(order.getHarga_final());
+                holder.tvHargaTransaksi.setText("Rp" + new DecimalFormat("#,###").format(harga));
+            } catch (Exception e) {
+                holder.tvHargaTransaksi.setText("Rp" + order.getHarga_final());
+            }
+
+            // LOAD GAMBAR PRODUK VIA GLIDE
+            if (order.getProduct() != null && order.getProduct().getImages() != null && !order.getProduct().getImages().isEmpty()) {
+                String imgPath = order.getProduct().getImages().get(0).getImage_path();
+                if (imgPath != null) {
+                    String url = imgPath.startsWith("http") ? imgPath : Config.IMAGE_URL + imgPath;
+                    Glide.with(holder.itemView.getContext())
+                        .load(url)
+                        .placeholder(android.R.drawable.ic_menu_gallery)
+                        .into(holder.ivProdukTransaksi);
+                }
+            } else {
+                holder.ivProdukTransaksi.setImageResource(android.R.drawable.ic_menu_gallery);
+            }
 
             String status = order.getStatus() != null ? order.getStatus() : "pending";
-            holder.tvStatus.setText(labelStatus(status));
+            holder.tvStatusTransaksi.setText(labelStatus(status));
 
             switch (status) {
                 case "pending":
-                    holder.cardBadge.setCardBackgroundColor(0xFFFFF3E0);
-                    holder.tvStatus.setTextColor(0xFFFF9800);
+                    holder.badgeStatusTransaksi.setCardBackgroundColor(0xFFFFF3E0);
+                    holder.tvStatusTransaksi.setTextColor(0xFFFF9800);
                     break;
                 case "completed":
-                    holder.cardBadge.setCardBackgroundColor(0xFFE8F5E9);
-                    holder.tvStatus.setTextColor(0xFF4CAF50);
+                    holder.badgeStatusTransaksi.setCardBackgroundColor(0xFFE8F5E9);
+                    holder.tvStatusTransaksi.setTextColor(0xFF4CAF50);
                     break;
                 case "cancelled":
-                    holder.cardBadge.setCardBackgroundColor(0xFFFFEBEE);
-                    holder.tvStatus.setTextColor(0xFFF44336);
+                    holder.badgeStatusTransaksi.setCardBackgroundColor(0xFFFFEBEE);
+                    holder.tvStatusTransaksi.setTextColor(0xFFF44336);
                     break;
                 default:
-                    holder.cardBadge.setCardBackgroundColor(0xFFE3F2FD);
-                    holder.tvStatus.setTextColor(0xFF2196F3);
+                    holder.badgeStatusTransaksi.setCardBackgroundColor(0xFFE3F2FD);
+                    holder.tvStatusTransaksi.setTextColor(0xFF2196F3);
                     break;
             }
 
@@ -259,23 +266,23 @@ public class AdminTransaksiActivity extends AppCompatActivity {
         }
 
         @Override
-        public int getItemCount() {
-            return data.size();
-        }
+        public int getItemCount() { return data.size(); }
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            TextView tvInvoice, tvTanggal, tvNamaProduk, tvBuyerSeller, tvHarga, tvStatus;
-            com.google.android.material.card.MaterialCardView cardBadge;
+            TextView tvInvoiceTransaksi, tvTanggalTransaksi, tvNamaProdukTransaksi, tvBuyerSellerTransaksi, tvHargaTransaksi, tvStatusTransaksi;
+            ImageView ivProdukTransaksi;
+            com.google.android.material.card.MaterialCardView badgeStatusTransaksi;
 
             ViewHolder(@NonNull View itemView) {
                 super(itemView);
-                tvInvoice = itemView.findViewById(R.id.tvInvoiceTransaksi);
-                tvTanggal = itemView.findViewById(R.id.tvTanggalTransaksi);
-                tvNamaProduk = itemView.findViewById(R.id.tvNamaProdukTransaksi);
-                tvBuyerSeller = itemView.findViewById(R.id.tvBuyerSellerTransaksi);
-                tvHarga = itemView.findViewById(R.id.tvHargaTransaksi);
-                tvStatus = itemView.findViewById(R.id.tvStatusTransaksi);
-                cardBadge = itemView.findViewById(R.id.badgeStatusTransaksi);
+                tvInvoiceTransaksi = itemView.findViewById(R.id.tvInvoiceTransaksi);
+                tvTanggalTransaksi = itemView.findViewById(R.id.tvTanggalTransaksi);
+                tvNamaProdukTransaksi = itemView.findViewById(R.id.tvNamaProdukTransaksi);
+                tvBuyerSellerTransaksi = itemView.findViewById(R.id.tvBuyerSellerTransaksi);
+                tvHargaTransaksi = itemView.findViewById(R.id.tvHargaTransaksi);
+                tvStatusTransaksi = itemView.findViewById(R.id.tvStatusTransaksi);
+                ivProdukTransaksi = itemView.findViewById(R.id.ivProdukTransaksi);
+                badgeStatusTransaksi = itemView.findViewById(R.id.badgeStatusTransaksi);
             }
         }
     }

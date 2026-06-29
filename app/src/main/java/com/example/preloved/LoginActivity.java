@@ -73,11 +73,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Tahap 1: coba login sebagai admin lewat /api/admin/login.
-     * Kalau berhasil (admin ditemukan & password benar) -> langsung ke AdminMainActivity.
-     * Kalau gagal (401/404/dll, berarti bukan akun admin) -> lanjut coba sebagai user biasa.
-     */
+
     private void attemptAdminLogin(String email, String password) {
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         Call<AdminLoginResponse> call = apiService.adminLogin(new LoginRequest(email, password));

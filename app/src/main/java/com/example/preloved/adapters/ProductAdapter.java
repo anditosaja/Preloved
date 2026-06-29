@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.example.preloved.ProfilBarangActivity;
 import com.example.preloved.R;
 import com.example.preloved.models.Product;
+import com.example.preloved.network.Config;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -83,7 +84,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                 if (imagePath.startsWith("http")) {
                     finalImageUrl = imagePath;
                 } else {
-                    finalImageUrl = "http://192.168.18.169:8000/storage/" + imagePath;
+                    finalImageUrl = Config.IMAGE_URL + imagePath;
                 }
             }
 

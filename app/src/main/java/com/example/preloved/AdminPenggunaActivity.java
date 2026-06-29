@@ -21,6 +21,8 @@ import com.example.preloved.models.User;
 import com.example.preloved.network.ApiService;
 import com.example.preloved.network.RetrofitClient;
 import com.example.preloved.utils.SessionManager;
+import com.bumptech.glide.Glide;
+import com.example.preloved.network.Config;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -203,6 +205,18 @@ public class AdminPenggunaActivity extends AppCompatActivity {
             holder.tvNama.setText(user.getNama_lengkap());
             holder.tvEmail.setText(user.getEmail());
 
+            String fotoProfil = user.getFoto_profil();
+            if (fotoProfil != null && !fotoProfil.isEmpty()) {
+                Glide.with(holder.itemView.getContext())
+                    .load(Config.IMAGE_URL + fotoProfil)
+                    .placeholder(R.drawable.ic_person_placeholder)
+                    .error(R.drawable.ic_person_placeholder)
+                    .circleCrop()
+                    .into(holder.ivAvatar);
+            } else {
+                holder.ivAvatar.setImageResource(R.drawable.ic_person_placeholder);
+            }
+
             String bergabung = user.getCreated_at();
             holder.tvBergabung.setText("Bergabung: " + (bergabung != null ? bergabung.substring(0, Math.min(10, bergabung.length())) : "-"));
 
@@ -236,7 +250,7 @@ public class AdminPenggunaActivity extends AppCompatActivity {
 
         class ViewHolder extends RecyclerView.ViewHolder {
             TextView tvNama, tvEmail, tvBergabung, tvStatus;
-            ImageView btnMore;
+            ImageView btnMore, ivAvatar;
             com.google.android.material.card.MaterialCardView cardBadge;
 
             ViewHolder(@NonNull View itemView) {
@@ -247,6 +261,7 @@ public class AdminPenggunaActivity extends AppCompatActivity {
                 tvStatus = itemView.findViewById(R.id.tvStatusPengguna);
                 btnMore = itemView.findViewById(R.id.btnMorePengguna);
                 cardBadge = itemView.findViewById(R.id.badgeStatusPengguna);
+                ivAvatar = itemView.findViewById(R.id.ivAvatarPengguna);
             }
         }
     }

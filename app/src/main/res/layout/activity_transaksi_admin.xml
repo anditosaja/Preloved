@@ -1,40 +1,202 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent" android:layout_height="match_parent" android:background="#FAFAFA">
-    <!--  AREA KONTEN UTAMA (Scrollable)  -->
-    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent" android:layout_above="@+id/bottomNavigation" android:scrollbars="none">
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
-            <!--  HEADER BAR  -->
-            <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:layout_marginBottom="16dp" android:gravity="center_vertical">
-                <ImageView android:id="@+id/btnMenu" android:layout_width="28dp" android:layout_height="28dp" android:layout_centerVertical="true" android:src="@drawable/bar" android:background="?attr/selectableItemBackgroundBorderless" android:clickable="true" android:focusable="true"/>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerInParent="true" android:text="Transaksi" android:textColor="#000000" android:textSize="18sp" android:textStyle="bold"/>
-                <!--  Icon Search & Filter di Kanan  -->
-                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentEnd="true" android:layout_centerVertical="true" android:orientation="horizontal">
-                    <ImageView android:id="@+id/btnSearch" android:layout_width="24dp" android:layout_height="24dp" android:layout_marginEnd="16dp" android:src="@drawable/search" android:background="?attr/selectableItemBackgroundBorderless" android:clickable="true" android:focusable="true"/>
-                    <ImageView android:id="@+id/btnFilter" android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_sort_by_size" app:tint="#000000" android:background="?attr/selectableItemBackgroundBorderless" android:clickable="true" android:focusable="true"/>
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FAFAFA">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottomNavigation"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"
+                android:paddingHorizontal="16dp"
+                android:gravity="center_vertical">
+                <ImageView
+                    android:id="@+id/btnMenu"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/bar"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="Transaksi"
+                    android:textColor="#000000"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:id="@+id/btnSearch"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="16dp"
+                        android:src="@drawable/search"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true"/>
+                    <ImageView
+                        android:id="@+id/btnFilter"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@android:drawable/ic_menu_sort_by_size"
+                        app:tint="#000000"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true"/>
                 </LinearLayout>
             </RelativeLayout>
-            <!--  TABS SCROLLABLE (Semua, Menunggu, Diproses, Selesai, Dibatalkan)  -->
-            <HorizontalScrollView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:scrollbars="none">
-                <LinearLayout android:layout_width="wrap_content" android:layout_height="40dp" android:orientation="horizontal" android:gravity="center_vertical">
-                    <!--  Tab Aktif: Semua  -->
-                    <com.google.android.material.card.MaterialCardView android:id="@+id/tabTrxSemua" android:layout_width="wrap_content" android:layout_height="36dp" android:layout_marginEnd="8dp" android:clickable="true" android:focusable="true" app:cardBackgroundColor="#6952D9" app:cardCornerRadius="8dp" app:cardElevation="0dp">
-                        <TextView android:layout_width="wrap_content" android:layout_height="match_parent" android:paddingHorizontal="16dp" android:gravity="center" android:text="Semua" android:textColor="#FFFFFF" android:textSize="12sp" android:textStyle="bold"/>
-                    </com.google.android.material.card.MaterialCardView>
-                    <TextView android:id="@+id/tabTrxMenunggu" android:layout_width="wrap_content" android:layout_height="match_parent" android:paddingHorizontal="12dp" android:gravity="center" android:clickable="true" android:focusable="true" android:text="Menunggu" android:textColor="#757575" android:textSize="12sp"/>
-                    <TextView android:id="@+id/tabTrxDiproses" android:layout_width="wrap_content" android:layout_height="match_parent" android:paddingHorizontal="12dp" android:gravity="center" android:clickable="true" android:focusable="true" android:text="Diproses" android:textColor="#757575" android:textSize="12sp"/>
-                    <TextView android:id="@+id/tabTrxSelesai" android:layout_width="wrap_content" android:layout_height="match_parent" android:paddingHorizontal="12dp" android:gravity="center" android:clickable="true" android:focusable="true" android:text="Selesai" android:textColor="#757575" android:textSize="12sp"/>
-                    <TextView android:id="@+id/tabTrxDibatalkan" android:layout_width="wrap_content" android:layout_height="match_parent" android:paddingHorizontal="12dp" android:gravity="center" android:clickable="true" android:focusable="true" android:text="Dibatalkan" android:textColor="#757575" android:textSize="12sp"/>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:scrollbars="none"
+                android:clipToPadding="false"
+                android:paddingHorizontal="16dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tabTrxSemua"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Semua"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:paddingHorizontal="20dp"
+                        android:paddingVertical="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@android:color/white"
+                        android:backgroundTint="#6952D9"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"/>
+
+                    <TextView
+                        android:id="@+id/tabTrxMenunggu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Menunggu"
+                        android:textColor="#757575"
+                        android:textSize="13sp"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@android:color/white"
+                        android:backgroundTint="@android:color/transparent"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"/>
+
+                    <TextView
+                        android:id="@+id/tabTrxDiproses"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Diproses"
+                        android:textColor="#757575"
+                        android:textSize="13sp"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@android:color/white"
+                        android:backgroundTint="@android:color/transparent"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"/>
+
+                    <TextView
+                        android:id="@+id/tabTrxSelesai"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Selesai"
+                        android:textColor="#757575"
+                        android:textSize="13sp"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@android:color/white"
+                        android:backgroundTint="@android:color/transparent"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"/>
+
+                    <TextView
+                        android:id="@+id/tabTrxDibatalkan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Dibatalkan"
+                        android:textColor="#757575"
+                        android:textSize="13sp"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:background="@android:color/white"
+                        android:backgroundTint="@android:color/transparent"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"/>
                 </LinearLayout>
             </HorizontalScrollView>
-            <!--  TOTAL TRANSAKSI  -->
-            <TextView android:id="@+id/tvTotalTransaksi" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="20dp" android:layout_marginBottom="16dp" android:text="Total 0 transaksi" android:textColor="#424242" android:textSize="14sp"/>
-            <!--  LIST TRANSAKSI (dinamis dari API)  -->
-            <androidx.recyclerview.widget.RecyclerView android:id="@+id/rvTransaksi" android:layout_width="match_parent" android:layout_height="wrap_content" android:nestedScrollingEnabled="false" tools:listitem="@layout/item_transaksi_admin"/>
-            <TextView android:id="@+id/tvEmptyTransaksi" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="40dp" android:gravity="center" android:text="Belum ada transaksi" android:textColor="#9E9E9E" android:textSize="13sp" android:visibility="gone"/>
-            <!--  Ruang Kosong agar tidak tertutup Bottom Nav  -->
+
+            <TextView
+                android:id="@+id/tvTotalTransaksi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginHorizontal="16dp"
+                android:text="Total 0 transaksi"
+                android:textColor="#424242"
+                android:textSize="14sp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvTransaksi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="14dp"
+                android:nestedScrollingEnabled="false"
+                tools:listitem="@layout/item_transaksi_admin"/>
+
+            <TextView
+                android:id="@+id/tvEmptyTransaksi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:gravity="center"
+                android:text="Belum ada transaksi"
+                android:textColor="#9E9E9E"
+                android:textSize="13sp"
+                android:visibility="gone"/>
+
             <View android:layout_width="match_parent" android:layout_height="80dp"/>
         </LinearLayout>
     </ScrollView>
-    <!--  BOTTOM NAVIGATION BAR  -->
+
     <LinearLayout android:id="@+id/bottomNavigation" android:layout_width="match_parent" android:layout_height="70dp" android:layout_alignParentBottom="true" android:background="#FFFFFF" android:elevation="16dp" android:orientation="horizontal">
         <LinearLayout android:id="@+id/navAdminDashboard" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:background="?attr/selectableItemBackgroundBorderless" android:clickable="true" android:focusable="true">
             <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/beranda" app:tint="#757575"/>
@@ -44,7 +206,6 @@
             <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/kategori" app:tint="#757575"/>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Produk" android:textSize="10sp" android:textColor="#757575"/>
         </LinearLayout>
-        <!--  Navigasi Transaksi Aktif (Warna Ungu)  -->
         <LinearLayout android:id="@+id/navAdminTransaksi" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:background="?attr/selectableItemBackgroundBorderless" android:clickable="true" android:focusable="true">
             <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_cart" app:tint="#6952D9"/>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Transaksi" android:textSize="10sp" android:textColor="#6952D9" android:textStyle="bold"/>
@@ -53,7 +214,6 @@
             <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/chat" app:tint="#757575"/>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Komplain" android:textSize="10sp" android:textColor="#757575"/>
         </LinearLayout>
-        <!--  Menu Pengguna   -->
         <LinearLayout android:id="@+id/navAdminPengguna" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:background="?attr/selectableItemBackgroundBorderless" android:clickable="true" android:focusable="true">
             <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/profile" app:tint="#757575"/>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pengguna" android:textSize="10sp" android:textColor="#757575"/>

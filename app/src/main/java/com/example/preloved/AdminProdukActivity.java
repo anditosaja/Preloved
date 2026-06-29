@@ -2,6 +2,7 @@ package com.example.preloved;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -15,16 +16,20 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.preloved.models.ApiResponse;
 import com.example.preloved.models.Category;
 import com.example.preloved.models.Product;
 import com.example.preloved.network.ApiService;
+import com.example.preloved.network.Config;
 import com.example.preloved.network.RetrofitClient;
 import com.example.preloved.utils.SessionManager;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,11 +47,11 @@ public class AdminProdukActivity extends AppCompatActivity {
     private ProdukAdapter adapter;
     private final List<Product> daftarProduk = new ArrayList<>();
 
-    /** Lookup categoryId -> nama_kategori, dimuat sekali dari /api/categories */
     private final Map<Integer, String> namaKategoriById = new HashMap<>();
-
-    /** null = semua, "available" = aktif, "ditangguhkan" = menunggu, "ditolak" = ditolak */
     private String filterStatus = null;
+
+    // Deklarasi Tab
+    private TextView tabSemua, tabAktif, tabMenunggu, tabDitolak;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,13 +82,8 @@ public class AdminProdukActivity extends AppCompatActivity {
         loadProduk();
     }
 
-    /**
-     * Ambil seluruh kategori sekali saat halaman dibuka, supaya adapter bisa
-     * menampilkan nama kategori asli (Product hanya menyimpan categoryId).
-     */
     private void loadKategori() {
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-
         apiService.getCategories().enqueue(new Callback<List<Category>>() {
             @Override
             public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
@@ -95,24 +95,37 @@ public class AdminProdukActivity extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                 }
             }
-
             @Override
-            public void onFailure(Call<List<Category>> call, Throwable t) {
-                // Kalau gagal, adapter tetap fallback menampilkan "Kategori #ID".
-            }
+            public void onFailure(Call<List<Category>> call, Throwable t) { }
         });
     }
 
     private void setupTabs() {
-        View tabSemua = findViewById(R.id.tabProdukSemua);
-        View tabAktif = findViewById(R.id.tabProdukAktif);
-        View tabMenunggu = findViewById(R.id.tabProdukMenunggu);
-        View tabDitolak = findViewById(R.id.tabProdukDitolak);
+        tabSemua = findViewById(R.id.tabProdukSemua);
+        tabAktif = findViewById(R.id.tabProdukAktif);
+        tabMenunggu = findViewById(R.id.tabProdukMenunggu);
+        tabDitolak = findViewById(R.id.tabProdukDitolak);
 
-        if (tabSemua != null) tabSemua.setOnClickListener(v -> { filterStatus = null; loadProduk(); });
-        if (tabAktif != null) tabAktif.setOnClickListener(v -> { filterStatus = "available"; loadProduk(); });
-        if (tabMenunggu != null) tabMenunggu.setOnClickListener(v -> { filterStatus = "ditangguhkan"; loadProduk(); });
-        if (tabDitolak != null) tabDitolak.setOnClickListener(v -> { filterStatus = "ditolak"; loadProduk(); });
+        if (tabSemua != null) tabSemua.setOnClickListener(v -> { filterStatus = null; updateTabUI(tabSemua); loadProduk(); });
+        if (tabAktif != null) tabAktif.setOnClickListener(v -> { filterStatus = "available"; updateTabUI(tabAktif); loadProduk(); });
+        if (tabMenunggu != null) tabMenunggu.setOnClickListener(v -> { filterStatus = "ditangguhkan"; updateTabUI(tabMenunggu); loadProduk(); });
+        if (tabDitolak != null) tabDitolak.setOnClickListener(v -> { filterStatus = "ditolak"; updateTabUI(tabDitolak); loadProduk(); });
+    }
+
+    private void updateTabUI(TextView activeTab) {
+        TextView[] allTabs = {tabSemua, tabAktif, tabMenunggu, tabDitolak};
+        for (TextView tab : allTabs) {
+            if (tab == null) continue;
+            if (tab == activeTab) {
+                ViewCompat.setBackgroundTintList(tab, ColorStateList.valueOf(android.graphics.Color.parseColor("#6952D9")));
+                tab.setTextColor(android.graphics.Color.WHITE);
+                tab.setTypeface(null, android.graphics.Typeface.BOLD);
+            } else {
+                ViewCompat.setBackgroundTintList(tab, ColorStateList.valueOf(android.graphics.Color.TRANSPARENT));
+                tab.setTextColor(android.graphics.Color.parseColor("#757575"));
+                tab.setTypeface(null, android.graphics.Typeface.NORMAL);
+            }
+        }
     }
 
     private void loadProduk() {
@@ -150,18 +163,10 @@ public class AdminProdukActivity extends AppCompatActivity {
             .setTitle(product.getNama_barang())
             .setItems(opsi, (dialog, which) -> {
                 switch (which) {
-                    case 0:
-                        approveProduk(product);
-                        break;
-                    case 1:
-                        mintaCatatanLaluKirim(product, true);
-                        break;
-                    case 2:
-                        mintaCatatanLaluKirim(product, false);
-                        break;
-                    case 3:
-                        confirmHapus(product);
-                        break;
+                    case 0: approveProduk(product); break;
+                    case 1: mintaCatatanLaluKirim(product, true); break;
+                    case 2: mintaCatatanLaluKirim(product, false); break;
+                    case 3: confirmHapus(product); break;
                 }
             })
             .show();
@@ -177,11 +182,8 @@ public class AdminProdukActivity extends AppCompatActivity {
             .setView(input)
             .setPositiveButton("Kirim", (dialog, which) -> {
                 String catatan = input.getText().toString().trim();
-                if (isSuspend) {
-                    suspendProduk(product, catatan);
-                } else {
-                    rejectProduk(product, catatan);
-                }
+                if (isSuspend) suspendProduk(product, catatan);
+                else rejectProduk(product, catatan);
             })
             .setNegativeButton("Batal", null)
             .show();
@@ -190,86 +192,41 @@ public class AdminProdukActivity extends AppCompatActivity {
     private void approveProduk(Product product) {
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         String bearerToken = "Bearer " + sessionManager.getAdminToken();
-
         apiService.approveProduct(bearerToken, product.getProductId()).enqueue(new Callback<ApiResponse<Product>>() {
-            @Override
-            public void onResponse(Call<ApiResponse<Product>> call, Response<ApiResponse<Product>> response) {
-                Toast.makeText(AdminProdukActivity.this, "Produk disetujui", Toast.LENGTH_SHORT).show();
-                loadProduk();
-            }
-
-            @Override
-            public void onFailure(Call<ApiResponse<Product>> call, Throwable t) {
-                Toast.makeText(AdminProdukActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
-            }
+            @Override public void onResponse(Call<ApiResponse<Product>> call, Response<ApiResponse<Product>> response) { loadProduk(); }
+            @Override public void onFailure(Call<ApiResponse<Product>> call, Throwable t) { }
         });
     }
 
     private void suspendProduk(Product product, String catatan) {
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         String bearerToken = "Bearer " + sessionManager.getAdminToken();
-
         apiService.suspendProduct(bearerToken, product.getProductId(), catatan).enqueue(new Callback<ApiResponse<Product>>() {
-            @Override
-            public void onResponse(Call<ApiResponse<Product>> call, Response<ApiResponse<Product>> response) {
-                Toast.makeText(AdminProdukActivity.this, "Produk ditangguhkan", Toast.LENGTH_SHORT).show();
-                loadProduk();
-            }
-
-            @Override
-            public void onFailure(Call<ApiResponse<Product>> call, Throwable t) {
-                Toast.makeText(AdminProdukActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
-            }
+            @Override public void onResponse(Call<ApiResponse<Product>> call, Response<ApiResponse<Product>> response) { loadProduk(); }
+            @Override public void onFailure(Call<ApiResponse<Product>> call, Throwable t) { }
         });
     }
 
     private void rejectProduk(Product product, String catatan) {
-        if (catatan.isEmpty()) {
-            Toast.makeText(this, "Catatan alasan penolakan wajib diisi", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
+        if (catatan.isEmpty()) { Toast.makeText(this, "Catatan wajib diisi", Toast.LENGTH_SHORT).show(); return; }
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         String bearerToken = "Bearer " + sessionManager.getAdminToken();
-
         apiService.rejectProduct(bearerToken, product.getProductId(), catatan).enqueue(new Callback<ApiResponse<Product>>() {
-            @Override
-            public void onResponse(Call<ApiResponse<Product>> call, Response<ApiResponse<Product>> response) {
-                Toast.makeText(AdminProdukActivity.this, "Produk ditolak", Toast.LENGTH_SHORT).show();
-                loadProduk();
-            }
-
-            @Override
-            public void onFailure(Call<ApiResponse<Product>> call, Throwable t) {
-                Toast.makeText(AdminProdukActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
-            }
+            @Override public void onResponse(Call<ApiResponse<Product>> call, Response<ApiResponse<Product>> response) { loadProduk(); }
+            @Override public void onFailure(Call<ApiResponse<Product>> call, Throwable t) { }
         });
     }
 
     private void confirmHapus(Product product) {
-        new AlertDialog.Builder(this)
-            .setTitle("Hapus Produk")
-            .setMessage("Produk \"" + product.getNama_barang() + "\" akan dihapus permanen. Lanjutkan?")
-            .setPositiveButton("Hapus", (dialog, which) -> hapusProduk(product))
-            .setNegativeButton("Batal", null)
-            .show();
+        new AlertDialog.Builder(this).setTitle("Hapus Produk").setMessage("Hapus permanen?").setPositiveButton("Hapus", (d, w) -> hapusProduk(product)).setNegativeButton("Batal", null).show();
     }
 
     private void hapusProduk(Product product) {
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         String bearerToken = "Bearer " + sessionManager.getAdminToken();
-
         apiService.deleteProduct(bearerToken, product.getProductId()).enqueue(new Callback<ApiResponse<Object>>() {
-            @Override
-            public void onResponse(Call<ApiResponse<Object>> call, Response<ApiResponse<Object>> response) {
-                Toast.makeText(AdminProdukActivity.this, "Produk dihapus", Toast.LENGTH_SHORT).show();
-                loadProduk();
-            }
-
-            @Override
-            public void onFailure(Call<ApiResponse<Object>> call, Throwable t) {
-                Toast.makeText(AdminProdukActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
-            }
+            @Override public void onResponse(Call<ApiResponse<Object>> call, Response<ApiResponse<Object>> response) { loadProduk(); }
+            @Override public void onFailure(Call<ApiResponse<Object>> call, Throwable t) { }
         });
     }
 
@@ -279,34 +236,10 @@ public class AdminProdukActivity extends AppCompatActivity {
         LinearLayout navKomplain = findViewById(R.id.navAdminKomplain);
         LinearLayout navPengguna = findViewById(R.id.navAdminPengguna);
 
-        if (navDashboard != null) {
-            navDashboard.setOnClickListener(v -> {
-                startActivity(new Intent(AdminProdukActivity.this, AdminMainActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
-            });
-        }
-        if (navTransaksi != null) {
-            navTransaksi.setOnClickListener(v -> {
-                startActivity(new Intent(AdminProdukActivity.this, AdminTransaksiActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
-            });
-        }
-        if (navKomplain != null) {
-            navKomplain.setOnClickListener(v -> {
-                startActivity(new Intent(AdminProdukActivity.this, AdminKomplainActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
-            });
-        }
-        if (navPengguna != null) {
-            navPengguna.setOnClickListener(v -> {
-                startActivity(new Intent(AdminProdukActivity.this, AdminPenggunaActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
-            });
-        }
+        if (navDashboard != null) navDashboard.setOnClickListener(v -> { startActivity(new Intent(this, AdminMainActivity.class)); overridePendingTransition(0, 0); finish(); });
+        if (navTransaksi != null) navTransaksi.setOnClickListener(v -> { startActivity(new Intent(this, AdminTransaksiActivity.class)); overridePendingTransition(0, 0); finish(); });
+        if (navKomplain != null) navKomplain.setOnClickListener(v -> { startActivity(new Intent(this, AdminKomplainActivity.class)); overridePendingTransition(0, 0); finish(); });
+        if (navPengguna != null) navPengguna.setOnClickListener(v -> { startActivity(new Intent(this, AdminPenggunaActivity.class)); overridePendingTransition(0, 0); finish(); });
     }
 
     private void redirectToLogin() {
@@ -317,19 +250,18 @@ public class AdminProdukActivity extends AppCompatActivity {
         finish();
     }
 
+    // ==========================================
+    // ADAPTER PRODUK LOCK IN!
+    // ==========================================
     private class ProdukAdapter extends RecyclerView.Adapter<ProdukAdapter.ViewHolder> {
-
         private final List<Product> data;
 
-        ProdukAdapter(List<Product> data) {
-            this.data = data;
-        }
+        ProdukAdapter(List<Product> data) { this.data = data; }
 
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_produk_admin, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_produk_admin, parent, false);
             return new ViewHolder(view);
         }
 
@@ -337,35 +269,57 @@ public class AdminProdukActivity extends AppCompatActivity {
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             Product produk = data.get(position);
 
-            holder.tvNama.setText(produk.getNama_barang());
+            holder.tvNamaProduk.setText(produk.getNama_barang());
             String namaKategori = namaKategoriById.get(produk.getCategoryId());
-            holder.tvKategori.setText(namaKategori != null ? namaKategori : "Kategori #" + produk.getCategoryId());
-            holder.tvHarga.setText("Rp" + produk.getHarga_jual());
-            holder.tvPenjual.setText("Penjual: " + (produk.getSeller() != null ? "@" + produk.getSeller().getName() : "-"));
+            holder.tvKategoriProduk.setText(namaKategori != null ? namaKategori : "Kategori #" + produk.getCategoryId());
+
+            // Format Harga jadi ada titiknya (Rp1.000.000)
+            try {
+                double harga = Double.parseDouble(produk.getHarga_jual());
+                holder.tvHargaProduk.setText("Rp" + new DecimalFormat("#,###").format(harga));
+            } catch (Exception e) {
+                holder.tvHargaProduk.setText("Rp" + produk.getHarga_jual());
+            }
+
+            holder.tvPenjualProduk.setText("Penjual: " + (produk.getSeller() != null ? "@" + produk.getSeller().getName() : "-"));
+
+            // LOGIKA GAMBAR (PAKAI GLIDE)
+            if (produk.getImages() != null && !produk.getImages().isEmpty()) {
+                String imgPath = produk.getImages().get(0).getImage_path();
+                if (imgPath != null) {
+                    String url = imgPath.startsWith("http") ? imgPath : Config.IMAGE_URL + imgPath;
+                    Glide.with(holder.itemView.getContext())
+                        .load(url)
+                        .placeholder(android.R.drawable.ic_menu_gallery)
+                        .into(holder.ivProduk);
+                }
+            } else {
+                holder.ivProduk.setImageResource(android.R.drawable.ic_menu_gallery);
+            }
 
             String status = produk.getStatus_barang() != null ? produk.getStatus_barang() : "available";
-            holder.tvStatus.setText(labelStatus(status));
+            holder.tvStatusProduk.setText(labelStatus(status));
 
             switch (status) {
                 case "ditangguhkan":
-                    holder.cardBadge.setCardBackgroundColor(0xFFFFF3E0);
-                    holder.tvStatus.setTextColor(0xFFFF9800);
+                    holder.badgeStatusProduk.setCardBackgroundColor(0xFFFFF3E0);
+                    holder.tvStatusProduk.setTextColor(0xFFFF9800);
                     break;
                 case "ditolak":
-                    holder.cardBadge.setCardBackgroundColor(0xFFFFEBEE);
-                    holder.tvStatus.setTextColor(0xFFF44336);
+                    holder.badgeStatusProduk.setCardBackgroundColor(0xFFFFEBEE);
+                    holder.tvStatusProduk.setTextColor(0xFFF44336);
                     break;
                 case "sold":
-                    holder.cardBadge.setCardBackgroundColor(0xFFE3F2FD);
-                    holder.tvStatus.setTextColor(0xFF2196F3);
+                    holder.badgeStatusProduk.setCardBackgroundColor(0xFFE3F2FD);
+                    holder.tvStatusProduk.setTextColor(0xFF2196F3);
                     break;
                 default:
-                    holder.cardBadge.setCardBackgroundColor(0xFFE8F5E9);
-                    holder.tvStatus.setTextColor(0xFF4CAF50);
+                    holder.badgeStatusProduk.setCardBackgroundColor(0xFFE8F5E9);
+                    holder.tvStatusProduk.setTextColor(0xFF4CAF50);
                     break;
             }
 
-            holder.btnMore.setOnClickListener(v -> showAksiProduk(produk));
+            holder.btnMoreProduk.setOnClickListener(v -> showAksiProduk(produk));
             holder.itemView.setOnClickListener(v -> showAksiProduk(produk));
         }
 
@@ -380,24 +334,26 @@ public class AdminProdukActivity extends AppCompatActivity {
         }
 
         @Override
-        public int getItemCount() {
-            return data.size();
-        }
+        public int getItemCount() { return data.size(); }
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            TextView tvNama, tvKategori, tvHarga, tvPenjual, tvStatus;
-            ImageView btnMore;
-            com.google.android.material.card.MaterialCardView cardBadge;
+            // NAMA VARIABEL SAMA PERSIS DENGAN ID XML
+            ImageView ivProduk;
+            TextView tvNamaProduk, tvKategoriProduk, tvHargaProduk, tvPenjualProduk, tvStatusProduk;
+            ImageView btnMoreProduk;
+            com.google.android.material.card.MaterialCardView badgeStatusProduk;
 
             ViewHolder(@NonNull View itemView) {
                 super(itemView);
-                tvNama = itemView.findViewById(R.id.tvNamaProduk);
-                tvKategori = itemView.findViewById(R.id.tvKategoriProduk);
-                tvHarga = itemView.findViewById(R.id.tvHargaProduk);
-                tvPenjual = itemView.findViewById(R.id.tvPenjualProduk);
-                tvStatus = itemView.findViewById(R.id.tvStatusProduk);
-                btnMore = itemView.findViewById(R.id.btnMoreProduk);
-                cardBadge = itemView.findViewById(R.id.badgeStatusProduk);
+                // BINDING ID
+                ivProduk = itemView.findViewById(R.id.ivProduk);
+                tvNamaProduk = itemView.findViewById(R.id.tvNamaProduk);
+                tvKategoriProduk = itemView.findViewById(R.id.tvKategoriProduk);
+                tvHargaProduk = itemView.findViewById(R.id.tvHargaProduk);
+                tvPenjualProduk = itemView.findViewById(R.id.tvPenjualProduk);
+                tvStatusProduk = itemView.findViewById(R.id.tvStatusProduk);
+                btnMoreProduk = itemView.findViewById(R.id.btnMoreProduk);
+                badgeStatusProduk = itemView.findViewById(R.id.badgeStatusProduk);
             }
         }
     }

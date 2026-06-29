@@ -3,6 +3,7 @@ package com.example.preloved;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +52,10 @@ public class AdminMainActivity extends AppCompatActivity {
         valProduk = findViewById(R.id.valProduk);
         valTransaksi = findViewById(R.id.valTransaksi);
         valPendapatan = findViewById(R.id.valPendapatan);
+        View cardPengguna = findViewById(R.id.cardPengguna);
+        View cardProduk = findViewById(R.id.cardProduk);
+        View cardTransaksi = findViewById(R.id.cardTransaksi);
+        View cardPendapatan = findViewById(R.id.cardPendapatan);
 
         if (tvAdminTitle != null) {
             String nama = sessionManager.getAdminNama();
@@ -61,10 +66,28 @@ public class AdminMainActivity extends AppCompatActivity {
             findViewById(R.id.imgProfile).setOnClickListener(v -> showLogoutConfirmation());
         }
 
+        if (cardPengguna != null) {
+            cardPengguna.setOnClickListener(v -> bukaGrafik("pengguna", "Grafik Pertumbuhan Pengguna"));
+        }
+        if (cardProduk != null) {
+            cardProduk.setOnClickListener(v -> bukaGrafik("produk", "Grafik Penambahan Produk"));
+        }
+        if (cardTransaksi != null) {
+            cardTransaksi.setOnClickListener(v -> bukaGrafik("transaksi", "Grafik Transaksi Harian"));
+        }
+        if (cardPendapatan != null) {
+            cardPendapatan.setOnClickListener(v -> bukaGrafik("pendapatan", "Grafik Pendapatan Kotor"));
+        }
+
         setupBottomNav();
         loadDashboardSummary();
     }
-
+    private void bukaGrafik(String tipeMetrik, String judul) {
+        Intent intent = new Intent(AdminMainActivity.this, AdminDetailGrafikActivity.class);
+        intent.putExtra("TIPE_METRIK", tipeMetrik);
+        intent.putExtra("JUDUL_GRAFIK", judul);
+        startActivity(intent);
+    }
     private void showLogoutConfirmation() {
         new AlertDialog.Builder(this)
                 .setTitle("Keluar")
@@ -176,6 +199,8 @@ public class AdminMainActivity extends AppCompatActivity {
                 overridePendingTransition(0, 0);
             });
         }
+
+
     }
 
     private void redirectToLogin() {

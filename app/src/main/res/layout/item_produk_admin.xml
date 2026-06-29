@@ -20,6 +20,7 @@
             android:layout_height="80dp"
             app:cardCornerRadius="8dp"
             app:cardElevation="0dp">
+
             <ImageView
                 android:id="@+id/ivProduk"
                 android:layout_width="match_parent"
@@ -44,7 +45,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_alignParentEnd="true"
-            android:src="@drawable/more"
+            android:src="@android:drawable/ic_menu_more"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true" />
@@ -84,6 +85,7 @@
             app:cardBackgroundColor="#E8F5E9"
             app:cardCornerRadius="4dp"
             app:cardElevation="0dp">
+
             <TextView
                 android:id="@+id/tvStatusProduk"
                 android:layout_width="wrap_content"

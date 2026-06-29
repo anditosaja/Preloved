@@ -5,9 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
+    android:layout_marginHorizontal="2dp"
     app:cardBackgroundColor="#FFFFFF"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="2dp">
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -18,7 +22,7 @@
             android:id="@+id/tvInvoiceTransaksi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="#INV-000"
+            android:text="#INV-0"
             android:textColor="#000000"
             android:textSize="14sp"
             android:textStyle="bold" />
@@ -27,95 +31,90 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_alignParentEnd="true"
-            android:src="@drawable/arrow_right" />
+            android:src="@android:drawable/ic_media_next"
+            app:tint="#BDBDBD"/>
 
         <TextView
             android:id="@+id/tvTanggalTransaksi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tvInvoiceTransaksi"
-            android:layout_marginTop="4dp"
-            android:text="-"
+            android:layout_marginTop="2dp"
+            android:text="2026-06-16 00:00"
             android:textColor="#9E9E9E"
             android:textSize="11sp" />
 
-        <RelativeLayout
-            android:id="@+id/contentTransaksi"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardImgTrx"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_below="@id/tvTanggalTransaksi"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="0dp">
+            <ImageView
+                android:id="@+id/ivProdukTransaksi"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:background="#F5F5F5" />
+        </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/imgTransaksi"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="0dp">
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:background="#F5F5F5" />
-            </androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/tvNamaProdukTransaksi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/cardImgTrx"
+            android:layout_alignTop="@id/cardImgTrx"
+            android:layout_marginStart="12dp"
+            android:text="Nama Produk"
+            android:textColor="#000000"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/imgTransaksi"
-                android:layout_marginStart="12dp"
-                android:layout_centerVertical="true"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tvNamaProdukTransaksi"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Nama Produk"
-                    android:textColor="#000000"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvBuyerSellerTransaksi"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Pembeli • Penjual"
-                    android:textColor="#757575"
-                    android:textSize="11sp" />
-            </LinearLayout>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/badgeStatusTransaksi"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                app:cardBackgroundColor="#E3F2FD"
-                app:cardCornerRadius="4dp"
-                app:cardElevation="0dp">
-                <TextView
-                    android:id="@+id/tvStatusTransaksi"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingHorizontal="8dp"
-                    android:paddingVertical="4dp"
-                    android:text="Diproses"
-                    android:textColor="#2196F3"
-                    android:textSize="10sp"
-                    android:textStyle="bold" />
-            </com.google.android.material.card.MaterialCardView>
-        </RelativeLayout>
+        <TextView
+            android:id="@+id/tvBuyerSellerTransaksi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/cardImgTrx"
+            android:layout_below="@id/tvNamaProdukTransaksi"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="4dp"
+            android:text="Pembeli • Penjual"
+            android:textColor="#757575"
+            android:textSize="11sp" />
 
         <TextView
             android:id="@+id/tvHargaTransaksi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/contentTransaksi"
+            android:layout_below="@id/cardImgTrx"
             android:layout_marginTop="16dp"
             android:text="Rp0"
             android:textColor="#000000"
             android:textSize="14sp"
             android:textStyle="bold" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/badgeStatusTransaksi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@id/tvNamaProdukTransaksi"
+            app:cardBackgroundColor="#E8F5E9"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="0dp">
+            <TextView
+                android:id="@+id/tvStatusTransaksi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:text="Selesai"
+                android:textColor="#4CAF50"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+        </com.google.android.material.card.MaterialCardView>
+
     </RelativeLayout>
 </com.google.android.material.card.MaterialCardView>

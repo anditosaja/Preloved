@@ -4,6 +4,8 @@ import com.example.preloved.models.AdminDashboardSummary;
 import com.example.preloved.models.AdminLoginResponse;
 import com.example.preloved.models.ApiResponse;
 import com.example.preloved.models.CategoryPopulerResponse;
+import com.example.preloved.models.ChartItem;
+import com.example.preloved.models.Complaint;
 import com.example.preloved.models.HomeResponse;
 import com.example.preloved.models.ImageResponse;
 import com.example.preloved.models.LoginRequest;
@@ -112,6 +114,31 @@ public interface ApiService {
     Call<ProductResponse> createProduct(
         @Header("Authorization") String token,
         @Body ProductRequest request
+    );
+
+    @GET("admin/dashboard/chart")
+    Call<ApiResponse<List<ChartItem>>> getAdminChartData(
+        @Header("Authorization") String bearerToken,
+        @Query("type") String type
+    );
+
+
+    // =====================================
+    // API KOMPLAIN ADMIN
+    // =====================================
+
+    @GET("admin/complaints")
+    Call<ApiResponse<List<Complaint>>> getAdminComplaints(
+        @Header("Authorization") String token,
+        @Query("status") String status
+    );
+
+    @FormUrlEncoded
+    @PUT("admin/complaints/{id}/status")
+    Call<ApiResponse<Complaint>> updateComplaintStatus(
+        @Header("Authorization") String token,
+        @Path("id") int id,
+        @Field("status") String status
     );
 
     @Multipart
