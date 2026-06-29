@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -71,7 +72,7 @@ public class ProfilActivity extends AppCompatActivity {
         txtSaldoProfil = findViewById(R.id.txtSaldoProfil);
         txtEmailProfil = findViewById(R.id.txtEmailProfil);
         imgFotoProfil = findViewById(R.id.imgFotoProfil);
-        txtFollowersProfil = findViewById(R.id.txtFollowersProfil); // Deklarasikan di sini
+        txtFollowersProfil = findViewById(R.id.txtFollowersProfil);
 
         SessionManager sessionManager = new SessionManager(this);
         token = sessionManager.getToken();
@@ -101,8 +102,7 @@ public class ProfilActivity extends AppCompatActivity {
 
         if (token.isEmpty()) {
             Toast.makeText(this, "Token kosong! Silakan login ulang.", Toast.LENGTH_LONG).show();
-            // Opsional: Langsung arahkan (Intent) kembali ke LoginActivity
-            return; // Hentikan proses load data
+            return;
         } else {
             Log.d("TOKEN_CEK", "Token yang dikirim: " + token);
         }
@@ -121,7 +121,50 @@ public class ProfilActivity extends AppCompatActivity {
         });
 
         // =========================================================
-        // KLIK MENU BARANG SAYA
+        // MENU BARANG TERJUAL (Menampilkan Barang Status Sold)
+        // =========================================================
+        LinearLayout layoutBarangTerjual = findViewById(R.id.layoutBarangTerjual);
+        if (layoutBarangTerjual != null) {
+            layoutBarangTerjual.setOnClickListener(v -> {
+                Intent intent = new Intent(ProfilActivity.this, BarangSayaActivity.class);
+                intent.putExtra("FILTER_STATUS", "sold"); // Kirim instruksi filter
+                startActivity(intent);
+            });
+        }
+
+        // =========================================================
+        // MENU BARANG DIJUAL (Menampilkan Semua Barang)
+        // =========================================================
+        LinearLayout layoutBarangDijual = findViewById(R.id.layoutBarangDijual);
+        if (layoutBarangDijual != null) {
+            layoutBarangDijual.setOnClickListener(v -> {
+                Intent intent = new Intent(ProfilActivity.this, BarangSayaActivity.class);
+                // Tidak mengirim parameter filter, artinya tampilkan semua
+                startActivity(intent);
+            });
+        }
+
+        // =========================================================
+        // MENU RATING (Menampilkan Daftar Ulasan Toko)
+        // =========================================================
+        LinearLayout layoutRatingProfil = findViewById(R.id.layoutRatingProfil);
+        if (layoutRatingProfil != null) {
+            layoutRatingProfil.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (currentUserId != -1) {
+                        Intent intent = new Intent(ProfilActivity.this, DaftarUlasanActivity.class);
+                        intent.putExtra("SELLER_ID", currentUserId);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(ProfilActivity.this, "Menunggu data profil...", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+
+        // =========================================================
+        // MENU BARANG SAYA (Tampil Semua Barang juga)
         // =========================================================
         findViewById(R.id.menuBarangSaya).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,10 +185,8 @@ public class ProfilActivity extends AppCompatActivity {
         findViewById(R.id.txtRatingProfil).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Cegah pindah halaman kalau ID masih -1 (data belum ke-load)
                 if (currentUserId != -1) {
                     Intent intent = new Intent(ProfilActivity.this, DaftarUlasanActivity.class);
-                    // Sekarang ID-nya dijamin bukan 0 lagi!
                     intent.putExtra("SELLER_ID", currentUserId);
                     startActivity(intent);
                 } else {
@@ -155,7 +196,7 @@ public class ProfilActivity extends AppCompatActivity {
         });
 
         // =========================================================
-        // KLIK MENU PESANAN SAYA (PEMBELI / KONFIRMASI)
+        // MENU PESANAN SAYA (PEMBELI / KONFIRMASI)
         // =========================================================
         View menuPesananSaya = findViewById(R.id.menuPesanan);
         if (menuPesananSaya != null) {
@@ -169,7 +210,7 @@ public class ProfilActivity extends AppCompatActivity {
         }
 
         // =========================================================
-        // KLIK MENU SALDO PRELOVED (MASUK KE TOP UP)
+        // MENU SALDO PRELOVED (MASUK KE TOP UP)
         // =========================================================
         findViewById(R.id.menuSaldo).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,7 +221,7 @@ public class ProfilActivity extends AppCompatActivity {
         });
 
         // =========================================================
-        // KLIK MENU LOGOUT (KELUAR)
+        // MENU LOGOUT (KELUAR)
         // =========================================================
         findViewById(R.id.menuLogout).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -283,8 +324,14 @@ public class ProfilActivity extends AppCompatActivity {
                         int jumlahUlasan = jsonObject.optInt("jumlah_ulasan", 0);
                         int saldo = jsonObject.optInt("balance", 0);
 
-                        // [UPDATE] Tangkap followers_count dari JSON API profil kamu
+                        // [UPDATE] Tangkap followers_count dari JSON API profil
                         int jumlahFollower = jsonObject.optInt("followers_count", 0);
+
+                        // Set nilai ke UI untuk jumlah barang dijual dan terjual
+                        TextView txtAngkaTerjual = findViewById(R.id.txtAngkaTerjual);
+                        TextView txtAngkaDijual = findViewById(R.id.txtAngkaDijual);
+                        if (txtAngkaTerjual != null) txtAngkaTerjual.setText(String.valueOf(jsonObject.optInt("barang_terjual", 0))); // Ganti "barang_terjual" sesuai key json
+                        if (txtAngkaDijual != null) txtAngkaDijual.setText(String.valueOf(jsonObject.optInt("barang_dijual", 0))); // Ganti "barang_dijual" sesuai key json
 
                         // Set nilai ke UI
                         txtNama.setText(namaLengkap);
@@ -295,14 +342,14 @@ public class ProfilActivity extends AppCompatActivity {
                         txtSaldoProfil.setText("Rp " + saldo);
                         txtEmailProfil.setText(email);
 
-                        // [UPDATE] Set text followers ke layar
+                        // Set text followers ke layar
                         txtFollowersProfil.setText(jumlahFollower + " Pengikut");
 
                         if (!fotoProfil.isEmpty() && !fotoProfil.equals("null")) {
                             String imageUrl = fotoProfil.startsWith("http") ? fotoProfil : Config.IMAGE_URL + fotoProfil;
                             Glide.with(ProfilActivity.this)
                                 .load(imageUrl)
-                                .circleCrop() // Opsional: Biar fotonya otomatis bulat
+                                .circleCrop()
                                 .into(imgFotoProfil);
                         }
 

@@ -104,15 +104,44 @@ public class BarangSayaActivity extends AppCompatActivity {
                         String jsonString = response.body().string();
                         JSONArray jsonArray = new JSONArray(jsonString);
 
-                        if (jsonArray.length() == 0) {
+                        // 1. Tangkap status filter dari Intent ProfilActivity
+                        String filterStatus = getIntent().getStringExtra("FILTER_STATUS");
+
+                        // 2. Siapkan array kosong untuk menampung data yang sudah disaring
+                        JSONArray filteredArray = new JSONArray();
+
+                        // 3. Proses penyaringan (Filtering)
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject product = jsonArray.getJSONObject(i);
+                            String statusBarang = product.optString("status_barang", "available");
+
+                            if ("sold".equals(filterStatus)) {
+                                // Jika mode "Barang Terjual", masukkan HANYA yang statusnya "sold"
+                                if (statusBarang.equalsIgnoreCase("sold")) {
+                                    filteredArray.put(product);
+                                }
+                            } else {
+                                // Jika mode "Barang Dijual" / "Barang Saya", masukkan semuanya
+                                filteredArray.put(product);
+                            }
+                        }
+
+                        // 4. Tampilkan data yang sudah difilter
+                        if (filteredArray.length() == 0) {
                             rvMyProducts.setVisibility(View.GONE);
                             tvEmptyState.setVisibility(View.VISIBLE);
+                            // Ubah teks empty state menyesuaikan jenis filter
+                            if ("sold".equals(filterStatus)) {
+                                tvEmptyState.setText("Belum ada barang yang terjual.");
+                            } else {
+                                tvEmptyState.setText("Belum ada barang yang dijual.");
+                            }
                         } else {
                             tvEmptyState.setVisibility(View.GONE);
                             rvMyProducts.setVisibility(View.VISIBLE);
 
-                            // Pasang data ke adapter internal
-                            SalesAdapter adapter = new SalesAdapter(jsonArray);
+                            // Masukkan filteredArray ke adapter, bukan jsonArray mentah
+                            SalesAdapter adapter = new SalesAdapter(filteredArray);
                             rvMyProducts.setAdapter(adapter);
                         }
                     } catch (Exception e) {
