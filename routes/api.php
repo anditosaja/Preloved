@@ -36,7 +36,16 @@ Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{id}', [ProductController::class, 'show']);
 Route::get('/home', [HomeController::class, 'index']);
 Route::get('/categories', [CategoryController::class, 'index']);
-Route::get('/categories/{id}/products', [CategoryController::class, 'products']);
+
+Route::get(
+    '/products/search',
+    [ProductController::class, 'search']
+);
+
+Route::get('/categories/{id}/products',[CategoryController::class, 'products']
+);
+
+Route::get('/categories/populer', [CategoryController::class, 'populer']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/favorites', [FavoriteController::class, 'index']);

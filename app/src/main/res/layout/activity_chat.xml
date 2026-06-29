@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <RelativeLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Pesan Chat"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/searchArea"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/topBar"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/bg_search_outline"
+        android:padding="4dp">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@null"
+            android:drawableStart="@drawable/search"
+            android:drawablePadding="8dp"
+            android:hint="Cari obrolan..."
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textSize="14sp"
+            android:inputType="text"
+            android:importantForAutofill="no" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvUserList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/searchArea"
+        android:layout_above="@id/bottomNavigation"
+        android:paddingHorizontal="16dp"
+        android:clipToPadding="false" />
+
+    <LinearLayout
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:background="#FFFFFF"
+        android:elevation="16dp"
+        android:orientation="horizontal">
+
+        <LinearLayout android:id="@+id/navBeranda" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:background="?attr/selectableItemBackgroundBorderless" android:clickable="true" android:focusable="true">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/beranda" app:tint="#757575" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Beranda" android:textSize="10sp" android:textColor="#757575" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/navKategori" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:background="?attr/selectableItemBackgroundBorderless" android:clickable="true" android:focusable="true">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/kategori" app:tint="#757575" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Kategori" android:textSize="10sp" android:textColor="#757575" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/navJual" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:background="?attr/selectableItemBackgroundBorderless" android:clickable="true" android:focusable="true">
+            <RelativeLayout android:layout_width="45dp" android:layout_height="45dp" android:background="@drawable/bg_badge_angka">
+                <ImageView android:layout_width="30dp" android:layout_height="30dp" android:layout_centerInParent="true" android:src="@android:drawable/ic_input_add" app:tint="#FFFFFF" />
+            </RelativeLayout>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="Jual" android:textSize="10sp" android:textColor="#757575" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/navChat" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:background="?attr/selectableItemBackgroundBorderless" android:clickable="true" android:focusable="true">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/chat" app:tint="#6952D9" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Chat" android:textSize="10sp" android:textStyle="bold" android:textColor="#6952D9" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/navProfil" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:background="?attr/selectableItemBackgroundBorderless" android:clickable="true" android:focusable="true">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/profile" app:tint="#757575" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Profil" android:textSize="10sp" android:textColor="#757575" />
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

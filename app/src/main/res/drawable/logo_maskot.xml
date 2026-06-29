@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+
+    <!-- Tali Tas -->
+    <path
+        android:strokeColor="#6952D9"
+        android:strokeWidth="6"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M 35,40 C 35,15 65,15 65,40" />
+
+    <!-- Tangan Melambai (Kiri) -->
+    <path
+        android:strokeColor="#6952D9"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M 20,50 C 10,40 5,25 15,15" />
+
+    <!-- Tangan Menyapa (Kanan) -->
+    <path
+        android:strokeColor="#6952D9"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M 80,50 C 90,60 95,70 85,85" />
+
+    <!-- Badan Tas (Bentuk Love Ungu) -->
+    <path
+        android:fillColor="#6952D9"
+        android:pathData="M 50,35 C 50,35 40,15 20,25 C -5,35 10,70 50,90 C 90,70 105,35 80,25 C 60,15 50,35 50,35 Z" />
+
+    <!-- Mata Kiri (Putih) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 38,50 A 4,4 0 1,1 38,49.9 Z" />
+
+    <!-- Mata Kanan (Putih) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 62,50 A 4,4 0 1,1 62,49.9 Z" />
+
+    <!-- Pipi Merah Merona -->
+    <path
+        android:fillColor="#FF85A2"
+        android:pathData="M 32,58 A 3,2 0 1,1 32,57.9 Z" />
+    <path
+        android:fillColor="#FF85A2"
+        android:pathData="M 68,58 A 3,2 0 1,1 68,57.9 Z" />
+
+    <!-- Mulut Tersenyum (Putih) -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M 42,58 Q 50,68 58,58" />
+
+</vector>

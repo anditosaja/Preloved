@@ -20,12 +20,14 @@
             android:layout_height="30dp"
             android:layout_centerInParent="true"
             android:scaleType="fitCenter"
-            android:src="@drawable/group_2" /> <ImageView
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:src="@drawable/ion_notifications_outline" />
+            android:src="@drawable/group_2" />
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ion_notifications_outline" />
     </RelativeLayout>
 
     <ScrollView
@@ -44,25 +46,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="350dp"
                 android:scaleType="centerCrop"
-                android:background="#E0E0E0" /> <ImageView
-            android:id="@+id/btnBackImg"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/bg_circle_white"
-            android:src="@drawable/maki_arrow"
-            android:padding="10dp" />
+                android:background="#E0E0E0" />
 
             <ImageView
+                android:id="@+id/btnBackImg"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_alignParentEnd="true"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
                 android:background="@drawable/bg_circle_white"
-                android:src="@android:drawable/ic_menu_more"
-                android:padding="6dp" />
+                android:src="@drawable/arrow_left"
+                android:padding="10dp" />
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -78,11 +73,12 @@
                     android:layout_height="wrap_content">
 
                     <TextView
+                        android:id="@+id/tvProductName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_toStartOf="@+id/btnFavorite"
                         android:layout_marginEnd="16dp"
-                        android:text="Chio 2nd Hand\nBag"
+                        android:text="Nama Barang"
                         android:textSize="22sp"
                         android:textStyle="bold"
                         android:textColor="#000000"/>
@@ -92,8 +88,19 @@
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:layout_alignParentEnd="true"
-                        android:src="@android:drawable/ic_menu_view"
-                        app:tint="#D32F2F"/> </RelativeLayout>
+                        android:src="@drawable/heart"
+                        app:tint="#D32F2F"/>
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/tvProductCategory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Kategori: Pakaian"
+                    android:textColor="#757575"
+                    android:textSize="13sp"
+                    android:textStyle="italic" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -103,9 +110,10 @@
                     android:gravity="center_vertical">
 
                     <TextView
+                        android:id="@+id/tvProductPrice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Rp120.000"
+                        android:text="Rp0"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:textColor="#000000"/>
@@ -115,15 +123,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:text="Rp300.000"
+                        android:text="Rp0"
                         android:textSize="14sp"
                         android:textColor="#9E9E9E"/>
 
                     <TextView
+                        android:id="@+id/tvDiscount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:text="-60%"
+                        android:text="0%"
                         android:textSize="12sp"
                         android:textStyle="bold"
                         android:textColor="#D32F2F"
@@ -143,7 +152,7 @@
 
                     <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Kondisi" android:textSize="12sp" android:textColor="#757575"/>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Sangat Baik" android:textSize="14sp" android:textStyle="bold" android:textColor="#000000"/>
+                        <TextView android:id="@+id/tvCondition" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Kondisi" android:textSize="14sp" android:textStyle="bold" android:textColor="#000000"/>
                     </LinearLayout>
 
                     <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
@@ -153,7 +162,7 @@
 
                     <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Warna" android:textSize="12sp" android:textColor="#757575"/>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Beige" android:textSize="14sp" android:textStyle="bold" android:textColor="#000000"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Sesuai Foto" android:textSize="14sp" android:textStyle="bold" android:textColor="#000000"/>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -178,8 +187,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
                         android:orientation="vertical">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Jakarta Pusat" android:textSize="14sp" android:textStyle="bold" android:textColor="#000000"/>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="24 km dari lokasi kamu" android:textSize="12sp" android:textColor="#757575"/>
+                        <TextView android:id="@+id/tvProductLocation" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Lokasi" android:textSize="14sp" android:textStyle="bold" android:textColor="#000000"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Lokasi tertera penjual" android:textSize="12sp" android:textColor="#757575"/>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -194,10 +203,11 @@
                     android:textColor="#000000"/>
 
                 <TextView
+                    android:id="@+id/tvDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Tas handbag/slingbag kecil merk Chio 2nd, perpaduan warna beige dan cokelat. Kondisi masih sangat mulus dan terawat. Cocok untuk jalan santai atau acara formal. Pemakaian kurang dari 1 bulan."
+                    android:text="Deskripsi barang preloved berkualitas bagus sesuai foto demo."
                     android:textSize="13sp"
                     android:textColor="#424242"
                     android:lineSpacingExtra="4dp"/>
@@ -209,6 +219,34 @@
                     android:text="Lihat selengkapnya"
                     android:textSize="13sp"
                     android:textColor="#6952D9"/>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E0E0E0" android:layout_marginTop="20dp" android:layout_marginBottom="20dp"/>
+
+                <TextView
+                    android:id="@+id/tvTitleBarangSerupa"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Barang Serupa"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvBarangSerupa"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:clipToPadding="false"
+                    android:paddingEnd="16dp" />
+
+                <TextView
+                    android:id="@+id/tvEmptyBarangSerupa"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="Belum ada barang serupa di kategori ini."
+                    android:textColor="#757575"
+                    android:visibility="gone"/>
 
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E0E0E0" android:layout_marginTop="20dp" android:layout_marginBottom="20dp"/>
 
@@ -233,15 +271,41 @@
                         android:layout_centerVertical="true"
                         android:orientation="vertical">
 
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Danil Caesar Handoko" android:textSize="14sp" android:textStyle="bold" android:textColor="#000000" android:maxLines="1" android:ellipsize="end"/>
+                        <TextView
+                            android:id="@+id/tvSellerName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Memuat nama..."
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:textColor="#000000"
+                            android:maxLines="1"
+                            android:ellipsize="end"/>
 
                         <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginTop="2dp">
                             <ImageView android:layout_width="14dp" android:layout_height="14dp" android:src="@android:drawable/star_on" app:tint="#FFC107"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="4dp" android:text="4.8" android:textSize="12sp" android:textStyle="bold" android:textColor="#000000"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="4dp" android:text="(67)" android:textSize="12sp" android:textColor="#757575"/>
+
+                            <TextView
+                                android:id="@+id/tvSellerRating"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:text="0.0"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:textColor="#000000"/>
+
+                            <TextView
+                                android:id="@+id/tvSellerFollowers"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:text="(0)"
+                                android:textSize="12sp"
+                                android:textColor="#757575"/>
                         </LinearLayout>
 
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="Aktif 1 menit yang lalu" android:textSize="12sp" android:textColor="#757575"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="Aktif baru saja" android:textSize="12sp" android:textColor="#757575"/>
                     </LinearLayout>
 
                     <com.google.android.material.button.MaterialButton
@@ -274,37 +338,16 @@
         android:background="#FFFFFF"
         android:elevation="16dp">
 
-        <LinearLayout
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnChat"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnTawar"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="55dp"
-                android:layout_weight="1"
-                android:layout_marginEnd="8dp"
-                android:text="Tawar"
-                android:textAllCaps="false"
-                android:textColor="#6952D9"
-                app:strokeColor="#6952D9"
-                app:cornerRadius="8dp"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnChat"
-                android:layout_width="0dp"
-                android:layout_height="55dp"
-                android:layout_weight="1"
-                android:layout_marginStart="8dp"
-                android:text="Chat Penjual"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF"
-                app:backgroundTint="#6952D9"
-                app:cornerRadius="8dp"/>
-        </LinearLayout>
+            android:layout_height="55dp"
+            android:text="Chat Penjual"
+            android:textAllCaps="false"
+            android:textColor="#6952D9"
+            app:strokeColor="#6952D9"
+            app:cornerRadius="8dp"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnBeli"

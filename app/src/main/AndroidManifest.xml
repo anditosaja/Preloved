@@ -8,14 +8,50 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo_maskot"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/logo_maskot"
         android:supportsRtl="true"
         android:theme="@style/Theme.Preloved"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".AdminDetailGrafikActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DaftarUlasanActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TulisReviewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".FavoriteActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PesananSayaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SuccessActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BarangSayaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".JualSelesaiActivity"
+            android:exported="false" />
+        <activity
+            android:name=".JualKondisiActivity"
+            android:exported="false" />
+        <activity
+            android:name=".JualKategoriActivity"
+            android:exported="false" />
+        <activity
+            android:name=".JualDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".ProfilActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ChatActivity"
             android:exported="false" />
         <activity
             android:name=".ProfilBarangActivity"
@@ -46,6 +82,36 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DaftarBarangActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ChatActivityDetail"
+            android:exported="false" />
+        <activity
+            android:name=".TopUpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".HasilPencarianActivity"
+            android:exported="false" />
+        <activity
+            android:name=".OrderActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminMainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminPenggunaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminProdukActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminTransaksiActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminKomplainActivity"
             android:exported="false" />
     </application>
 
