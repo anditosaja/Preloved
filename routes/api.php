@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\ProductImageController;
+use App\Http\Controllers\Api\TopUpController;
 
 use App\Http\Controllers\Api\Admin\AdminAuthController;
 use App\Http\Controllers\Api\Admin\AdminDashboardController;
@@ -65,6 +66,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/profile', [ProfileController::class, 'update']);
     Route::post('/profile/photo', [ProfileController::class, 'uploadPhoto']);
     Route::get('/profile/{userId}', [ProfileController::class, 'seller']);
+    Route::post('/topup', [TopUpController::class, 'store']);
+    Route::put('/balance', [TopUpController::class, 'updateBalance']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
